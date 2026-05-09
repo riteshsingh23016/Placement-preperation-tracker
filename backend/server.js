@@ -8,6 +8,7 @@ const companyRoutes = require("./routes/companyRoutes");
 const authRoutes = require("./routes/authRoutes");
 const notesRoutes = require("./routes/notesRoutes");
 const collectionRoutes = require("./routes/collectionRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const { seedCompaniesIfEmpty } = require("./seed/companySeed");
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/collections", collectionRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 

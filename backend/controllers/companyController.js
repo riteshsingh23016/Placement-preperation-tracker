@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Company = require("../models/company");
+const { createInternalNotification } = require("./notificationController");
 
 function parseOptionalDate(value) {
   if (value === undefined || value === null || value === "") return null;
@@ -101,6 +102,18 @@ exports.createCompany = async (req, res) => {
       user: req.user._id,
     });
 
+    // Notification for interview
+    if (doc.interviewDate || doc.status === "Interview Scheduled") {
+      await createInternalNotification({
+        userId: req.user._id,
+        type: "interview",
+        title: "Interview Scheduled",
+        message: `Interview for ${doc.companyName} set for ${doc.interviewDate ? new Date(doc.interviewDate).toLocaleDateString() : "TBD"}.`,
+        companyId: doc._id,
+        priority: doc.priority === "High" ? "high" : "medium",
+      });
+    }
+
     return res.status(201).json({
       success: true,
       data: doc.toObject(),
@@ -170,6 +183,18 @@ exports.updateCompany = async (req, res) => {
       });
     }
 
+    // Notification for interview status change or date update
+    if (updates.status === "Interview Scheduled" || updates.interviewDate) {
+      await createInternalNotification({
+        userId: req.user._id,
+        type: "interview",
+        title: "Interview Updated",
+        message: `Interview details updated for ${doc.companyName}.`,
+        companyId: doc._id,
+        priority: doc.priority === "High" ? "high" : "medium",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       data: doc,
@@ -227,6 +252,117 @@ exports.deleteCompany = async (req, res) => {
       success: false,
       message: "Could not delete company.",
       code: "COMPANY_DELETE_FAILED",
+    });
+  }
+};
+
+exports.getAnalytics = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // 1. Basic Counts
+    const stats = await Company.aggregate([
+      { $match: { user: userId, archived: false } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          selected: { $sum: { $cond: [{ $eq: ["$status", "Selected"] }, 1, 0] } },
+          rejected: { $sum: { $cond: [{ $eq: ["$status", "Rejected"] }, 1, 0] } },
+          interviews: { $sum: { $cond: [{ $eq: ["$status", "Interview Scheduled"] }, 1, 0] } },
+          pending: { $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] } },
+          applied: { $sum: { $cond: [{ $eq: ["$status", "Applied"] }, 1, 0] } },
+        },
+      },
+    ]);
+
+    const baseStats = stats[0] || {
+      total: 0,
+      selected: 0,
+      rejected: 0,
+      interviews: 0,
+      pending: 0,
+      applied: 0,
+    };
+
+    // Calculate success rate
+    const successRate =
+      baseStats.selected + baseStats.rejected > 0
+        ? Math.round((baseStats.selected / (baseStats.selected + baseStats.rejected)) * 100)
+        : 0;
+
+    // Active applications
+    const activeApps = baseStats.applied + baseStats.interviews + baseStats.pending;
+
+    // 2. Status Distribution
+    const statusDist = await Company.aggregate([
+      { $match: { user: userId, archived: false } },
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    // 3. Priority Distribution
+    const priorityDist = await Company.aggregate([
+      { $match: { user: userId, archived: false } },
+      { $group: { _id: "$priority", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    // 4. Monthly Trend (last 12 months)
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 11);
+    twelveMonthsAgo.setDate(1);
+    twelveMonthsAgo.setHours(0, 0, 0, 0);
+
+    const monthlyTrend = await Company.aggregate([
+      {
+        $match: {
+          user: userId,
+          appliedDate: { $gte: twelveMonthsAgo },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$appliedDate" },
+            month: { $month: "$appliedDate" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+    ]);
+
+    // 5. Top Companies
+    const companyDist = await Company.aggregate([
+      { $match: { user: userId, archived: false } },
+      { $group: { _id: "$companyName", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        summary: {
+          total: baseStats.total,
+          selected: baseStats.selected,
+          rejected: baseStats.rejected,
+          interviews: baseStats.interviews,
+          active: activeApps,
+          successRate,
+        },
+        statusDistribution: statusDist,
+        priorityDistribution: priorityDist,
+        monthlyTrend,
+        companyDistribution: companyDist,
+      },
+    });
+  } catch (err) {
+    console.error("getAnalytics:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load analytics.",
     });
   }
 };
