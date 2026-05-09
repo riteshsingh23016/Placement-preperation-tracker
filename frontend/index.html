@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Tracker — Login</title>
+    <meta name="description" content="Placement Preparation & Interview Tracker — Login" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+  </head>
+  <body class="theme-dark" data-page="login">
+    <main class="auth">
+      <section class="auth__brand">
+        <div class="brandmark">
+          <div class="brandmark__icon" aria-hidden="true">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <div>
+            <div class="brandmark__title">Placement Tracker</div>
+            <div class="brandmark__subtitle">Preparation & Interview Dashboard</div>
+          </div>
+        </div>
+
+        <div class="auth__hero glass">
+          <div class="auth__heroTitle">Track applications. Prepare smarter. Get selected.</div>
+          <p class="auth__heroText">
+            A premium dashboard to manage your placement journey—applications, interview notes, and
+            progress analytics.
+          </p>
+          <div class="auth__bullets">
+            <div class="bullet">
+              <i data-lucide="shield-check"></i>
+              <span>Clean, focused workflow</span>
+            </div>
+            <div class="bullet">
+              <i data-lucide="bar-chart-3"></i>
+              <span>Progress analytics</span>
+            </div>
+            <div class="bullet">
+              <i data-lucide="notebook-tabs"></i>
+              <span>Interview notes & prep</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="auth__panel">
+        <div class="panel glass">
+          <header class="panel__header">
+            <h1 class="panel__title">Welcome back</h1>
+            <p class="panel__subtitle">Sign in to continue to your dashboard.</p>
+          </header>
+
+          <form class="form" id="loginForm" novalidate>
+            <label class="field">
+              <span class="field__label">Email</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="mail"></i>
+                <input
+                  class="input"
+                  type="email"
+                  name="email"
+                  placeholder="you@college.edu"
+                  autocomplete="email"
+                  required
+                />
+              </span>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Password</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="lock"></i>
+                <input
+                  class="input"
+                  type="password"
+                  name="password"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                />
+                <button class="iconBtn" type="button" id="togglePassword" aria-label="Show password">
+                  <i data-lucide="eye"></i>
+                </button>
+              </span>
+            </label>
+
+            <div class="form__row">
+              <label class="checkbox">
+                <input type="checkbox" name="remember" />
+                <span>Remember me</span>
+              </label>
+              <a class="link" href="dashboard.html">Forgot password?</a>
+            </div>
+
+            <button class="btn btn--primary btn--lg" type="submit">
+              <span>Sign in</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+
+            <div class="divider">
+              <span>or</span>
+            </div>
+
+            <button class="btn btn--secondary btn--lg" type="button" id="demoLogin">
+              <i data-lucide="zap"></i>
+              <span>Continue with Demo</span>
+            </button>
+
+            <p class="fineprint">
+              By continuing, you agree to the Terms and Privacy Policy.
+            </p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/auth.js" defer></script>
+  </body>
+</html>

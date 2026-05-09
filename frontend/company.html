@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Tracker — Companies</title>
+    <meta name="description" content="Companies — Placement Preparation & Interview Tracker" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/company.css" />
+  </head>
+  <body class="theme-dark" data-page="company">
+    <div class="appShell">
+      <aside class="sidebar" aria-label="Sidebar">
+        <div class="sidebar__top">
+          <a class="logo" href="dashboard.html" aria-label="Placement Tracker home">
+            <span class="logo__mark" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+            <span class="logo__text">
+              <span class="logo__title">Placement Tracker</span>
+              <span class="logo__subtitle">Interview & Prep</span>
+            </span>
+          </a>
+
+          <button class="sidebar__collapse iconBtn" type="button" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i data-lucide="panel-left"></i>
+          </button>
+        </div>
+
+        <nav class="nav">
+          <a class="nav__item" href="dashboard.html">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav__item is-active" href="company.html">
+            <i data-lucide="building-2"></i>
+            <span>Companies</span>
+          </a>
+          <a class="nav__item" href="notes.html">
+            <i data-lucide="notebook-tabs"></i>
+            <span>Notes</span>
+          </a>
+
+          <div class="nav__divider"></div>
+
+          <a class="nav__item" href="index.html">
+            <i data-lucide="log-out"></i>
+            <span>Logout</span>
+          </a>
+        </nav>
+
+        <div class="sidebar__bottom glass">
+          <div class="miniProfile">
+            <div class="avatar" aria-hidden="true">AS</div>
+            <div class="miniProfile__meta">
+              <div class="miniProfile__name">Aspirant</div>
+              <div class="miniProfile__hint">Demo workspace</div>
+            </div>
+          </div>
+          <button class="btn btn--ghost btn--sm" type="button" id="openCommand">
+            <i data-lucide="command"></i>
+            <span>Quick commands</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="content">
+        <header class="topbar">
+          <div class="topbar__left">
+            <button class="iconBtn topbar__menuBtn" type="button" id="mobileMenu" aria-label="Open menu">
+              <i data-lucide="menu"></i>
+            </button>
+            <div class="pageTitle">
+              <div class="pageTitle__kicker">Companies</div>
+              <div class="pageTitle__title">Applications</div>
+            </div>
+          </div>
+
+          <div class="topbar__right">
+            <div class="search">
+              <i data-lucide="search"></i>
+              <input class="search__input" type="search" placeholder="Search companies…" />
+            </div>
+            <button class="btn btn--primary btn--sm" type="button" id="addCompanyBtn">
+              <i data-lucide="plus"></i>
+              <span>Add</span>
+            </button>
+          </div>
+        </header>
+
+        <main class="main">
+          <section class="grid grid--company">
+            <article class="card glass">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Pipeline</div>
+                  <div class="card__subtitle">Status overview</div>
+                </div>
+              </div>
+
+              <div class="pipeline">
+                <div class="pipeline__item glassHover">
+                  <div class="pipeline__label">Applied</div>
+                  <div class="pipeline__value">12</div>
+                </div>
+                <div class="pipeline__item glassHover">
+                  <div class="pipeline__label">OA / Screening</div>
+                  <div class="pipeline__value">6</div>
+                </div>
+                <div class="pipeline__item glassHover">
+                  <div class="pipeline__label">Interview</div>
+                  <div class="pipeline__value">5</div>
+                </div>
+                <div class="pipeline__item glassHover">
+                  <div class="pipeline__label">Selected</div>
+                  <div class="pipeline__value">2</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card glass">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Company List</div>
+                  <div class="card__subtitle">A premium table layout (UI only for now)</div>
+                </div>
+                <div class="chips" aria-label="Filters">
+                  <button class="chip is-active" type="button">All</button>
+                  <button class="chip" type="button">Applied</button>
+                  <button class="chip" type="button">Interview</button>
+                  <button class="chip" type="button">Selected</button>
+                  <button class="chip" type="button">Rejected</button>
+                </div>
+              </div>
+
+              <div class="tableWrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Company</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Last update</th>
+                      <th class="u-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="companyCell">
+                          <div class="companyLogo is-blue" aria-hidden="true">A</div>
+                          <div>
+                            <div class="companyName">Acme Labs</div>
+                            <div class="companyMeta">Off-campus</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>SDE Intern</td>
+                      <td><span class="badge">Applied</span></td>
+                      <td>Today</td>
+                      <td class="u-right">
+                        <button class="btn btn--ghost btn--sm" type="button">
+                          <i data-lucide="more-horizontal"></i>
+                          <span>Manage</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="companyCell">
+                          <div class="companyLogo is-purple" aria-hidden="true">N</div>
+                          <div>
+                            <div class="companyName">Neon</div>
+                            <div class="companyMeta">Referral</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Backend Engineer</td>
+                      <td><span class="badge badge--good">Interview</span></td>
+                      <td>Yesterday</td>
+                      <td class="u-right">
+                        <button class="btn btn--ghost btn--sm" type="button">
+                          <i data-lucide="more-horizontal"></i>
+                          <span>Manage</span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="companyCell">
+                          <div class="companyLogo is-amber" aria-hidden="true">V</div>
+                          <div>
+                            <div class="companyName">Vanta</div>
+                            <div class="companyMeta">Campus</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Full-stack</td>
+                      <td><span class="badge badge--muted">OA</span></td>
+                      <td>3 days ago</td>
+                      <td class="u-right">
+                        <button class="btn btn--ghost btn--sm" type="button">
+                          <i data-lucide="more-horizontal"></i>
+                          <span>Manage</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="cmdkOverlay" id="cmdkOverlay" hidden>
+      <div class="cmdk glass" role="dialog" aria-modal="true" aria-label="Quick commands">
+        <div class="cmdk__top">
+          <i data-lucide="command"></i>
+          <input class="cmdk__input" id="cmdkInput" placeholder="Type a command…" />
+          <button class="iconBtn" type="button" id="cmdkClose" aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="cmdk__list">
+          <button class="cmdk__item" type="button" data-go="dashboard.html">
+            <span class="cmdk__label">Go to Dashboard</span>
+            <span class="cmdk__hint">Overview & analytics</span>
+          </button>
+          <button class="cmdk__item" type="button" data-go="notes.html">
+            <span class="cmdk__label">Go to Notes</span>
+            <span class="cmdk__hint">Interview notes & prep</span>
+          </button>
+          <button class="cmdk__item" type="button" data-go="index.html">
+            <span class="cmdk__label">Logout</span>
+            <span class="cmdk__hint">Back to login</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/company.js" defer></script>
+  </body>
+</html>

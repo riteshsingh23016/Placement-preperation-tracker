@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Placement Tracker — Dashboard</title>
+    <meta name="description" content="Dashboard — Placement Preparation & Interview Tracker" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body class="theme-dark" data-page="dashboard">
+    <div class="appShell">
+      <aside class="sidebar" aria-label="Sidebar">
+        <div class="sidebar__top">
+          <a class="logo" href="dashboard.html" aria-label="Placement Tracker home">
+            <span class="logo__mark" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+            <span class="logo__text">
+              <span class="logo__title">Placement Tracker</span>
+              <span class="logo__subtitle">Interview & Prep</span>
+            </span>
+          </a>
+
+          <button class="sidebar__collapse iconBtn" type="button" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i data-lucide="panel-left"></i>
+          </button>
+        </div>
+
+        <nav class="nav">
+          <a class="nav__item is-active" href="dashboard.html">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav__item" href="company.html">
+            <i data-lucide="building-2"></i>
+            <span>Companies</span>
+          </a>
+          <a class="nav__item" href="notes.html">
+            <i data-lucide="notebook-tabs"></i>
+            <span>Notes</span>
+          </a>
+
+          <div class="nav__divider"></div>
+
+          <a class="nav__item" href="index.html">
+            <i data-lucide="log-out"></i>
+            <span>Logout</span>
+          </a>
+        </nav>
+
+        <div class="sidebar__bottom glass">
+          <div class="miniProfile">
+            <div class="avatar" aria-hidden="true">AS</div>
+            <div class="miniProfile__meta">
+              <div class="miniProfile__name">Aspirant</div>
+              <div class="miniProfile__hint">Demo workspace</div>
+            </div>
+          </div>
+          <button class="btn btn--ghost btn--sm" type="button" id="openCommand">
+            <i data-lucide="command"></i>
+            <span>Quick commands</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="content">
+        <header class="topbar">
+          <div class="topbar__left">
+            <button class="iconBtn topbar__menuBtn" type="button" id="mobileMenu" aria-label="Open menu">
+              <i data-lucide="menu"></i>
+            </button>
+            <div class="pageTitle">
+              <div class="pageTitle__kicker">Dashboard</div>
+              <div class="pageTitle__title">Placement Overview</div>
+            </div>
+          </div>
+
+          <div class="topbar__right">
+            <div class="search">
+              <i data-lucide="search"></i>
+              <input class="search__input" type="search" placeholder="Search companies, notes…" />
+            </div>
+            <button class="iconBtn" type="button" aria-label="Notifications">
+              <i data-lucide="bell"></i>
+            </button>
+            <button class="pill" type="button" aria-label="Profile">
+              <span class="pill__dot"></span>
+              <span class="pill__text">Aspirant</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+          </div>
+        </header>
+
+        <main class="main">
+          <section class="grid grid--cards">
+            <article class="card metric glass">
+              <div class="metric__meta">
+                <div class="metric__label">Total Applications</div>
+                <div class="metric__value" id="mTotal">24</div>
+                <div class="metric__delta is-up">
+                  <i data-lucide="trending-up"></i>
+                  <span>+3 this week</span>
+                </div>
+              </div>
+              <div class="metric__icon">
+                <i data-lucide="layers"></i>
+              </div>
+            </article>
+
+            <article class="card metric glass">
+              <div class="metric__meta">
+                <div class="metric__label">Interviews Scheduled</div>
+                <div class="metric__value" id="mInterviews">5</div>
+                <div class="metric__delta is-up">
+                  <i data-lucide="calendar-check"></i>
+                  <span>Next: Tue</span>
+                </div>
+              </div>
+              <div class="metric__icon">
+                <i data-lucide="calendar"></i>
+              </div>
+            </article>
+
+            <article class="card metric glass">
+              <div class="metric__meta">
+                <div class="metric__label">Selected Companies</div>
+                <div class="metric__value" id="mSelected">2</div>
+                <div class="metric__delta is-up">
+                  <i data-lucide="badge-check"></i>
+                  <span>Strong momentum</span>
+                </div>
+              </div>
+              <div class="metric__icon">
+                <i data-lucide="award"></i>
+              </div>
+            </article>
+
+            <article class="card metric glass">
+              <div class="metric__meta">
+                <div class="metric__label">Rejected Companies</div>
+                <div class="metric__value" id="mRejected">4</div>
+                <div class="metric__delta is-down">
+                  <i data-lucide="trending-down"></i>
+                  <span>Keep iterating</span>
+                </div>
+              </div>
+              <div class="metric__icon">
+                <i data-lucide="x-circle"></i>
+              </div>
+            </article>
+          </section>
+
+          <section class="grid grid--main">
+            <article class="card chart glass">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Placement Progress</div>
+                  <div class="card__subtitle">Applications → interviews → selection</div>
+                </div>
+                <div class="segmented" role="tablist" aria-label="Range">
+                  <button class="segmented__btn is-active" type="button" data-range="7">7d</button>
+                  <button class="segmented__btn" type="button" data-range="30">30d</button>
+                  <button class="segmented__btn" type="button" data-range="90">90d</button>
+                </div>
+              </div>
+              <div class="chart__body">
+                <canvas id="progressChart" height="120"></canvas>
+              </div>
+            </article>
+
+            <aside class="card glass">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Quick Actions</div>
+                  <div class="card__subtitle">Stay in flow</div>
+                </div>
+              </div>
+
+              <div class="quickActions">
+                <button class="qa glassHover" type="button" data-action="addCompany">
+                  <div class="qa__icon"><i data-lucide="plus"></i></div>
+                  <div class="qa__meta">
+                    <div class="qa__title">Add Company</div>
+                    <div class="qa__hint">Track new application</div>
+                  </div>
+                </button>
+                <button class="qa glassHover" type="button" data-action="addInterview">
+                  <div class="qa__icon"><i data-lucide="calendar-plus"></i></div>
+                  <div class="qa__meta">
+                    <div class="qa__title">Schedule Interview</div>
+                    <div class="qa__hint">Set date & round</div>
+                  </div>
+                </button>
+                <button class="qa glassHover" type="button" data-action="addNote">
+                  <div class="qa__icon"><i data-lucide="sticky-note"></i></div>
+                  <div class="qa__meta">
+                    <div class="qa__title">Add Note</div>
+                    <div class="qa__hint">Save insights fast</div>
+                  </div>
+                </button>
+                <button class="qa glassHover" type="button" data-action="viewCompanies">
+                  <div class="qa__icon"><i data-lucide="building-2"></i></div>
+                  <div class="qa__meta">
+                    <div class="qa__title">View Companies</div>
+                    <div class="qa__hint">Filter by status</div>
+                  </div>
+                </button>
+              </div>
+            </aside>
+          </section>
+
+          <section class="grid grid--activity">
+            <article class="card glass">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Recent Activity</div>
+                  <div class="card__subtitle">Latest updates across your tracker</div>
+                </div>
+                <button class="btn btn--ghost btn--sm" type="button">
+                  <i data-lucide="filter"></i>
+                  <span>Filter</span>
+                </button>
+              </div>
+
+              <div class="activity" id="activityList">
+                <div class="activity__item">
+                  <div class="activity__icon is-blue"><i data-lucide="send"></i></div>
+                  <div class="activity__meta">
+                    <div class="activity__title">Applied to <span class="textStrong">Acme Labs</span></div>
+                    <div class="activity__time">2 hours ago</div>
+                  </div>
+                  <span class="badge">Applied</span>
+                </div>
+
+                <div class="activity__item">
+                  <div class="activity__icon is-purple"><i data-lucide="calendar-check"></i></div>
+                  <div class="activity__meta">
+                    <div class="activity__title">Interview scheduled for <span class="textStrong">Neon</span></div>
+                    <div class="activity__time">Yesterday</div>
+                  </div>
+                  <span class="badge badge--good">Interview</span>
+                </div>
+
+                <div class="activity__item">
+                  <div class="activity__icon is-amber"><i data-lucide="notebook-pen"></i></div>
+                  <div class="activity__meta">
+                    <div class="activity__title">Added interview notes for <span class="textStrong">Vanta</span></div>
+                    <div class="activity__time">3 days ago</div>
+                  </div>
+                  <span class="badge badge--muted">Notes</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card glass">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Focus</div>
+                  <div class="card__subtitle">Today’s prep checklist</div>
+                </div>
+              </div>
+
+              <div class="checklist">
+                <label class="check">
+                  <input type="checkbox" checked />
+                  <span>Revise DBMS notes</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" />
+                  <span>Solve 3 DSA problems</span>
+                </label>
+                <label class="check">
+                  <input type="checkbox" />
+                  <span>Mock interview (30 min)</span>
+                </label>
+                <button class="btn btn--secondary btn--sm" type="button">
+                  <i data-lucide="plus"></i>
+                  <span>Add task</span>
+                </button>
+              </div>
+            </article>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="cmdkOverlay" id="cmdkOverlay" hidden>
+      <div class="cmdk glass" role="dialog" aria-modal="true" aria-label="Quick commands">
+        <div class="cmdk__top">
+          <i data-lucide="command"></i>
+          <input class="cmdk__input" id="cmdkInput" placeholder="Type a command…" />
+          <button class="iconBtn" type="button" id="cmdkClose" aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <div class="cmdk__list">
+          <button class="cmdk__item" type="button" data-go="company.html">
+            <span class="cmdk__label">Go to Companies</span>
+            <span class="cmdk__hint">View your applications</span>
+          </button>
+          <button class="cmdk__item" type="button" data-go="notes.html">
+            <span class="cmdk__label">Go to Notes</span>
+            <span class="cmdk__hint">Interview notes & prep</span>
+          </button>
+          <button class="cmdk__item" type="button" data-go="index.html">
+            <span class="cmdk__label">Logout</span>
+            <span class="cmdk__hint">Back to login</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
+  </body>
+</html>
