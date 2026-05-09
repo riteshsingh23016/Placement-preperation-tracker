@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 
 const connectDB = require("./config/db");
 const companyRoutes = require("./routes/companyRoutes");
+const authRoutes = require("./routes/authRoutes");
+const notesRoutes = require("./routes/notesRoutes");
+const collectionRoutes = require("./routes/collectionRoutes");
 const { seedCompaniesIfEmpty } = require("./seed/companySeed");
 
 dotenv.config();
@@ -23,7 +26,10 @@ app.get("/", (req, res) => {
   res.json({ ok: true, name: "Placement Prep Tracker API" });
 });
 
+app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
+app.use("/api/notes", notesRoutes);
+app.use("/api/collections", collectionRoutes);
 
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 

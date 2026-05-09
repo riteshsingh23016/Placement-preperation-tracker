@@ -52,7 +52,7 @@ function collectUpdateFields(body) {
 
 exports.getCompanies = async (req, res) => {
   try {
-    const companies = await Company.find().sort({ appliedDate: -1 }).lean().exec();
+    const companies = await Company.find({ user: req.user._id }).sort({ appliedDate: -1 }).lean().exec();
     return res.status(200).json({
       success: true,
       data: companies,
@@ -98,6 +98,7 @@ exports.createCompany = async (req, res) => {
       interviewDate,
       appliedDate: appliedDate || new Date(),
       archived: Boolean(req.body.archived) || false,
+      user: req.user._id,
     });
 
     return res.status(201).json({
@@ -153,8 +154,8 @@ exports.updateCompany = async (req, res) => {
       });
     }
 
-    const doc = await Company.findByIdAndUpdate(
-      id,
+    const doc = await Company.findOneAndUpdate(
+      { _id: id, user: req.user._id },
       { $set: updates },
       { new: true, runValidators: true }
     )
@@ -206,7 +207,7 @@ exports.deleteCompany = async (req, res) => {
       });
     }
 
-    const deleted = await Company.findByIdAndDelete(id).lean().exec();
+    const deleted = await Company.findOneAndDelete({ _id: id, user: req.user._id }).lean().exec();
     if (!deleted) {
       return res.status(404).json({
         success: false,
