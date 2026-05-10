@@ -1,5 +1,23 @@
 /* Global UI behaviors (no frameworks). */
 
+window.openModalOverlay = function(overlay) {
+  if (!overlay) return;
+  overlay.hidden = false;
+  requestAnimationFrame(function () {
+    overlay.classList.add("is-open");
+  });
+  document.documentElement.style.overflow = "hidden";
+};
+
+window.closeModalOverlay = function(overlay) {
+  if (!overlay) return;
+  overlay.classList.remove("is-open");
+  setTimeout(function () {
+    overlay.hidden = true;
+    document.documentElement.style.overflow = "";
+  }, 220);
+};
+
 function qs(sel, root = document) {
   return root.querySelector(sel);
 }
@@ -48,8 +66,16 @@ function initMobileNav() {
 
   if (!open) return;
 
+  const overlay = document.createElement("div");
+  overlay.className = "sidebarOverlay";
+  document.body.appendChild(overlay);
+
   open.addEventListener("click", () => {
     document.body.classList.toggle("is-mobile-nav-open");
+  });
+
+  overlay.addEventListener("click", () => {
+    document.body.classList.remove("is-mobile-nav-open");
   });
 
   document.addEventListener("keydown", (e) => {
@@ -121,6 +147,16 @@ function initCommandPalette() {
     }
   });
 
+  if (input) {
+    input.addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      qsa(".cmdk__item", overlay).forEach((item) => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? "flex" : "none";
+      });
+    });
+  }
+
   qsa("[data-go]", overlay).forEach((btn) => {
     btn.addEventListener("click", () => {
       const dest = btn.getAttribute("data-go");
@@ -132,10 +168,59 @@ function initCommandPalette() {
   });
 }
 
+function checkAuth() {
+  const page = document.body?.dataset?.page;
+  if (page && page !== "login") {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "index.html";
+      return;
+    }
+  }
+
+  // Auto-redirect from login if already logged in
+  if (page === "login") {
+    const token = localStorage.getItem("token");
+    if (token) {
+      window.location.href = "dashboard.html";
+      return;
+    }
+  }
+
+  const profiles = qsa(".miniProfile");
+  profiles.forEach((p) => {
+    p.style.cursor = "pointer";
+    p.addEventListener("click", () => {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (window.Toast) {
+        window.Toast.info("Profile Info", `Logged in as ${user.name || 'User'}`);
+      }
+    });
+  });
+
+  const logoutBtns = qsa("#logoutBtn, [data-logout]");
+  logoutBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.replace("index.html");
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  checkAuth();
   safeLucide();
   setActiveNav();
   initSidebarToggle();
   initMobileNav();
   initCommandPalette();
+});
+
+// Handle browser back button / bfcache
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    checkAuth();
+  }
 });

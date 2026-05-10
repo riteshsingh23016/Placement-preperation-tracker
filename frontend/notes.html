@@ -49,7 +49,7 @@
 
           <div class="nav__divider"></div>
 
-          <a class="nav__item" href="index.html">
+          <a class="nav__item" href="index.html" data-logout>
             <i data-lucide="log-out"></i>
             <span>Logout</span>
           </a>
@@ -97,35 +97,20 @@
         <main class="main">
           <section class="grid grid--notes">
             <article class="card glass">
-              <div class="card__header">
-                <div>
-                  <div class="card__title">Collections</div>
-                  <div class="card__subtitle">Organize by company/round</div>
+              <div class="card__header" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div>
+                    <div class="card__title">Collections</div>
+                    <div class="card__subtitle">Organize by company/round</div>
+                  </div>
+                  <button class="iconBtn" type="button" id="newCollectionBtn" data-tooltip="Create Collection" aria-label="Create Collection">
+                    <i data-lucide="folder-plus"></i>
+                  </button>
                 </div>
               </div>
 
-              <div class="collections">
-                <button class="collection is-active" type="button">
-                  <i data-lucide="sparkles"></i>
-                  <span>All Notes</span>
-                  <span class="badge badge--muted">18</span>
-                </button>
-                <button class="collection" type="button">
-                  <i data-lucide="building-2"></i>
-                  <span>Company-wise</span>
-                </button>
-                <button class="collection" type="button">
-                  <i data-lucide="code-2"></i>
-                  <span>DSA</span>
-                </button>
-                <button class="collection" type="button">
-                  <i data-lucide="database"></i>
-                  <span>DBMS</span>
-                </button>
-                <button class="collection" type="button">
-                  <i data-lucide="globe"></i>
-                  <span>OS + CN</span>
-                </button>
+              <div class="collections" id="collectionsContainer">
+                <!-- Dynamically populated -->
               </div>
             </article>
 
@@ -141,45 +126,121 @@
                 </button>
               </div>
 
-              <div class="noteGrid">
-                <button class="noteCard glassHover" type="button">
-                  <div class="noteCard__top">
-                    <span class="badge badge--good">Interview</span>
-                    <span class="noteCard__time">Today</span>
-                  </div>
-                  <div class="noteCard__title">Neon — Round 1 (Backend)</div>
-                  <div class="noteCard__excerpt">
-                    Focused on API design, caching tradeoffs, DB indexing. Review: TTL, hot keys,
-                    idempotency.
-                  </div>
-                </button>
-
-                <button class="noteCard glassHover" type="button">
-                  <div class="noteCard__top">
-                    <span class="badge">Applied</span>
-                    <span class="noteCard__time">Yesterday</span>
-                  </div>
-                  <div class="noteCard__title">Acme Labs — Company research</div>
-                  <div class="noteCard__excerpt">
-                    Read about product, hiring bar, typical rounds, and tech stack. Prepare STAR
-                    stories.
-                  </div>
-                </button>
-
-                <button class="noteCard glassHover" type="button">
-                  <div class="noteCard__top">
-                    <span class="badge badge--muted">Prep</span>
-                    <span class="noteCard__time">3 days ago</span>
-                  </div>
-                  <div class="noteCard__title">DBMS — Normal forms cheatsheet</div>
-                  <div class="noteCard__excerpt">
-                    1NF/2NF/3NF/BCNF quick checks, decomposition tips, and common pitfalls to avoid.
-                  </div>
-                </button>
+              <div class="noteGrid" id="notesContainer">
               </div>
             </article>
           </section>
         </main>
+      </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modalOverlay" id="noteModal" hidden>
+      <div class="modal glass" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle">
+        <div class="modal__header">
+          <div>
+            <h2 class="modal__title" id="noteModalTitle">Add Note</h2>
+            <p class="modal__subtitle" id="noteModalSubtitle">Save important details.</p>
+          </div>
+          <button class="iconBtn modal__close" id="noteModalClose" type="button" aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="modal__body">
+          <form class="modalForm" id="noteForm" novalidate>
+            <input type="hidden" id="noteEditId" />
+
+            <div class="modalForm__grid">
+              <label class="modalField">
+                <span class="modalField__label">Title <span class="req">*</span></span>
+                <input class="modalField__input" type="text" id="noteTitle" required />
+              </label>
+
+              <label class="modalField">
+                <span class="modalField__label">Collection</span>
+                <select class="modalField__input" id="noteCollectionId">
+                </select>
+              </label>
+            </div>
+
+            <label class="modalField">
+              <span class="modalField__label">Content <span class="req">*</span></span>
+              <textarea class="modalField__input" id="noteContent" rows="6" required></textarea>
+            </label>
+          </form>
+        </div>
+
+        <div class="modal__footer">
+          <button class="btn btn--secondary" id="noteModalCancel" type="button">
+            Cancel
+          </button>
+          <button class="btn btn--primary" type="submit" form="noteForm" id="noteSaveBtn">
+            Save Note
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collection Modal -->
+    <div class="modalOverlay" id="collectionModal" hidden>
+      <div class="modal modal--sm glass" role="dialog" aria-modal="true" aria-labelledby="collectionModalTitle">
+        <div class="modal__header">
+          <div>
+            <h2 class="modal__title" id="collectionModalTitle">Add Collection</h2>
+            <p class="modal__subtitle">Group your notes efficiently.</p>
+          </div>
+          <button class="iconBtn modal__close" id="collectionModalClose" type="button" aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <div class="modal__body">
+          <form class="modalForm" id="collectionForm" novalidate>
+            <input type="hidden" id="collectionEditId" />
+
+            <div class="modalField" style="margin-bottom: 12px;">
+              <span class="modalField__label">Name <span class="req">*</span></span>
+              <input class="modalField__input" type="text" id="collectionName" placeholder="e.g. System Design" required />
+            </div>
+
+            <div class="modalForm__grid">
+              <label class="modalField">
+                <span class="modalField__label">Color</span>
+                <select class="modalField__input" id="collectionColor">
+                  <option value="muted">Gray</option>
+                  <option value="good">Green</option>
+                  <option value="blue">Blue</option>
+                  <option value="purple">Purple</option>
+                  <option value="amber">Yellow</option>
+                  <option value="bad">Red</option>
+                </select>
+              </label>
+              <label class="modalField">
+                <span class="modalField__label">Icon</span>
+                <select class="modalField__input" id="collectionIcon">
+                  <option value="folder">Folder</option>
+                  <option value="code-2">Code</option>
+                  <option value="database">Database</option>
+                  <option value="globe">Network</option>
+                  <option value="building-2">Company</option>
+                  <option value="briefcase">Briefcase</option>
+                  <option value="sparkles">Sparkles</option>
+                  <option value="book">Book</option>
+                </select>
+              </label>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal__footer">
+          <button class="btn btn--secondary" id="collectionModalCancel" type="button">
+            Cancel
+          </button>
+          <button class="btn btn--primary" type="submit" form="collectionForm" id="collectionSaveBtn">
+            Save Collection
+          </button>
+        </div>
       </div>
     </div>
 
@@ -210,6 +271,9 @@
     </div>
 
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/companyApi.js" defer></script>
+    <script src="js/notesApi.js" defer></script>
     <script src="js/app.js" defer></script>
     <script src="js/notes.js" defer></script>
   </body>

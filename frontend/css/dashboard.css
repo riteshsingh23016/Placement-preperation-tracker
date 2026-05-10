@@ -1,7 +1,7 @@
 /* Dashboard page layout */
 
 .grid--cards {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .metric {
@@ -220,6 +220,12 @@
     grid-template-columns: 1fr;
   }
   .grid--activity {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid--cards {
     grid-template-columns: 1fr;
   }
 }

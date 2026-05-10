@@ -10,10 +10,12 @@ class ApiError extends Error {
 }
 
 async function request(url, options = {}) {
+  const token = localStorage.getItem("token");
   try {
     const response = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
       ...options,
     });
@@ -27,6 +29,11 @@ async function request(url, options = {}) {
     }
 
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "index.html";
+      }
       throw new ApiError(
         data.message || "Request failed",
         response.status,
@@ -49,7 +56,6 @@ async function request(url, options = {}) {
 
 const CompanyApi = {
   async list() {
-    // Can return: {success, data:[...]} OR [...] depending on backend
     return request(API_BASE);
   },
 
@@ -72,6 +78,12 @@ const CompanyApi = {
       method: "DELETE",
     });
   },
+
+  async getAnalytics() {
+    return request(`${API_BASE}/analytics`);
+  },
+
+  request,
 };
 
 window.CompanyApi = CompanyApi;

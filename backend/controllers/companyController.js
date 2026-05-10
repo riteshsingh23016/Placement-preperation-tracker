@@ -262,7 +262,7 @@ exports.getAnalytics = async (req, res) => {
 
     // 1. Basic Counts
     const stats = await Company.aggregate([
-      { $match: { user: userId, archived: false } },
+      { $match: { user: userId } }, // Include archived in totals
       {
         $group: {
           _id: null,

@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/auth.css" />
+    <link rel="stylesheet" href="css/notifications.css" />
   </head>
   <body class="theme-dark" data-page="login">
     <main class="auth">
@@ -29,7 +30,7 @@
           </div>
         </div>
 
-        <div class="auth__hero glass">
+        <div class="auth__hero">
           <div class="auth__heroTitle">Track applications. Prepare smarter. Get selected.</div>
           <p class="auth__heroText">
             A premium dashboard to manage your placement journey—applications, interview notes, and
@@ -55,11 +56,23 @@
       <section class="auth__panel">
         <div class="panel glass">
           <header class="panel__header">
-            <h1 class="panel__title">Welcome back</h1>
-            <p class="panel__subtitle">Sign in to continue to your dashboard.</p>
+            <h1 class="panel__title">Welcome</h1>
+            <p class="panel__subtitle">Sign in or create an account to track your progress.</p>
+            <div class="auth__tabs">
+              <button type="button" class="auth__tab is-active" data-target="login">Sign In</button>
+              <button type="button" class="auth__tab" data-target="signup">Sign Up</button>
+            </div>
           </header>
 
-          <form class="form" id="loginForm" novalidate>
+          <form class="form" id="authForm" novalidate>
+            <label class="field" id="nameField" style="display: none;">
+              <span class="field__label">Full Name</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="user"></i>
+                <input class="input" type="text" name="name" placeholder="Jane Doe" />
+              </span>
+            </label>
+
             <label class="field">
               <span class="field__label">Email</span>
               <span class="field__control">
@@ -93,37 +106,41 @@
               </span>
             </label>
 
-            <div class="form__row">
+            <div class="form__row" id="loginExtras">
               <label class="checkbox">
                 <input type="checkbox" name="remember" />
                 <span>Remember me</span>
               </label>
-              <a class="link" href="dashboard.html">Forgot password?</a>
+              <button type="button" class="linkBtn" id="forgotPassword">Forgot password?</button>
             </div>
 
-            <button class="btn btn--primary btn--lg" type="submit">
-              <span>Sign in</span>
+            <button class="btn btn--primary btn--lg" type="submit" id="submitBtn">
+              <span id="submitBtnText">Sign in</span>
               <i data-lucide="arrow-right"></i>
             </button>
 
-            <div class="divider">
-              <span>or</span>
+            <div id="demoExtras">
+              <div class="divider">
+                <span>or</span>
+              </div>
+              <button class="btn btn--secondary btn--lg" type="button" id="demoLogin">
+                <i data-lucide="zap"></i>
+                <span>Continue with Demo</span>
+              </button>
             </div>
-
-            <button class="btn btn--secondary btn--lg" type="button" id="demoLogin">
-              <i data-lucide="zap"></i>
-              <span>Continue with Demo</span>
-            </button>
 
             <p class="fineprint">
               By continuing, you agree to the Terms and Privacy Policy.
             </p>
           </form>
+          
+          <div id="toastStack" class="toastStack" aria-live="polite"></div>
         </div>
       </section>
     </main>
 
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/toast.js"></script>
     <script src="js/app.js" defer></script>
     <script src="js/auth.js" defer></script>
   </body>

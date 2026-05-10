@@ -61,6 +61,12 @@
   border-color: rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.05);
 }
+.noteCard.is-loading .noteCard__title,
+.noteCard.is-loading .noteCard__excerpt {
+  color: transparent !important;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
 .noteCard__top {
   display: flex;
   align-items: center;

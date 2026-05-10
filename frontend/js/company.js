@@ -146,23 +146,31 @@
   }
 
   function toast(message, type) {
-    var stack = qs("#toastStack");
-    if (!stack || !message) return;
-    var t = type || "info";
-    var el = document.createElement("div");
-    el.className = "toast toast--" + t;
-    el.setAttribute("role", "status");
-    el.textContent = message;
-    stack.appendChild(el);
-    requestAnimationFrame(function () {
-      el.classList.add("is-visible");
-    });
-    window.setTimeout(function () {
-      el.classList.remove("is-visible");
+    if (window.Toast) {
+      if (type === "success") window.Toast.success("Success", message);
+      else if (type === "error") window.Toast.error("Error", message);
+      else if (type === "warning") window.Toast.warn("Warning", message);
+      else window.Toast.info("Info", message);
+    } else {
+      // Fallback
+      var stack = qs("#toastStack");
+      if (!stack || !message) return;
+      var t = type || "info";
+      var el = document.createElement("div");
+      el.className = "toast toast--" + t;
+      el.setAttribute("role", "status");
+      el.textContent = message;
+      stack.appendChild(el);
+      requestAnimationFrame(function () {
+        el.classList.add("is-visible");
+      });
       window.setTimeout(function () {
-        if (el.parentNode) el.parentNode.removeChild(el);
-      }, 320);
-    }, 4400);
+        el.classList.remove("is-visible");
+        window.setTimeout(function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 320);
+      }, 4400);
+    }
   }
 
   function formatApiError(err) {
@@ -468,13 +476,15 @@
       .map(function (c) {
         var initial = escapeHtml(c.name.trim().charAt(0).toUpperCase());
         var intv = c.interviewDate
-          ? '<span class="dateCell">' + formatDisplayDate(c.interviewDate) + "</span>"
+          ? '<span class="dateCell" data-countdown="' + escapeHtml(c.interviewDate) + '">' + formatDisplayDate(c.interviewDate) + "</span>"
           : '<span class="dateCell dateCell--muted">Not set</span>';
+
+        var rowCls = c.priority === "High" ? ' class="priority-high-glow"' : '';
 
         return (
           '<tr data-id="' +
           escapeHtml(c.id) +
-          '">' +
+          '"' + rowCls + '>' +
           "<td>" +
           '<div class="companyCell">' +
           '<div class="companyLogo is-' +
@@ -533,7 +543,7 @@
           '<div class="miniMenu">' +
           '<button type="button" class="iconAction js-mark" data-id="' +
           escapeHtml(c.id) +
-          '" aria-label="Mark status for ' +
+          '" data-tooltip="Mark Complete" aria-label="Mark status for ' +
           escapeHtml(c.name) +
           '"' +
           (statusUpdateInFlight === c.id ? " disabled" : "") +
@@ -558,13 +568,15 @@
           '<span class="rowActions__split" aria-hidden="true"></span>' +
           '<button type="button" class="iconAction js-edit" data-id="' +
           escapeHtml(c.id) +
-          '" aria-label="Edit ' +
+          '" data-tooltip="Edit Company" aria-label="Edit ' +
           escapeHtml(c.name) +
           '"' +
           (statusUpdateInFlight === c.id ? " disabled" : "") +
           '><i data-lucide="pencil"></i></button>' +
           '<button type="button" class="iconAction js-archive" data-id="' +
           escapeHtml(c.id) +
+          '" data-tooltip="' +
+          (c.archived ? "Restore Company" : "Archive Company") +
           '" aria-label="' +
           (c.archived ? "Restore " : "Archive ") +
           escapeHtml(c.name) +
@@ -575,7 +587,7 @@
           '"></i></button>' +
           '<button type="button" class="iconAction iconAction--danger js-delete" data-id="' +
           escapeHtml(c.id) +
-          '" aria-label="Delete ' +
+          '" data-tooltip="Delete Company" aria-label="Delete ' +
           escapeHtml(c.name) +
           '"' +
           (statusUpdateInFlight === c.id ? " disabled" : "") +
@@ -639,21 +651,11 @@
   var saveBtn = qs("#companyModalSave");
 
   function openModalOverlay(overlay) {
-    if (!overlay) return;
-    overlay.hidden = false;
-    requestAnimationFrame(function () {
-      overlay.classList.add("is-open");
-    });
-    document.documentElement.style.overflow = "hidden";
+    window.openModalOverlay(overlay);
   }
 
   function closeModalOverlay(overlay) {
-    if (!overlay) return;
-    overlay.classList.remove("is-open");
-    window.setTimeout(function () {
-      overlay.setAttribute("hidden", "");
-      document.documentElement.style.overflow = "";
-    }, 220);
+    window.closeModalOverlay(overlay);
   }
 
   function setSaveBusy(busy) {
@@ -805,9 +807,9 @@
   function wireModals() {
     var addBtn = qs("#addCompanyBtn");
     if (addBtn) {
-      addBtn.addEventListener("click", function () {
+      addBtn.onclick = function () {
         openCompanyModal("add", null);
-      });
+      };
     }
 
     if (companyForm) companyForm.addEventListener("submit", onCompanySubmit);
@@ -894,6 +896,10 @@
         return;
       }
       if (btn.classList.contains("js-delete")) {
+        if (!id || id === "undefined") {
+          toast("Invalid application ID", "error");
+          return;
+        }
         openDeleteModal(id, c && c.name);
         return;
       }
@@ -901,7 +907,7 @@
   }
 
   async function handleDelete(id) {
-    if (!Api) return;
+    if (!Api || !id || id === "undefined") return;
     try {
       await Api.remove(id);
       toast("Company removed", "success");
@@ -970,8 +976,9 @@
     if (confirmBtn) {
       confirmBtn.addEventListener("click", function () {
         if (!deleteTargetId) return;
+        var idToDelete = deleteTargetId;
         closeDeleteModal();
-        handleDelete(deleteTargetId);
+        handleDelete(idToDelete);
       });
     }
     if (deleteModal) {
@@ -990,6 +997,16 @@
     if (sort) sort.addEventListener("change", renderTable);
   }
 
+  function handlePendingCompany() {
+    var pendingId = sessionStorage.getItem("pendingCompanyId");
+    if (!pendingId) return;
+    sessionStorage.removeItem("pendingCompanyId");
+    var company = findCompany(pendingId);
+    if (company) {
+      openCompanyModal("edit", company);
+    }
+  }
+
   async function init() {
     wireModals();
     wireTableActions();
@@ -998,7 +1015,10 @@
     wireDeleteModal();
     wireMiniMenuDismiss();
     await loadCompanies();
+    handlePendingCompany();
   }
+
+  window.handlePendingCompany = handlePendingCompany;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

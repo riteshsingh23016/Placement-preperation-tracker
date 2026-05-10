@@ -15,6 +15,8 @@
 
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/analytics.css" />
+    <link rel="stylesheet" href="css/notifications.css" />
   </head>
   <body class="theme-dark" data-page="dashboard">
     <div class="appShell">
@@ -49,7 +51,7 @@
 
           <div class="nav__divider"></div>
 
-          <a class="nav__item" href="index.html">
+          <a class="nav__item" href="index.html" data-logout>
             <i data-lucide="log-out"></i>
             <span>Logout</span>
           </a>
@@ -87,115 +89,179 @@
               <i data-lucide="search"></i>
               <input class="search__input" type="search" placeholder="Search companies, notes…" />
             </div>
-            <button class="iconBtn" type="button" aria-label="Notifications">
-              <i data-lucide="bell"></i>
-            </button>
+            
+            <div style="position: relative;">
+              <button class="iconBtn" type="button" id="ncToggle" aria-label="Notifications">
+                <i data-lucide="bell"></i>
+                <span class="badge-count" id="notifBadge" hidden>0</span>
+              </button>
+
+              <!-- Notification Center Panel -->
+              <div class="nc-panel" id="ncPanel">
+                <div class="nc-header">
+                  <div class="nc-header__title">Notifications</div>
+                  <button class="btn btn--ghost btn--sm" id="markAllRead">Mark all read</button>
+                </div>
+                <div class="nc-list" id="ncList">
+                  <div class="empty-state">
+                    <i data-lucide="bell-off"></i>
+                    <div class="empty-state__title">All caught up!</div>
+                    <div class="empty-state__text">No new notifications at the moment.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <button class="pill" type="button" aria-label="Profile">
               <span class="pill__dot"></span>
-              <span class="pill__text">Aspirant</span>
+              <span class="pill__text" id="userNameDisplay">User</span>
               <i data-lucide="chevron-down"></i>
             </button>
           </div>
         </header>
 
         <main class="main">
+          <!-- Statistics Cards -->
           <section class="grid grid--cards">
-            <article class="card metric glass">
+            <article class="card metric glass is-loading">
               <div class="metric__meta">
                 <div class="metric__label">Total Applications</div>
-                <div class="metric__value" id="mTotal">24</div>
-                <div class="metric__delta is-up">
-                  <i data-lucide="trending-up"></i>
-                  <span>+3 this week</span>
+                <div class="metric__value skeleton" id="mTotal">0</div>
+                <div class="metric__delta" id="mTotalDelta">
+                   <i data-lucide="layers"></i>
+                   <span>Lifetime applications</span>
                 </div>
               </div>
-              <div class="metric__icon">
-                <i data-lucide="layers"></i>
-              </div>
+              <div class="metric__icon"><i data-lucide="briefcase"></i></div>
             </article>
 
-            <article class="card metric glass">
+            <article class="card metric glass is-loading">
               <div class="metric__meta">
-                <div class="metric__label">Interviews Scheduled</div>
-                <div class="metric__value" id="mInterviews">5</div>
-                <div class="metric__delta is-up">
-                  <i data-lucide="calendar-check"></i>
-                  <span>Next: Tue</span>
-                </div>
-              </div>
-              <div class="metric__icon">
-                <i data-lucide="calendar"></i>
-              </div>
-            </article>
-
-            <article class="card metric glass">
-              <div class="metric__meta">
-                <div class="metric__label">Selected Companies</div>
-                <div class="metric__value" id="mSelected">2</div>
+                <div class="metric__label">Selected</div>
+                <div class="metric__value skeleton" id="mSelected">0</div>
                 <div class="metric__delta is-up">
                   <i data-lucide="badge-check"></i>
-                  <span>Strong momentum</span>
+                  <span>Hired!</span>
                 </div>
               </div>
-              <div class="metric__icon">
-                <i data-lucide="award"></i>
+              <div class="metric__icon"><i data-lucide="award"></i></div>
+            </article>
+
+            <article class="card metric glass is-loading">
+              <div class="metric__meta">
+                <div class="metric__label">Rejected</div>
+                <div class="metric__value skeleton" id="mRejected">0</div>
+                <div class="metric__delta is-down">
+                  <i data-lucide="trending-down"></i>
+                  <span>Keep pushing</span>
+                </div>
+              </div>
+              <div class="metric__icon"><i data-lucide="x-circle"></i></div>
+            </article>
+
+            <article class="card metric glass is-loading">
+              <div class="metric__meta">
+                <div class="metric__label">Scheduled Interviews</div>
+                <div class="metric__value skeleton" id="mInterviews">0</div>
+                <div class="metric__delta is-up">
+                  <i data-lucide="calendar"></i>
+                  <span>Upcoming</span>
+                </div>
+              </div>
+              <div class="metric__icon"><i data-lucide="video"></i></div>
+            </article>
+
+            <article class="card metric glass is-loading">
+              <div class="metric__meta">
+                <div class="metric__label">Success Rate</div>
+                <div class="metric__value skeleton"><span id="mSuccessRate">0</span>%</div>
+                <div class="metric__delta">
+                  <i data-lucide="percent"></i>
+                  <span>Conversion rate</span>
+                </div>
+              </div>
+              <div class="metric__icon"><i data-lucide="pie-chart"></i></div>
+            </article>
+
+            <article class="card metric glass is-loading">
+              <div class="metric__meta">
+                <div class="metric__label">Active Apps</div>
+                <div class="metric__value skeleton" id="mActive">0</div>
+                <div class="metric__delta">
+                  <i data-lucide="activity"></i>
+                  <span>In progress</span>
+                </div>
+              </div>
+              <div class="metric__icon"><i data-lucide="flame"></i></div>
+            </article>
+          </section>
+
+          <!-- Charts Section -->
+          <section class="analytics-grid">
+            <article class="card chart-card glass is-loading">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Monthly Application Trend</div>
+                  <div class="card__subtitle">Your activity over time</div>
+                </div>
+              </div>
+              <div class="chart-container skeleton">
+                <canvas id="trendChart"></canvas>
               </div>
             </article>
 
-            <article class="card metric glass">
-              <div class="metric__meta">
-                <div class="metric__label">Rejected Companies</div>
-                <div class="metric__value" id="mRejected">4</div>
-                <div class="metric__delta is-down">
-                  <i data-lucide="trending-down"></i>
-                  <span>Keep iterating</span>
+            <article class="card chart-card glass is-loading">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Application Status</div>
+                  <div class="card__subtitle">Current pipeline distribution</div>
                 </div>
               </div>
-              <div class="metric__icon">
-                <i data-lucide="x-circle"></i>
+              <div class="chart-container skeleton">
+                <canvas id="statusChart"></canvas>
+              </div>
+            </article>
+
+            <article class="card chart-card glass is-loading">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Priority Mix</div>
+                  <div class="card__subtitle">Focus areas</div>
+                </div>
+              </div>
+              <div class="chart-container skeleton">
+                <canvas id="priorityChart"></canvas>
+              </div>
+            </article>
+
+            <article class="card chart-card glass is-loading">
+              <div class="card__header">
+                <div>
+                  <div class="card__title">Top Target Companies</div>
+                  <div class="card__subtitle">Most frequent applications</div>
+                </div>
+              </div>
+              <div class="chart-container skeleton">
+                <canvas id="companyChart"></canvas>
               </div>
             </article>
           </section>
 
-          <section class="grid grid--main">
-            <article class="card chart glass">
-              <div class="card__header">
-                <div>
-                  <div class="card__title">Placement Progress</div>
-                  <div class="card__subtitle">Applications → interviews → selection</div>
-                </div>
-                <div class="segmented" role="tablist" aria-label="Range">
-                  <button class="segmented__btn is-active" type="button" data-range="7">7d</button>
-                  <button class="segmented__btn" type="button" data-range="30">30d</button>
-                  <button class="segmented__btn" type="button" data-range="90">90d</button>
-                </div>
-              </div>
-              <div class="chart__body">
-                <canvas id="progressChart" height="120"></canvas>
-              </div>
-            </article>
-
-            <aside class="card glass">
+          <!-- Recent Activity & Checklist -->
+          <section class="grid grid--activity">
+            <article class="card glass">
               <div class="card__header">
                 <div>
                   <div class="card__title">Quick Actions</div>
                   <div class="card__subtitle">Stay in flow</div>
                 </div>
               </div>
-
               <div class="quickActions">
                 <button class="qa glassHover" type="button" data-action="addCompany">
                   <div class="qa__icon"><i data-lucide="plus"></i></div>
                   <div class="qa__meta">
                     <div class="qa__title">Add Company</div>
                     <div class="qa__hint">Track new application</div>
-                  </div>
-                </button>
-                <button class="qa glassHover" type="button" data-action="addInterview">
-                  <div class="qa__icon"><i data-lucide="calendar-plus"></i></div>
-                  <div class="qa__meta">
-                    <div class="qa__title">Schedule Interview</div>
-                    <div class="qa__hint">Set date & round</div>
                   </div>
                 </button>
                 <button class="qa glassHover" type="button" data-action="addNote">
@@ -213,50 +279,6 @@
                   </div>
                 </button>
               </div>
-            </aside>
-          </section>
-
-          <section class="grid grid--activity">
-            <article class="card glass">
-              <div class="card__header">
-                <div>
-                  <div class="card__title">Recent Activity</div>
-                  <div class="card__subtitle">Latest updates across your tracker</div>
-                </div>
-                <button class="btn btn--ghost btn--sm" type="button">
-                  <i data-lucide="filter"></i>
-                  <span>Filter</span>
-                </button>
-              </div>
-
-              <div class="activity" id="activityList">
-                <div class="activity__item">
-                  <div class="activity__icon is-blue"><i data-lucide="send"></i></div>
-                  <div class="activity__meta">
-                    <div class="activity__title">Applied to <span class="textStrong">Acme Labs</span></div>
-                    <div class="activity__time">2 hours ago</div>
-                  </div>
-                  <span class="badge">Applied</span>
-                </div>
-
-                <div class="activity__item">
-                  <div class="activity__icon is-purple"><i data-lucide="calendar-check"></i></div>
-                  <div class="activity__meta">
-                    <div class="activity__title">Interview scheduled for <span class="textStrong">Neon</span></div>
-                    <div class="activity__time">Yesterday</div>
-                  </div>
-                  <span class="badge badge--good">Interview</span>
-                </div>
-
-                <div class="activity__item">
-                  <div class="activity__icon is-amber"><i data-lucide="notebook-pen"></i></div>
-                  <div class="activity__meta">
-                    <div class="activity__title">Added interview notes for <span class="textStrong">Vanta</span></div>
-                    <div class="activity__time">3 days ago</div>
-                  </div>
-                  <span class="badge badge--muted">Notes</span>
-                </div>
-              </div>
             </article>
 
             <article class="card glass">
@@ -266,7 +288,6 @@
                   <div class="card__subtitle">Today’s prep checklist</div>
                 </div>
               </div>
-
               <div class="checklist">
                 <label class="check">
                   <input type="checkbox" checked />
@@ -319,7 +340,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/companyApi.js" defer></script>
+    <script src="js/notificationApi.js" defer></script>
+    <script src="js/toast.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/notifications.js" defer></script>
     <script src="js/dashboard.js" defer></script>
   </body>
 </html>
