@@ -143,6 +143,8 @@
 .table-container {
     border-radius: var(--radius-xl);
     overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--stroke);
     background: rgba(0, 0, 0, 0.1);
 }

@@ -58,11 +58,12 @@
         <!-- Main Content Area -->
         <main class="content">
             <header class="topbar glass">
-                <div class="topbar__left">
-                    <div class="pageTitle">
-                        <div class="pageTitle__kicker">Admin</div>
-                        <div class="pageTitle__title" id="activeSectionTitle">Platform Overview</div>
-                    </div>
+                <button class="iconBtn topbar__menuBtn" type="button" id="mobileMenu" aria-label="Open menu">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="pageTitle">
+                    <div class="pageTitle__kicker">Admin</div>
+                    <div class="pageTitle__title" id="activeSectionTitle">Platform Overview</div>
                 </div>
                 <div class="topbar__right">
                     <div class="search">
@@ -70,13 +71,15 @@
                         <input class="search__input" type="search" placeholder="Search platform..." id="globalSearch" />
                     </div>
 
-                    <div class="miniProfile">
-                        <div class="avatar" aria-hidden="true">SA</div>
-                        <div class="miniProfile__meta">
-                            <div class="miniProfile__name">System Admin</div>
-                            <div class="miniProfile__hint">Global Administrator</div>
+                    <div class="topbar__actions">
+                        <div class="miniProfile">
+                            <div class="avatar" aria-hidden="true">SA</div>
+                            <div class="miniProfile__meta">
+                                <div class="miniProfile__name">System Admin</div>
+                                <div class="miniProfile__hint">Global Administrator</div>
+                            </div>
+                            <i data-lucide="chevron-down" class="dropdown-chevron"></i>
                         </div>
-                        <i data-lucide="chevron-down" class="dropdown-chevron"></i>
                     </div>
                 </div>
             </header>

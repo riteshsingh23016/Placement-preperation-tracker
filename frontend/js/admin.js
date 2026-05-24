@@ -1076,6 +1076,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // UI Updates
                 navItems.forEach(nav => nav.classList.remove("is-active"));
                 item.classList.add("is-active");
+                document.body.classList.remove("is-mobile-nav-open");
 
                 sections.forEach(section => {
                     if (section.id === `admin-${target}`) {

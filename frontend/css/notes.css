@@ -237,6 +237,9 @@
 }
 
 @media (max-width: 640px) {
+  .noteGrid {
+    padding-bottom: 96px !important;
+  }
   #newNoteBtn {
     position: fixed !important;
     bottom: 24px !important;

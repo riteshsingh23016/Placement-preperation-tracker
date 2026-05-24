@@ -66,30 +66,32 @@
               <span>New note</span>
             </button>
             
-            <div style="position: relative;">
-              <button class="iconBtn" type="button" id="ncToggle" aria-label="Notifications">
-                <i data-lucide="bell"></i>
-                <span class="badge-count" id="notifBadge" hidden>0</span>
-              </button>
+            <div class="topbar__actions">
+              <div style="position: relative;">
+                <button class="iconBtn" type="button" id="ncToggle" aria-label="Notifications">
+                  <i data-lucide="bell"></i>
+                  <span class="badge-count" id="notifBadge" hidden>0</span>
+                </button>
 
-              <!-- Notification Center Panel -->
-              <div class="nc-panel" id="ncPanel">
-                <div class="nc-header">
-                  <div class="nc-header__title">Notifications</div>
-                  <button class="btn btn--ghost btn--sm" id="markAllRead">Mark all read</button>
-                </div>
-                <div class="nc-list" id="ncList">
-                  <div class="empty-state">
-                    <i data-lucide="bell-off"></i>
-                    <div class="empty-state__title">All caught up!</div>
-                    <div class="empty-state__text">No new notifications at the moment.</div>
+                <!-- Notification Center Panel -->
+                <div class="nc-panel" id="ncPanel">
+                  <div class="nc-header">
+                    <div class="nc-header__title">Notifications</div>
+                    <button class="btn btn--ghost btn--sm" id="markAllRead">Mark all read</button>
+                  </div>
+                  <div class="nc-list" id="ncList">
+                    <div class="empty-state">
+                      <i data-lucide="bell-off"></i>
+                      <div class="empty-state__title">All caught up!</div>
+                      <div class="empty-state__text">No new notifications at the moment.</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="pill" aria-label="Profile">
-              <span class="online-dot"></span>
-              <span class="pill__text" id="userNameDisplay">User</span>
+              <div class="pill" aria-label="Profile">
+                <span class="online-dot"></span>
+                <span class="pill__text" id="userNameDisplay">User</span>
+              </div>
             </div>
           </div>
         </header>
