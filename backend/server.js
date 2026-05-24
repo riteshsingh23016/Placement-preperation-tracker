@@ -24,10 +24,6 @@ app.use(
 );
 app.use(express.json({ limit: "1mb" }));
 
-app.get("/", (req, res) => {
-  res.json({ ok: true, name: "Placement Prep Tracker API" });
-});
-
 app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/notes", notesRoutes);
