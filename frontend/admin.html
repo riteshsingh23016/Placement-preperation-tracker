@@ -452,79 +452,79 @@
 
     <!-- Student Detail Modal -->
     <div id="studentDetailModal" class="admin-modal-overlay hidden">
-        <div class="admin-modal-card" style="width: min(880px, 100%); max-height: 90vh;">
-            <div class="admin-modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; margin-bottom: 16px;">
+        <div class="admin-modal-card sd-modal-card">
+            <div class="admin-modal-header sd-modal-header">
                 <div>
-                    <h2 id="sdName" style="font-size: 24px; font-weight: 850; letter-spacing: -0.03em;">Student Name</h2>
-                    <p id="sdEmail" style="font-size: 13px; color: rgba(255, 255, 255, 0.58); margin-top: 4px;">student@email.com</p>
+                    <h2 id="sdName" class="sd-modal-title">Student Name</h2>
+                    <p id="sdEmail" class="sd-modal-subtitle">student@email.com</p>
                 </div>
                 <button id="closeStudentDetailModal" type="button" class="modal-close-btn">×</button>
             </div>
 
-            <div class="student-detail-content" style="display: grid; gap: 24px;">
+            <div class="sd-modal-body">
                 <!-- Profile Section -->
-                <div>
-                    <h3 style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #fff;">Student Profile</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; font-size: 13px; color: rgba(255, 255, 255, 0.8);">
-                        <div><strong>Phone Number:</strong> <span id="sdPhone">Not provided</span></div>
-                        <div><strong>Course / Branch:</strong> <span id="sdCourseBranch">Not provided</span></div>
-                        <div><strong>Graduation Year:</strong> <span id="sdGradYear">Not provided</span></div>
-                        <div><strong>Roll Number:</strong> <span id="sdRollNumber">Not provided</span></div>
-                        <div><strong>Account Status:</strong> <span id="sdStatus">Active</span></div>
-                        <div><strong>Joined Date:</strong> <span id="sdJoined">Not provided</span></div>
-                        <div style="grid-column: 1 / -1;"><strong>Skills:</strong> <span id="sdSkills">Not provided</span></div>
-                        <div style="grid-column: 1 / -1; display: flex; gap: 16px; margin-top: 8px;">
-                            <span id="sdResume"><strong>Resume:</strong> Not provided</span>
-                            <span id="sdLinkedIn"><strong>LinkedIn:</strong> Not provided</span>
-                            <span id="sdGitHub"><strong>GitHub:</strong> Not provided</span>
+                <div class="sd-section">
+                    <h3 class="sd-section-title">Student Profile</h3>
+                    <div class="sd-profile-grid">
+                        <div class="sd-profile-field"><strong>Phone Number:</strong> <span id="sdPhone">Not provided</span></div>
+                        <div class="sd-profile-field"><strong>Course / Branch:</strong> <span id="sdCourseBranch">Not provided</span></div>
+                        <div class="sd-profile-field"><strong>Graduation Year:</strong> <span id="sdGradYear">Not provided</span></div>
+                        <div class="sd-profile-field"><strong>Roll Number:</strong> <span id="sdRollNumber">Not provided</span></div>
+                        <div class="sd-profile-field"><strong>Account Status:</strong> <span id="sdStatus">Active</span></div>
+                        <div class="sd-profile-field"><strong>Joined Date:</strong> <span id="sdJoined">Not provided</span></div>
+                        <div class="sd-profile-field sd-profile-field--full"><strong>Skills:</strong> <span id="sdSkills">Not provided</span></div>
+                        <div class="sd-profile-links">
+                            <span id="sdResume" class="sd-link-chip"><strong>Resume:</strong> Not provided</span>
+                            <span id="sdLinkedIn" class="sd-link-chip"><strong>LinkedIn:</strong> Not provided</span>
+                            <span id="sdGitHub" class="sd-link-chip"><strong>GitHub:</strong> Not provided</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Placement Summary -->
-                <div>
-                    <h3 style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #fff;">Placement Summary</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; text-align: center;">
-                        <div class="mini-stat" style="padding: 12px; background: rgba(255,255,255,0.02);">
-                            <div class="mini-stat__val" id="sdSumTotal" style="font-size: 20px; font-weight: 850;">0</div>
-                            <div class="mini-stat__label" style="font-size: 9px; opacity: 0.7;">Total</div>
+                <div class="sd-section">
+                    <h3 class="sd-section-title">Placement Summary</h3>
+                    <div class="sd-summary-grid">
+                        <div class="mini-stat">
+                            <div class="mini-stat__val" id="sdSumTotal">0</div>
+                            <div class="mini-stat__label">Total</div>
                         </div>
-                        <div class="mini-stat selected" style="padding: 12px;">
-                            <div class="mini-stat__val" id="sdSumSelected" style="font-size: 20px; font-weight: 850;">0</div>
-                            <div class="mini-stat__label" style="font-size: 9px; opacity: 0.7;">Selected</div>
+                        <div class="mini-stat selected">
+                            <div class="mini-stat__val" id="sdSumSelected">0</div>
+                            <div class="mini-stat__label">Selected</div>
                         </div>
-                        <div class="mini-stat rejected" style="padding: 12px;">
-                            <div class="mini-stat__val" id="sdSumRejected" style="font-size: 20px; font-weight: 850;">0</div>
-                            <div class="mini-stat__label" style="font-size: 9px; opacity: 0.7;">Rejected</div>
+                        <div class="mini-stat rejected">
+                            <div class="mini-stat__val" id="sdSumRejected">0</div>
+                            <div class="mini-stat__label">Rejected</div>
                         </div>
-                        <div class="mini-stat interview" style="padding: 12px;">
-                            <div class="mini-stat__val" id="sdSumInterview" style="font-size: 20px; font-weight: 850;">0</div>
-                            <div class="mini-stat__label" style="font-size: 9px; opacity: 0.7;">Interview</div>
+                        <div class="mini-stat interview">
+                            <div class="mini-stat__val" id="sdSumInterview">0</div>
+                            <div class="mini-stat__label">Interview</div>
                         </div>
-                        <div class="mini-stat" style="padding: 12px; background: rgba(255,255,255,0.02);">
-                            <div class="mini-stat__val" id="sdSumActive" style="font-size: 20px; font-weight: 850; color: var(--cyan);">0</div>
-                            <div class="mini-stat__label" style="font-size: 9px; opacity: 0.7;">Active</div>
+                        <div class="mini-stat">
+                            <div class="mini-stat__val" id="sdSumActive" style="color: var(--cyan);">0</div>
+                            <div class="mini-stat__label">Active</div>
                         </div>
-                        <div class="mini-stat" style="padding: 12px; background: rgba(124, 107, 255, 0.1); border-color: rgba(124, 107, 255, 0.25);">
-                            <div class="mini-stat__val" id="sdSumSuccess" style="font-size: 20px; font-weight: 850; color: #7c6cff;">0%</div>
-                            <div class="mini-stat__label" style="font-size: 9px; opacity: 0.7; color: #7c6cff;">Success Rate</div>
+                        <div class="mini-stat" style="background: rgba(124, 107, 255, 0.1); border-color: rgba(124, 107, 255, 0.25);">
+                            <div class="mini-stat__val" id="sdSumSuccess" style="color: #7c6cff;">0%</div>
+                            <div class="mini-stat__label" style="color: #7c6cff;">Success Rate</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Applications List -->
-                <div>
-                    <h3 style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #fff;">Applications List</h3>
-                    <div class="table-container" style="max-height: 180px; overflow-y: auto; overflow-x: auto;">
-                        <table class="admin-table" style="font-size: 12px; width: 100%; min-width: 790px;">
+                <div class="sd-section">
+                    <h3 class="sd-section-title">Applications List</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
                             <thead>
-                                <tr style="background: rgba(255, 255, 255, 0.02);">
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 150px;">Company</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 150px;">Role</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 180px;">Status</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 90px;">Priority</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 110px;">Applied Date</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 110px;">Interview Date</th>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Applied Date</th>
+                                    <th>Interview Date</th>
                                 </tr>
                             </thead>
                             <tbody id="sdAppsTableBody">
@@ -535,15 +535,15 @@
                 </div>
 
                 <!-- Notes Preview -->
-                <div>
-                    <h3 style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; font-weight: 700; color: #fff;">Notes Preview</h3>
-                    <div class="table-container" style="max-height: 150px; overflow-y: auto; overflow-x: auto;">
-                        <table class="admin-table" style="font-size: 12px; width: 100%; min-width: 600px;">
+                <div class="sd-section">
+                    <h3 class="sd-section-title">Notes Preview</h3>
+                    <div class="table-container">
+                        <table class="admin-table">
                             <thead>
-                                <tr style="background: rgba(255, 255, 255, 0.02);">
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 40%;">Title</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 35%;">Category/Topic</th>
-                                    <th style="padding: 10px 14px; font-size: 11px; width: 25%;">Last Updated</th>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category/Topic</th>
+                                    <th>Last Updated</th>
                                 </tr>
                             </thead>
                             <tbody id="sdNotesTableBody">
@@ -554,31 +554,31 @@
                 </div>
 
                 <!-- Admin Action and Send Notification -->
-                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; display: grid; gap: 16px;">
+                <div class="sd-admin-actions-section">
                     <div>
-                        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #fff;">Send Notification to Student</h4>
-                        <div class="sd-notif-row" style="display: flex; gap: 12px; align-items: flex-start;">
-                            <div style="flex: 1; display: grid; gap: 8px;">
-                                <input type="text" id="sdNotifTitle" placeholder="Notification Title (e.g. Schedule Interview)" style="height: 38px; padding: 8px 12px; border-radius: 10px; font-size: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(15, 23, 42, 0.9); color:#fff; outline:none;" />
-                                <textarea id="sdNotifMessage" rows="2" placeholder="Notification Message..." style="padding: 8px 12px; border-radius: 10px; font-size: 12px; min-height: 50px; border: 1px solid rgba(255,255,255,0.12); background: rgba(15, 23, 42, 0.9); color:#fff; outline:none; resize:vertical;"></textarea>
+                        <h4 class="sd-notif-title-label">Send Notification to Student</h4>
+                        <div class="sd-notif-row">
+                            <div class="sd-notif-inputs">
+                                <input type="text" id="sdNotifTitle" placeholder="Notification Title (e.g. Schedule Interview)" />
+                                <textarea id="sdNotifMessage" rows="2" placeholder="Notification Message..."></textarea>
                             </div>
-                            <div style="display: grid; gap: 8px; width: 140px;">
-                                <select id="sdNotifPriority" style="height: 38px; padding: 6px 10px; border-radius: 10px; font-size: 12px; background-color: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.12); color:#fff; outline:none; cursor:pointer;">
+                            <div class="sd-notif-controls">
+                                <select id="sdNotifPriority">
                                     <option value="low">Low Priority</option>
                                     <option value="medium" selected>Medium Priority</option>
                                     <option value="high">High Priority</option>
                                 </select>
-                                <button type="button" id="sdSendNotifBtn" class="btn btn--primary btn--sm" style="height: 38px; min-height: 38px; border-radius: 10px;">Send Notif</button>
+                                <button type="button" id="sdSendNotifBtn" class="btn btn--primary btn--sm">Send Notif</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="sd-modal-actions" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; gap: 10px;">
-                        <div style="display: flex; gap: 8px;">
-                            <button type="button" id="sdBlockBtn" class="btn btn--secondary btn--sm" style="border-color: rgba(255,90,122,0.3); color: #ff5a7a; border-radius: 10px;">Block Student</button>
-                            <button type="button" id="sdDeleteBtn" class="btn btn--secondary btn--sm btn--danger" style="border-color: rgba(255,90,122,0.3); color: var(--bad); border-radius: 10px;">Delete Student</button>
+                    <div class="sd-modal-actions">
+                        <div class="sd-action-buttons-group">
+                            <button type="button" id="sdBlockBtn" class="btn btn--secondary btn--sm">Block Student</button>
+                            <button type="button" id="sdDeleteBtn" class="btn btn--secondary btn--sm btn--danger">Delete Student</button>
                         </div>
-                        <button type="button" id="sdCloseBtn" class="btn btn--secondary btn--sm" style="border-radius: 10px; min-width: 80px;">Close</button>
+                        <button type="button" id="sdCloseBtn" class="btn btn--secondary btn--sm">Close</button>
                     </div>
                 </div>
             </div>

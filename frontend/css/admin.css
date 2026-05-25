@@ -968,6 +968,179 @@
     }
 }
 
+/* Student Detail Modal Specific Layout Styles */
+.sd-modal-card {
+    width: min(880px, 100%);
+    max-height: 90vh;
+}
+.sd-modal-header {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+.sd-modal-title {
+    font-size: 24px;
+    font-weight: 850;
+    letter-spacing: -0.03em;
+    margin: 0;
+}
+.sd-modal-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.58);
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+.sd-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.sd-section-title {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 0;
+}
+.sd-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+.sd-profile-field strong {
+    color: var(--subtle);
+    font-weight: 600;
+}
+.sd-profile-field span {
+    color: #fff;
+}
+.sd-profile-field--full {
+    grid-column: 1 / -1;
+}
+.sd-profile-links {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+.sd-link-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: border-color 150ms ease, background 150ms ease;
+}
+.sd-link-chip strong {
+    color: var(--subtle);
+}
+.sd-link-chip a {
+    color: var(--indigo);
+    text-decoration: none;
+    font-weight: 600;
+}
+.sd-link-chip a:hover {
+    text-decoration: underline;
+}
+.sd-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 12px;
+}
+.sd-admin-actions-section {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 16px;
+    display: grid;
+    gap: 16px;
+}
+.sd-notif-title-label {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+    margin-top: 0;
+}
+.sd-notif-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.sd-notif-inputs {
+    flex: 1;
+    display: grid;
+    gap: 8px;
+}
+.sd-notif-inputs input {
+    height: 38px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(15, 23, 42, 0.9);
+    color: #fff;
+    outline: none;
+}
+.sd-notif-inputs textarea {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    min-height: 50px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(15, 23, 42, 0.9);
+    color: #fff;
+    outline: none;
+    resize: vertical;
+}
+.sd-notif-controls {
+    display: grid;
+    gap: 8px;
+    width: 140px;
+}
+.sd-notif-controls select {
+    height: 38px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    background-color: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+}
+.sd-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 14px;
+    gap: 10px;
+}
+.sd-action-buttons-group {
+    display: flex;
+    gap: 8px;
+}
+.sd-action-buttons-group button {
+    border-color: rgba(255,90,122,0.3);
+    color: #ff5a7a;
+    border-radius: 10px;
+}
+.sd-action-buttons-group button.btn--danger {
+    color: var(--bad);
+}
+#sdCloseBtn {
+    border-radius: 10px;
+    min-width: 80px;
+}
+
 /* Responsive Table Reflow into Professional Cards */
 @media (max-width: 768px) {
     .admin-table,
@@ -1061,43 +1234,111 @@
 
     /* Student Detail Modal Mobile Polish */
     #studentDetailModal .admin-modal-card {
+        width: 94vw !important;
         padding: 20px 16px !important;
-        max-height: 94vh !important;
+        max-height: 92vh !important;
+        border-radius: 20px !important;
     }
-
-    #studentDetailModal .student-detail-content {
-        gap: 16px !important;
+    .sd-modal-title {
+        font-size: 20px !important;
     }
-
-    #studentDetailModal .sd-notif-row {
+    .sd-modal-subtitle {
+        font-size: 12px !important;
+    }
+    .sd-profile-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    .sd-profile-field {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+        padding-bottom: 8px !important;
+    }
+    .sd-profile-field strong {
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.03em !important;
+    }
+    .sd-profile-field span {
+        font-size: 13.5px !important;
+    }
+    .sd-profile-field--full {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+    .sd-profile-links {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+    }
+    .sd-link-chip {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        box-sizing: border-box !important;
+        padding: 10px 12px !important;
+        font-size: 13px !important;
+        min-height: 40px !important;
+    }
+    .sd-summary-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    .sd-summary-grid .mini-stat {
+        padding: 10px 8px !important;
+        min-height: 60px !important;
+        border-radius: 12px !important;
+    }
+    .sd-summary-grid .mini-stat__val {
+        font-size: 18px !important;
+    }
+    .sd-summary-grid .mini-stat__label {
+        font-size: 8px !important;
+    }
+    #studentDetailModal .table-container {
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 12px !important;
+        background: rgba(0, 0, 0, 0.15) !important;
+    }
+    .sd-notif-row {
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 12px !important;
     }
-    #studentDetailModal .sd-notif-row > div:last-child {
+    .sd-notif-controls {
         width: 100% !important;
         grid-template-columns: 1fr 1fr !important;
         display: grid !important;
         gap: 8px !important;
     }
-    #studentDetailModal .sd-notif-row #sdSendNotifBtn {
-        min-height: 38px !important;
-    }
-
-    #studentDetailModal .sd-modal-actions {
+    .sd-modal-actions {
         flex-direction: column !important;
         gap: 12px !important;
         align-items: stretch !important;
     }
-    #studentDetailModal .sd-modal-actions > div {
+    .sd-action-buttons-group {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 8px !important;
         width: 100% !important;
     }
-    #studentDetailModal .sd-modal-actions #sdCloseBtn {
+    #studentDetailModal .btn,
+    #studentDetailModal button {
+        min-height: 44px !important;
+        height: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 13.5px !important;
+    }
+    #studentDetailModal #sdSendNotifBtn {
+        min-height: 44px !important;
+    }
+    #studentDetailModal #sdCloseBtn {
         width: 100% !important;
-        min-height: 38px !important;
     }
 
     /* General Admin Modals Mobile Polish */
