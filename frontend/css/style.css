@@ -56,30 +56,36 @@
   --bg1: #f1f5f9;
   --bg2: #e2e8f0;
   
-  --surface: rgba(255, 255, 255, 0.75);
-  --surface2: rgba(255, 255, 255, 0.92);
-  --stroke: rgba(15, 23, 42, 0.08);
-  --stroke2: rgba(15, 23, 42, 0.12);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface2: #ffffff;
+  --stroke: rgba(15, 23, 42, 0.06);
+  --stroke2: rgba(15, 23, 42, 0.1);
 
-  --text: rgba(15, 23, 42, 0.90);
-  --muted: rgba(15, 23, 42, 0.65);
-  --subtle: rgba(15, 23, 42, 0.48);
+  --text: #0f172a;
+  --muted: #334155;
+  --subtle: #627d98;
 
-  --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 12px 30px rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.03);
+  /* Accent & Status Colors for Light Mode readability */
+  --indigo: #4f46e5;
+  --cyan: #0891b2;
+  --good: #0d9488;
+  --warn: #b45309;
+  --bad: #be123c;
+
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.01);
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.02), 0 1px 2px rgba(15, 23, 42, 0.01);
 }
 
 body.theme-light {
   background:
-    radial-gradient(1200px 800px at 20% 0%, rgba(124, 107, 255, 0.06), transparent 55%),
-    radial-gradient(900px 700px at 90% 10%, rgba(79, 227, 255, 0.04), transparent 50%),
-    radial-gradient(900px 700px at 40% 95%, rgba(176, 107, 255, 0.05), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
+    radial-gradient(1200px 800px at 20% 0%, rgba(99, 102, 241, 0.05), transparent 60%),
+    radial-gradient(900px 700px at 90% 10%, rgba(6, 182, 212, 0.03), transparent 50%),
+    linear-gradient(180deg, var(--bg0), var(--bg1)) !important;
 }
 
 .theme-light .textStrong {
-  color: rgba(15, 23, 42, 0.95);
+  color: #0f172a;
 }
 
 .theme-light ::selection {
