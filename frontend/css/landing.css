@@ -1,39 +1,96 @@
 /* SaaS Public Landing Page Styles */
 
 /* 1. Header/Navbar styling */
+/* 1. Header/Navbar styling */
 .landing-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 74px;
-  background: rgba(7, 10, 18, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  height: 66px;
+  background: rgba(7, 10, 18, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 9999;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
 }
 
 .landing-nav.is-scrolled {
-  background: rgba(7, 10, 18, 0.85);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  background: rgba(7, 10, 18, 0.82);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(255, 255, 255, 0.03);
   border-color: rgba(255, 255, 255, 0.08);
 }
 
 .theme-light .landing-nav {
-  background: rgba(248, 250, 252, 0.4);
+  background: rgba(248, 250, 252, 0.45);
   border-bottom: 1px solid rgba(15, 23, 42, 0.05);
 }
 
 .theme-light .landing-nav.is-scrolled {
-  background: rgba(248, 250, 252, 0.85);
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+  background: rgba(248, 250, 252, 0.82);
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.04), inset 0 -1px 0 rgba(15, 23, 42, 0.02);
   border-color: rgba(15, 23, 42, 0.08);
 }
 
+/* Brandmark logo styling */
+.landing-nav .brandmark {
+  gap: 8px !important;
+  align-items: center !important;
+  display: flex !important;
+}
+
+.landing-nav .brandmark__icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: linear-gradient(135deg, rgba(124, 107, 255, 0.2), rgba(79, 227, 255, 0.1)) !important;
+  border: 1px solid rgba(124, 107, 255, 0.15) !important;
+  display: grid !important;
+  place-items: center !important;
+  box-shadow: 0 4px 12px rgba(124, 107, 255, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.landing-nav .brandmark:hover .brandmark__icon {
+  transform: rotate(12deg) scale(1.04) !important;
+  box-shadow: 0 6px 16px rgba(124, 107, 255, 0.25) !important;
+  border-color: rgba(124, 107, 255, 0.35) !important;
+}
+
+.landing-nav .brandmark__icon i {
+  width: 15px !important;
+  height: 15px !important;
+  color: #fff !important;
+}
+
+.landing-nav .brandmark__title {
+  font-size: 14.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.025em !important;
+  color: #fff !important;
+  transition: color 0.2s ease !important;
+}
+
+.landing-nav .brandmark:hover .brandmark__title {
+  color: var(--indigo) !important;
+}
+
+.theme-light .landing-nav .brandmark__icon {
+  background: linear-gradient(135deg, rgba(124, 107, 255, 0.15), rgba(79, 227, 255, 0.05)) !important;
+  border-color: rgba(124, 107, 255, 0.15) !important;
+}
+
+.theme-light .landing-nav .brandmark__title {
+  color: var(--text) !important;
+}
+.theme-light .landing-nav .brandmark:hover .brandmark__title {
+  color: var(--indigo) !important;
+}
+
+
 .landing-nav__container {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   height: 100%;
   padding: 0 24px;
@@ -45,13 +102,13 @@
 .landing-nav__left {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 36px;
 }
 
 .landing-nav__links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 28px;
 }
 
 @media (max-width: 900px) {
@@ -60,19 +117,39 @@
   }
 }
 
-.landing-nav__link {
-  font-size: 14px;
+a.landing-nav__link {
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--muted);
-  transition: color 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  padding: 4px 0;
 }
 
-.landing-nav__link:hover {
+a.landing-nav__link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 12px;
+  height: 1.5px;
+  background: var(--indigo);
+  border-radius: 1px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
+}
+
+a.landing-nav__link:hover {
   color: #fff;
 }
 
-.theme-light .landing-nav__link:hover {
-  color: rgba(15, 23, 42, 1);
+a.landing-nav__link:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.theme-light a.landing-nav__link:hover {
+  color: var(--text);
 }
 
 .landing-nav__right {
@@ -81,16 +158,138 @@
   gap: 12px;
 }
 
+#landingThemeToggle {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--muted) !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+}
+
+#landingThemeToggle:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+}
+
+.theme-light #landingThemeToggle {
+  background: rgba(15, 23, 42, 0.02) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  color: var(--muted) !important;
+}
+
+.theme-light #landingThemeToggle:hover {
+  background: rgba(15, 23, 42, 0.06) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: var(--text) !important;
+}
+
+#navSignIn {
+  height: 36px !important;
+  padding: 0 16px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+}
+
+#navSignIn:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.theme-light #navSignIn {
+  color: var(--muted) !important;
+}
+
+.theme-light #navSignIn:hover {
+  color: var(--text) !important;
+  background: rgba(15, 23, 42, 0.04) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+#navGetStarted {
+  height: 36px !important;
+  min-height: 0 !important;
+  padding: 0 18px !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  background: linear-gradient(135deg, var(--indigo) 0%, #9066ff 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(124, 107, 255, 0.2) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+}
+
+#navGetStarted:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(124, 107, 255, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.theme-light #navGetStarted {
+  border-color: rgba(124, 107, 255, 0.2) !important;
+  box-shadow: 0 4px 14px rgba(124, 107, 255, 0.15) !important;
+}
+
+.theme-light #navGetStarted:hover {
+  box-shadow: 0 6px 20px rgba(124, 107, 255, 0.25) !important;
+}
+
 .landing-nav__hamburger {
   display: none;
 }
 
 @media (max-width: 900px) {
   .landing-nav__hamburger {
-    display: block;
+    display: inline-grid !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--muted) !important;
+    cursor: pointer !important;
+    place-items: center !important;
+    padding: 0 !important;
+  }
+  .landing-nav__hamburger:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+  }
+  .theme-light .landing-nav__hamburger {
+    background: rgba(15, 23, 42, 0.02) !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    color: var(--muted) !important;
+  }
+  .theme-light .landing-nav__hamburger:hover {
+    background: rgba(15, 23, 42, 0.06) !important;
+    border-color: rgba(15, 23, 42, 0.15) !important;
+    color: var(--text) !important;
   }
   .landing-nav__right > .btn {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -786,16 +985,19 @@
 }
 
 .auth-modal-overlay .panel {
-  transform: scale(0.94) translateY(20px);
+  max-width: 500px !important;
+  padding: 40px 36px !important;
+  transform: scale(0.97) translateY(8px) !important;
   opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .auth-modal-overlay.is-open .panel {
-  transform: scale(1) translateY(0);
-  opacity: 1;
+  transform: scale(1) translateY(0) !important;
+  opacity: 1 !important;
 }
 
 /* Inner purple spotlight glow */
@@ -818,94 +1020,163 @@
 
 .auth-modal-close-btn {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1px solid var(--stroke);
-  background: rgba(255, 255, 255, 0.04);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  color: var(--muted);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 20;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, border-color 0.2s, color 0.2s;
+  top: 20px !important;
+  right: 20px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  color: var(--muted) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 20 !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, border-color 0.2s, color 0.2s !important;
+}
+
+.auth-modal-close-btn i,
+.auth-modal-close-btn svg {
+  width: 14px !important;
+  height: 14px !important;
 }
 
 .auth-modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #fff;
-  transform: rotate(90deg) scale(1.05);
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  transform: rotate(90deg) scale(1.05) !important;
 }
 
 .theme-light .auth-modal-close-btn {
-  background: rgba(15, 23, 42, 0.04);
-  color: var(--muted);
+  background: rgba(15, 23, 42, 0.04) !important;
+  border-color: rgba(15, 23, 42, 0.06) !important;
+  color: var(--muted) !important;
 }
 .theme-light .auth-modal-close-btn:hover {
-  background: rgba(15, 23, 42, 0.08);
-  border-color: rgba(15, 23, 42, 0.2);
-  color: var(--text);
+  background: rgba(15, 23, 42, 0.08) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: var(--text) !important;
+}
+
+/* Modal Typography Polish */
+.auth-modal-overlay .panel__title {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.3 !important;
+  color: #fff !important;
+}
+
+.theme-light .auth-modal-overlay .panel__title {
+  color: var(--text) !important;
+}
+
+.auth-modal-overlay .panel__subtitle {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.theme-light .auth-modal-overlay .panel__subtitle {
+  color: var(--muted) !important;
 }
 
 /* Premium Role Selection Cards styling */
 .role-card {
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.02) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  gap: 16px !important;
+  padding: 18px !important;
+  border-radius: 14px !important;
+  width: 100% !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer !important;
+  opacity: 0;
+  transform: translateY(12px) scale(0.98);
+}
+
+.theme-light .role-card {
+  background: linear-gradient(180deg, rgba(15,23,42,0.02) 0%, rgba(15,23,42,0.005) 100%) !important;
+  border: 1px solid rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Staggered entrance animation for role-cards when overlay is open */
+.auth-modal-overlay.is-open .role-card {
+  animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.auth-modal-overlay.is-open .role-card:nth-child(1) {
+  animation-delay: 0.12s;
+}
+
+.auth-modal-overlay.is-open .role-card:nth-child(2) {
+  animation-delay: 0.22s;
+}
+
+@keyframes cardFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .role-card--admin:hover {
   border-color: rgba(124, 107, 255, 0.35) !important;
-  background: rgba(124, 107, 255, 0.03) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 30px rgba(124, 107, 255, 0.12) !important;
+  background: linear-gradient(180deg, rgba(124, 107, 255, 0.05) 0%, rgba(124, 107, 255, 0.01) 100%) !important;
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 12px 30px rgba(124, 107, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 .role-card--student:hover {
   border-color: rgba(79, 227, 255, 0.35) !important;
-  background: rgba(79, 227, 255, 0.03) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 30px rgba(79, 227, 255, 0.12) !important;
+  background: linear-gradient(180deg, rgba(79, 227, 255, 0.05) 0%, rgba(79, 227, 255, 0.01) 100%) !important;
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 12px 30px rgba(79, 227, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 .role-card__icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  transition: all 0.3s ease;
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+  transition: all 0.3s ease !important;
+  flex-shrink: 0 !important;
 }
 
 .role-card--admin .role-card__icon {
-  background: rgba(124, 107, 255, 0.12);
-  color: var(--indigo);
-  border: 1px solid rgba(124, 107, 255, 0.2);
+  background: rgba(124, 107, 255, 0.12) !important;
+  color: var(--indigo) !important;
+  border: 1px solid rgba(124, 107, 255, 0.2) !important;
 }
 
 .role-card--admin:hover .role-card__icon {
-  background: var(--indigo);
-  color: #fff;
-  box-shadow: 0 0 16px rgba(124, 107, 255, 0.4);
+  background: var(--indigo) !important;
+  color: #fff !important;
+  box-shadow: 0 0 16px rgba(124, 107, 255, 0.4) !important;
 }
 
 .role-card--student .role-card__icon {
-  background: rgba(79, 227, 255, 0.12);
-  color: var(--cyan);
-  border: 1px solid rgba(79, 227, 255, 0.2);
+  background: rgba(79, 227, 255, 0.12) !important;
+  color: var(--cyan) !important;
+  border: 1px solid rgba(79, 227, 255, 0.2) !important;
 }
 
 .role-card--student:hover .role-card__icon {
-  background: var(--cyan);
-  color: #070a12;
-  box-shadow: 0 0 16px rgba(79, 227, 255, 0.4);
+  background: var(--cyan) !important;
+  color: #070a12 !important;
+  box-shadow: 0 0 16px rgba(79, 227, 255, 0.4) !important;
 }
 
 .role-card__glow {
@@ -950,6 +1221,35 @@
   background: rgba(79, 227, 255, 0.04) !important;
   box-shadow: 0 10px 30px rgba(79, 227, 255, 0.06) !important;
 }
+
+/* Onboarding Modal viewport <480px overrides */
+@media (max-width: 480px) {
+  .auth-modal-overlay .panel {
+    padding: 28px 20px !important;
+  }
+  .role-card {
+    gap: 12px !important;
+    padding: 14px !important;
+    border-radius: 12px !important;
+  }
+  .role-card__icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+  }
+  .role-card__icon i,
+  .role-card__icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .role-card__title {
+    font-size: 14px !important;
+  }
+  .role-card__text {
+    font-size: 12px !important;
+  }
+}
+
 
 /* 10. Mobile Slide Drawer Menu */
 .mobile-drawer-overlay {
