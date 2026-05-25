@@ -1647,3 +1647,241 @@ a.landing-nav__link:hover::after {
   color: #0d9488 !important;
 }
 
+/* ====================================================
+   MOBILE-FIRST REFINED AND POLISHED STYLES (< 768px)
+   ==================================================== */
+@media (max-width: 768px) {
+  /* Spacing & Typography */
+  .landing-hero {
+    padding: 110px 16px 40px 16px !important;
+  }
+  
+  .landing-section {
+    padding: 48px 16px !important;
+  }
+  
+  .landing-section__header {
+    margin-bottom: 24px !important;
+  }
+  
+  .landing-hero__title {
+    font-size: 30px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .landing-hero__subtitle {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 28px !important;
+  }
+  
+  .landing-section__title {
+    font-size: 23px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .landing-section__subtitle {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Compact Navbar & Symmetrical Buttons */
+  .landing-nav__container {
+    padding: 0 16px !important;
+  }
+  
+  .landing-nav .brandmark {
+    gap: 8px !important;
+  }
+  
+  .landing-nav .brandmark__icon {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+  }
+  
+  .landing-nav .brandmark__icon i {
+    width: 15px !important;
+    height: 15px !important;
+  }
+  
+  .landing-nav .brandmark__title {
+    font-size: 14.5px !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.02em !important;
+  }
+  
+  .landing-nav__right {
+    gap: 8px !important;
+  }
+  
+  #landingThemeToggle {
+    margin-right: 0 !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .landing-nav__hamburger {
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* CTA Buttons */
+  .landing-hero__ctas {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 0 auto 40px auto !important;
+  }
+  
+  .landing-hero__ctas .btn {
+    width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Simplified Hero Screen Preview */
+  .preview-mock-screen {
+    aspect-ratio: auto !important;
+    height: 280px !important;
+  }
+  
+  .mock-window-body {
+    grid-template-columns: 1fr !important;
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+  
+  .mock-sidebar {
+    display: none !important;
+  }
+  
+  .abstract-widget-activity {
+    display: none !important;
+  }
+  
+  .mock-grid-stats {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  
+  .mock-main-section {
+    display: none !important;
+  }
+
+  /* Workspace Switcher */
+  .preview-tabs {
+    width: 100% !important;
+    max-width: 310px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    box-sizing: border-box !important;
+  }
+  
+  .preview-tab-btn {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Showcase Dashboard Layout Polish */
+  .mock-dashboard-layout {
+    padding: 14px !important;
+    gap: 16px !important;
+  }
+  
+  .mock-metrics-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  
+  .mock-metric-card {
+    padding: 10px !important;
+    gap: 4px !important;
+    border-radius: 10px !important;
+  }
+  
+  .mock-metric-card__val {
+    font-size: 20px !important;
+  }
+  
+  .mock-metric-card__label {
+    font-size: 10px !important;
+    letter-spacing: 0.02em !important;
+  }
+  
+  .mock-split-row {
+    gap: 12px !important;
+  }
+  
+  .mock-inner-card {
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
+  
+  .mock-inner-card__title {
+    font-size: 13.5px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .mock-pipeline-item {
+    padding: 8px 10px !important;
+    border-radius: 10px !important;
+  }
+  
+  .mock-pipeline-company {
+    font-size: 12.5px !important;
+  }
+  
+  .mock-pipeline-role {
+    font-size: 11px !important;
+  }
+  
+  .mock-badge {
+    padding: 3px 8px !important;
+    font-size: 10px !important;
+  }
+  
+  .mock-note-item {
+    padding: 10px !important;
+    border-radius: 10px !important;
+  }
+  
+  .mock-note-title {
+    font-size: 12.5px !important;
+  }
+  
+  .mock-note-desc {
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-table th:nth-child(2),
+  .admin-table td:nth-child(2) {
+    display: none !important;
+  }
+}
+
+
