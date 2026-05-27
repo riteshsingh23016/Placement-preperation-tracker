@@ -281,8 +281,8 @@
   font-weight: 600;
   border-radius: 14px;
   margin-top: 12px;
-  background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 1), rgba(90, 70, 255, 1));
-  box-shadow: 0 4px 14px rgba(var(--accent-primary-rgb), 0.4);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+  box-shadow: 0 4px 14px rgba(var(--accent-primary-rgb), 0.25);
   display: flex;
   justify-content: center;
   align-items: center;

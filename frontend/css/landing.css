@@ -76,7 +76,7 @@
 }
 
 .landing-nav .brandmark:hover .brandmark__title {
-  color: var(--indigo) !important;
+  color: var(--accent-primary) !important;
 }
 
 .theme-light .landing-nav .brandmark__icon {
@@ -88,7 +88,7 @@
   color: var(--text) !important;
 }
 .theme-light .landing-nav .brandmark:hover .brandmark__title {
-  color: var(--indigo) !important;
+  color: var(--accent-primary) !important;
 }
 
 
@@ -238,7 +238,7 @@ a.landing-nav__link:hover::after {
   font-size: 13.5px !important;
   font-weight: 600 !important;
   border-radius: 8px !important;
-  background: linear-gradient(135deg, var(--indigo) 0%, var(--accent-secondary) 100%) !important;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-hover) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #fff !important;
   box-shadow: 0 4px 14px rgba(var(--accent-primary-rgb), 0.2) !important;
@@ -296,7 +296,8 @@ a.landing-nav__link:hover::after {
     border-color: rgba(15, 23, 42, 0.15) !important;
     color: var(--text) !important;
   }
-  .landing-nav__right > .btn {
+  #navSignIn,
+  #navGetStarted {
     display: none !important;
   }
 }
@@ -425,15 +426,17 @@ a.landing-nav__link:hover::after {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   padding: 8px;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(var(--accent-primary-rgb), 0.03);
   transform: rotateX(8deg) translateY(0);
   transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
   overflow: hidden;
 }
 
 .preview-wrapper:hover {
   transform: rotateX(0deg) translateY(-8px);
+  border-color: rgba(var(--accent-primary-rgb), 0.25);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 50px rgba(var(--accent-primary-rgb), 0.12);
 }
 
 .theme-light .preview-wrapper {
@@ -634,9 +637,9 @@ a.landing-nav__link:hover::after {
 }
 
 .preview-tab-btn.is-active {
-  background: var(--indigo);
+  background: var(--accent-primary);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.35);
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.22);
 }
 
 .showcase-display {
@@ -965,7 +968,7 @@ a.landing-nav__link:hover::after {
 }
 
 .mock-note-item i {
-  color: var(--indigo);
+  color: var(--accent-primary);
   margin-top: 2px;
 }
 
@@ -1015,13 +1018,13 @@ a.landing-nav__link:hover::after {
   border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
   display: grid;
   place-items: center;
-  color: var(--indigo);
+  color: var(--accent-primary);
   margin-bottom: 20px;
   transition: background 0.25s, color 0.25s;
 }
 
 .feature-card:hover .feature-card__icon {
-  background: var(--indigo);
+  background: var(--accent-primary);
   color: #fff;
 }
 
@@ -1228,6 +1231,64 @@ a.landing-nav__link:hover::after {
   color: var(--text) !important;
 }
 
+/* Step indicator badge */
+.onboarding-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: 20px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  color: var(--accent-primary) !important;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.2) !important;
+  background: rgba(var(--accent-primary-rgb), 0.06) !important;
+  margin-bottom: 12px;
+}
+
+.theme-light .onboarding-step-badge {
+  color: var(--accent-primary) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.25) !important;
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
+}
+
+/* Secondary accent style for student path */
+#authContent[data-active-role="student"] .onboarding-step-badge {
+  color: var(--accent-secondary) !important;
+  border-color: rgba(var(--accent-secondary-rgb), 0.2) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.06) !important;
+}
+
+.theme-light #authContent[data-active-role="student"] .onboarding-step-badge {
+  color: var(--accent-secondary) !important;
+  border-color: rgba(var(--accent-secondary-rgb), 0.25) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.08) !important;
+}
+
+/* Onboarding submit button theme-matching rules */
+#authContent[data-active-role="student"] .btn--primary {
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-secondary-hover)) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-secondary-rgb), 0.25) !important;
+}
+
+#authContent[data-active-role="student"] .btn--primary:hover {
+  background: linear-gradient(135deg, var(--accent-secondary-hover), var(--accent-secondary)) !important;
+  box-shadow: 0 6px 20px rgba(var(--accent-secondary-rgb), 0.35) !important;
+}
+
+#authContent[data-active-role="admin"] .btn--primary {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-primary-rgb), 0.25) !important;
+}
+
+#authContent[data-active-role="admin"] .btn--primary:hover {
+  background: linear-gradient(135deg, var(--accent-primary-hover), var(--accent-primary)) !important;
+  box-shadow: 0 6px 20px rgba(var(--accent-primary-rgb), 0.35) !important;
+}
+
 /* Modal Typography Polish */
 .auth-modal-overlay .panel__title {
   font-size: 22px !important;
@@ -1306,10 +1367,10 @@ a.landing-nav__link:hover::after {
 }
 
 .role-card--student:hover {
-  border-color: rgba(var(--color-info-rgb), 0.35) !important;
-  background: linear-gradient(180deg, rgba(var(--color-info-rgb), 0.05) 0%, rgba(var(--color-info-rgb), 0.01) 100%) !important;
+  border-color: rgba(var(--accent-secondary-rgb), 0.35) !important;
+  background: linear-gradient(180deg, rgba(var(--accent-secondary-rgb), 0.05) 0%, rgba(var(--accent-secondary-rgb), 0.01) 100%) !important;
   transform: translateY(-2px) scale(1.01) !important;
-  box-shadow: 0 12px 30px rgba(var(--color-info-rgb), 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 12px 30px rgba(var(--accent-secondary-rgb), 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 .role-card__icon {
@@ -1324,26 +1385,26 @@ a.landing-nav__link:hover::after {
 
 .role-card--admin .role-card__icon {
   background: rgba(var(--accent-primary-rgb), 0.12) !important;
-  color: var(--indigo) !important;
+  color: var(--accent-primary) !important;
   border: 1px solid rgba(var(--accent-primary-rgb), 0.2) !important;
 }
 
 .role-card--admin:hover .role-card__icon {
-  background: var(--indigo) !important;
+  background: var(--accent-primary) !important;
   color: #fff !important;
   box-shadow: 0 0 16px rgba(var(--accent-primary-rgb), 0.4) !important;
 }
 
 .role-card--student .role-card__icon {
-  background: rgba(var(--color-info-rgb), 0.12) !important;
-  color: var(--cyan) !important;
-  border: 1px solid rgba(var(--color-info-rgb), 0.2) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.12) !important;
+  color: var(--accent-secondary) !important;
+  border: 1px solid rgba(var(--accent-secondary-rgb), 0.2) !important;
 }
 
 .role-card--student:hover .role-card__icon {
-  background: var(--cyan) !important;
-  color: #070a12 !important;
-  box-shadow: 0 0 16px rgba(var(--color-info-rgb), 0.4) !important;
+  background: var(--accent-secondary) !important;
+  color: #fff !important;
+  box-shadow: 0 0 16px rgba(var(--accent-secondary-rgb), 0.4) !important;
 }
 
 .role-card__glow {
@@ -1364,7 +1425,7 @@ a.landing-nav__link:hover::after {
 }
 
 .role-card--student .role-card__glow {
-  background: radial-gradient(circle, rgba(var(--color-info-rgb), 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--accent-secondary-rgb), 0.08) 0%, transparent 70%);
   right: -50px;
   bottom: -50px;
 }
@@ -1385,8 +1446,8 @@ a.landing-nav__link:hover::after {
 }
 
 .theme-light .role-card--student:hover {
-  background: rgba(var(--color-info-rgb), 0.04) !important;
-  box-shadow: 0 10px 30px rgba(var(--color-info-rgb), 0.06) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.04) !important;
+  box-shadow: 0 10px 30px rgba(var(--accent-secondary-rgb), 0.06) !important;
 }
 
 /* Onboarding Modal viewport <480px overrides */
@@ -1474,7 +1535,14 @@ a.landing-nav__link:hover::after {
   font-weight: 600;
   color: var(--text);
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: all var(--transition-fast);
+}
+
+.mobile-drawer__link:hover {
+  color: var(--accent-primary);
+  border-bottom-color: rgba(var(--accent-primary-rgb), 0.25);
+  padding-left: 4px;
 }
 
 .mobile-drawer__ctas {
@@ -1570,16 +1638,16 @@ a.landing-nav__link:hover::after {
 }
 
 .theme-light .btn--primary {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
-  border-color: rgba(79, 70, 229, 0.2) !important;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-hover) 100%) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.2) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25), 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+  box-shadow: 0 4px 14px rgba(var(--accent-primary-rgb), 0.25), 0 1px 2px rgba(15, 23, 42, 0.05) !important;
 }
 
 .theme-light .btn--primary:hover {
-  background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%) !important;
-  border-color: rgba(79, 70, 229, 0.3) !important;
-  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35), 0 1px 3px rgba(15, 23, 42, 0.08) !important;
+  background: linear-gradient(135deg, var(--accent-primary-hover) 0%, var(--accent-primary) 100%) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.3) !important;
+  box-shadow: 0 6px 20px rgba(var(--accent-primary-rgb), 0.35), 0 1px 3px rgba(15, 23, 42, 0.08) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -1626,11 +1694,11 @@ a.landing-nav__link:hover::after {
 .theme-light .feature-card__icon {
   background: rgba(var(--accent-primary-rgb), 0.08) !important;
   border-color: rgba(var(--accent-primary-rgb), 0.15) !important;
-  color: #4f46e5 !important;
+  color: var(--accent-primary) !important;
 }
 
 .theme-light .feature-card:hover .feature-card__icon {
-  background: #4f46e5 !important;
+  background: var(--accent-primary) !important;
   color: #ffffff !important;
   box-shadow: 0 0 16px rgba(var(--accent-primary-rgb), 0.3) !important;
 }

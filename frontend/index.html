@@ -138,7 +138,7 @@
                       <div class="abstract-badge-placeholder" style="width: 24px; height: 10px; background: rgba(61, 220, 151, 0.15); border-radius: 100px;"></div>
                     </div>
                     <div class="abstract-circle-wrap" style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
-                      <div class="abstract-radial-progress" style="width: 32px; height: 32px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.04); border-top-color: var(--indigo); transform: rotate(45deg);"></div>
+                      <div class="abstract-radial-progress" style="width: 32px; height: 32px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.04); border-top-color: var(--accent-primary); transform: rotate(45deg);"></div>
                       <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
                         <div class="abstract-text-line" style="width: 80%; height: 10px; background: rgba(255,255,255,0.25); border-radius: 3px;"></div>
                         <div class="abstract-text-line" style="width: 50%; height: 6px; background: rgba(255,255,255,0.12); border-radius: 3px;"></div>
@@ -146,12 +146,12 @@
                     </div>
                   </div>
                   <!-- Abstract Chart Widget -->
-                  <div class="mock-card abstract-widget-chart" style="border-color: rgba(79, 227, 255, 0.15); background: linear-gradient(180deg, rgba(79, 227, 255, 0.04), transparent);">
+                  <div class="mock-card abstract-widget-chart" style="border-color: rgba(var(--color-info-rgb), 0.15); background: linear-gradient(180deg, rgba(var(--color-info-rgb), 0.04), transparent);">
                     <div class="abstract-text-line" style="width: 50%; height: 8px; background: rgba(255,255,255,0.12); border-radius: 3px; margin-bottom: 12px;"></div>
                     <div class="abstract-sparkline" style="position: relative; height: 32px; width: 100%; overflow: hidden;">
-                      <svg viewBox="0 0 100 30" class="abstract-sparkline-svg" style="width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 4px rgba(79, 227, 255, 0.4));">
-                        <path d="M0,20 Q15,5 30,18 T60,8 T90,2 M90,2 L100,20 L100,30 L0,30 Z" fill="rgba(79, 227, 255, 0.06)" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round"></path>
-                        <circle cx="90" cy="2" r="2.5" fill="var(--cyan)"></circle>
+                      <svg viewBox="0 0 100 30" class="abstract-sparkline-svg" style="width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 4px rgba(var(--color-info-rgb), 0.4));">
+                        <path d="M0,20 Q15,5 30,18 T60,8 T90,2 M90,2 L100,20 L100,30 L0,30 Z" fill="rgba(var(--color-info-rgb), 0.06)" stroke="var(--color-info)" stroke-width="1.5" stroke-linecap="round"></path>
+                        <circle cx="90" cy="2" r="2.5" fill="var(--color-info)"></circle>
                       </svg>
                     </div>
                   </div>
@@ -160,18 +160,18 @@
                     <div class="abstract-text-line" style="width: 60%; height: 8px; background: rgba(255,255,255,0.12); border-radius: 3px; margin-bottom: 8px;"></div>
                     <div class="abstract-grid-matrix" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 10px;">
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
-                      <div class="matrix-cell active-high" style="aspect-ratio: 1; border-radius: 2px; background: var(--indigo); opacity: 0.85;"></div>
+                      <div class="matrix-cell active-high" style="aspect-ratio: 1; border-radius: 2px; background: var(--accent-primary); opacity: 0.85;"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
-                      <div class="matrix-cell active-med" style="aspect-ratio: 1; border-radius: 2px; background: var(--blue); opacity: 0.5;"></div>
+                      <div class="matrix-cell active-med" style="aspect-ratio: 1; border-radius: 2px; background: var(--accent-secondary); opacity: 0.5;"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
-                      <div class="matrix-cell active-high" style="aspect-ratio: 1; border-radius: 2px; background: var(--indigo); opacity: 0.9;"></div>
+                      <div class="matrix-cell active-high" style="aspect-ratio: 1; border-radius: 2px; background: var(--accent-primary); opacity: 0.9;"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
-                      <div class="matrix-cell active-med" style="aspect-ratio: 1; border-radius: 2px; background: var(--indigo); opacity: 0.4;"></div>
+                      <div class="matrix-cell active-med" style="aspect-ratio: 1; border-radius: 2px; background: var(--accent-primary); opacity: 0.4;"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
-                      <div class="matrix-cell active-high" style="aspect-ratio: 1; border-radius: 2px; background: var(--cyan); opacity: 0.85;"></div>
+                      <div class="matrix-cell active-high" style="aspect-ratio: 1; border-radius: 2px; background: var(--color-info); opacity: 0.85;"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
-                      <div class="matrix-cell active-med" style="aspect-ratio: 1; border-radius: 2px; background: var(--blue); opacity: 0.6;"></div>
+                      <div class="matrix-cell active-med" style="aspect-ratio: 1; border-radius: 2px; background: var(--accent-secondary); opacity: 0.6;"></div>
                       <div class="matrix-cell active-low" style="aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.06);"></div>
                     </div>
                   </div>
@@ -256,7 +256,7 @@
             <div class="mock-split-row">
               <div class="mock-inner-card">
                 <h3 class="mock-inner-card__title">
-                  <i data-lucide="building-2" style="width: 16px; height: 16px; color: var(--indigo);"></i>
+                  <i data-lucide="building-2" style="width: 16px; height: 16px; color: var(--accent-primary);"></i>
                   Active Application Pipeline
                 </h3>
                 <div class="mock-pipeline">
@@ -265,28 +265,28 @@
                       <div class="mock-pipeline-company">Google</div>
                       <div class="mock-pipeline-role">Software Engineer Intern</div>
                     </div>
-                    <span class="mock-badge mock-badge--interview">Technical Interview</span>
+                    <span class="badge badge--warning">Technical Interview</span>
                   </div>
                   <div class="mock-pipeline-item">
                     <div>
                       <div class="mock-pipeline-company">Stripe</div>
                       <div class="mock-pipeline-role">Frontend Engineer</div>
                     </div>
-                    <span class="mock-badge mock-badge--offer">Offer Confirmed</span>
+                    <span class="badge badge--success">Offer Confirmed</span>
                   </div>
                   <div class="mock-pipeline-item">
                     <div>
                       <div class="mock-pipeline-company">Microsoft</div>
                       <div class="mock-pipeline-role">Product Manager</div>
                     </div>
-                    <span class="mock-badge mock-badge--applied">Applied</span>
+                    <span class="badge badge--applied">Applied</span>
                   </div>
                 </div>
               </div>
 
               <div class="mock-inner-card">
                 <h3 class="mock-inner-card__title">
-                  <i data-lucide="notebook-tabs" style="width: 16px; height: 16px; color: var(--indigo);"></i>
+                  <i data-lucide="notebook-tabs" style="width: 16px; height: 16px; color: var(--accent-primary);"></i>
                   Recent Prep Notes
                 </h3>
                 <div class="mock-notes-list">
@@ -319,7 +319,7 @@
                 <span class="mock-metric-card__label">Total Students</span>
               </div>
               <div class="mock-metric-card" style="border-color: rgba(var(--accent-primary-rgb), 0.25);">
-                <span class="mock-metric-card__val" style="color: var(--indigo);">12</span>
+                <span class="mock-metric-card__val" style="color: var(--accent-primary);">12</span>
                 <span class="mock-metric-card__label">Active Drives</span>
               </div>
               <div class="mock-metric-card" style="border-color: rgba(61, 220, 151, 0.25);">
@@ -335,7 +335,7 @@
             <div class="mock-split-row">
               <div class="mock-inner-card">
                 <h3 class="mock-inner-card__title">
-                  <i data-lucide="users" style="width: 16px; height: 16px; color: var(--indigo);"></i>
+                  <i data-lucide="users" style="width: 16px; height: 16px; color: var(--accent-primary);"></i>
                   Active Student List
                 </h3>
                 <div class="table-container" style="background: transparent; border: none; padding: 0;">
@@ -351,12 +351,12 @@
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.02); height: 42px;">
                         <td style="font-size: 13.5px; font-weight: 600;">Jane Cooper</td>
                         <td style="font-size: 12.5px; color: var(--muted);">B.Tech CSE</td>
-                        <td style="text-align: right;"><span class="mock-badge mock-badge--offer">Placed</span></td>
+                        <td style="text-align: right;"><span class="badge badge--success">Placed</span></td>
                       </tr>
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.02); height: 42px;">
                         <td style="font-size: 13.5px; font-weight: 600;">Alex Rivera</td>
                         <td style="font-size: 12.5px; color: var(--muted);">B.Tech IT</td>
-                        <td style="text-align: right;"><span class="mock-badge mock-badge--interview">Interviewing</span></td>
+                        <td style="text-align: right;"><span class="badge badge--warning">Interviewing</span></td>
                       </tr>
                     </tbody>
                   </table>
@@ -365,7 +365,7 @@
 
               <div class="mock-inner-card">
                 <h3 class="mock-inner-card__title">
-                  <i data-lucide="megaphone" style="width: 16px; height: 16px; color: var(--indigo);"></i>
+                  <i data-lucide="megaphone" style="width: 16px; height: 16px; color: var(--accent-primary);"></i>
                   Active Placement Drives
                 </h3>
                 <div class="mock-pipeline">
@@ -487,6 +487,7 @@
         </button>
 
         <div id="roleSelection" class="role-selection">
+          <div class="onboarding-step-badge">Step 1 of 2</div>
           <h1 class="panel__title" style="margin-bottom: 8px;">Choose your access type</h1>
           <p class="panel__subtitle" style="margin-bottom: 24px;">Select how you want to access the platform.</p>
           
@@ -517,7 +518,8 @@
             <span>Back to Selection</span>
           </button>
 
-          <header class="panel__header">
+          <header class="panel__header" style="margin-top: 16px;">
+            <div class="onboarding-step-badge">Step 2 of 2</div>
             <h1 class="panel__title" id="panelTitle">Welcome</h1>
             <p class="panel__subtitle" id="panelSubtitle">Sign in or create an account to track your progress.</p>
             <div class="auth__tabs" id="authTabs">

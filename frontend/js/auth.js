@@ -86,11 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
     roleSelection.style.display = "block";
     authContent.style.display = "none";
     selectedRole = null;
+    authContent.removeAttribute("data-active-role");
   });
 
   function showAuthForm() {
     roleSelection.style.display = "none";
     authContent.style.display = "block";
+    authContent.setAttribute("data-active-role", selectedRole);
     
     if (selectedRole === "admin") {
       panelTitle.textContent = "Admin Portal";
