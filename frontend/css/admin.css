@@ -92,14 +92,14 @@
 }
 
 /* Stat card icon colors using design system variables */
-.stat-card__icon.blue { background: rgba(102, 167, 255, 0.15); color: var(--blue); }
-.stat-card__icon.purple { background: rgba(176, 107, 255, 0.15); color: var(--purple); }
-.stat-card__icon.green { background: rgba(61, 220, 151, 0.15); color: var(--good); }
-.stat-card__icon.red { background: rgba(255, 90, 122, 0.15); color: var(--bad); }
-.stat-card__icon.amber { background: rgba(255, 204, 102, 0.15); color: var(--warn); }
-.stat-card__icon.cyan { background: rgba(79, 227, 255, 0.15); color: var(--cyan); }
-.stat-card__icon.indigo { background: rgba(124, 107, 255, 0.15); color: var(--indigo); }
-.stat-card__icon.pink { background: rgba(176, 107, 255, 0.15); color: #ec4899; }
+.stat-card__icon.blue { background: rgba(var(--accent-primary-rgb), 0.15); color: var(--blue); }
+.stat-card__icon.purple { background: rgba(var(--accent-secondary-rgb), 0.15); color: var(--purple); }
+.stat-card__icon.green { background: rgba(var(--color-success-rgb), 0.15); color: var(--good); }
+.stat-card__icon.red { background: rgba(var(--color-danger-rgb), 0.15); color: var(--bad); }
+.stat-card__icon.amber { background: rgba(var(--color-warning-rgb), 0.15); color: var(--warn); }
+.stat-card__icon.cyan { background: rgba(var(--color-info-rgb), 0.15); color: var(--cyan); }
+.stat-card__icon.indigo { background: rgba(var(--accent-primary-rgb), 0.15); color: var(--indigo); }
+.stat-card__icon.pink { background: rgba(var(--accent-secondary-rgb), 0.15); color: #ec4899; }
 
 .stat-card__meta {
     display: flex;
@@ -176,28 +176,7 @@
 }
 
 /* Status Tags */
-.status-tag {
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    background: var(--surface2);
-    border: 1px solid var(--stroke);
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 160px;
-    line-height: normal;
-}
 
-/* Specific status colors */
-.status-selected { color: var(--good); border-color: rgba(61, 220, 151, 0.3); background: rgba(61, 220, 151, 0.1); }
-.status-rejected { color: var(--bad); border-color: rgba(255, 90, 122, 0.3); background: rgba(255, 90, 122, 0.1); }
-.status-interview-scheduled { color: var(--blue); border-color: rgba(102, 167, 255, 0.3); background: rgba(102, 167, 255, 0.1); }
-.status-applied { color: var(--cyan); border-color: rgba(79, 227, 255, 0.3); background: rgba(79, 227, 255, 0.1); }
 
 /* Placement Drives */
 .drives-grid {
@@ -288,21 +267,12 @@
 }
 
 .admin-select {
-    height: 44px;
-    padding: 0 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--stroke);
-    border-radius: 12px;
-    cursor: pointer;
-    appearance: none; /* Hide default arrow */
+    appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 16px;
-}
-
-.admin-select:focus {
-    border-color: var(--stroke2);
+    padding-right: 36px;
 }
 
 .admin-reset-btn {
@@ -451,17 +421,14 @@
     border-color: var(--stroke2);
 }
 
-.badge--info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-.badge--success { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.badge--warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-.badge--urgent { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
 
 .text-red {
-    color: #ff5a7a !important;
+    color: var(--color-danger) !important;
 }
 
 .text-red:hover {
-    background: rgba(255, 90, 122, 0.1) !important;
+    background: rgba(var(--color-danger-rgb), 0.1) !important;
 }
 
 /* Responsive Overrides */
@@ -571,22 +538,47 @@
 }
 
 .admin-form-group input,
-.admin-form-group textarea,
 .admin-form-group select {
   width: 100%;
+  height: 42px;
   box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(15, 23, 42, 0.9);
-  color: #f8fafc;
-  border-radius: 14px;
-  padding: 13px 14px;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
   outline: none;
   font: inherit;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
 .admin-form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--stroke);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  outline: none;
+  font: inherit;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
   resize: vertical;
   min-height: 120px;
+}
+
+.admin-form-group input:hover,
+.admin-form-group select:hover,
+.admin-form-group textarea:hover {
+  border-color: var(--stroke2);
+}
+
+.admin-form-group input:focus,
+.admin-form-group select:focus,
+.admin-form-group textarea:focus {
+  border-color: rgba(var(--accent-primary-rgb), 0.45);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.18);
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .admin-modal-actions {
@@ -596,25 +588,53 @@
   margin-top: 20px;
 }
 
-.btn-secondary,
-.btn-primary {
-  min-height: 44px;
-  padding: 0 18px;
-  border-radius: 14px;
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  font-weight: 700;
+  user-select: none;
+  height: 40px;
+  padding: 0 var(--space-4);
+  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: translateY(-1px);
+}
+.btn-primary:active,
+.btn-secondary:active {
+  transform: translateY(0px);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
+  background: rgba(var(--accent-primary-rgb), 0.05);
+  color: var(--accent-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(var(--accent-primary-rgb), 0.08);
+  border-color: rgba(var(--accent-primary-rgb), 0.3);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #7c6cff, #5b8cff);
-  color: white;
-  border: none;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.35);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.15);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--accent-primary-hover), var(--accent-primary));
+  box-shadow: 0 6px 18px rgba(var(--accent-primary-rgb), 0.22);
 }
 
 /* Polished Admin Top-Right Profile Card */
@@ -635,7 +655,7 @@
 .topbar .miniProfile:hover {
     border-color: rgba(255, 255, 255, 0.20);
     background-color: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 25px rgba(124, 107, 255, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 25px rgba(var(--accent-primary-rgb), 0.12), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .topbar .miniProfile .avatar {
@@ -707,7 +727,7 @@
     bottom: 0;
     border-radius: var(--radius-lg);
     border: 1px solid transparent;
-    background: linear-gradient(135deg, rgba(124, 107, 255, 0.2), rgba(79, 227, 255, 0.08)) border-box;
+    background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 0.2), rgba(var(--color-info-rgb), 0.08)) border-box;
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: destination-out;
     mask-composite: exclude;
@@ -720,7 +740,7 @@
     transform: translateY(-5px) !important;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)) !important;
     border-color: rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(124, 107, 255, 0.08) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(var(--accent-primary-rgb), 0.08) !important;
 }
 
 #admin-drives .drive-card:hover::after {
@@ -746,7 +766,7 @@
     align-items: center;
     justify-content: center;
     letter-spacing: 0.02em;
-    box-shadow: 0 4px 12px rgba(124, 107, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.25);
     flex-shrink: 0;
 }
 
@@ -779,36 +799,7 @@
     line-height: 1.2;
 }
 
-/* Badges refinement */
-#admin-drives .badge--active,
-#admin-drives .badge--blocked {
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    padding: 3px 8px !important;
-    border-radius: 6px !important;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 20px;
-    border-width: 1px;
-    border-style: solid;
-    flex-shrink: 0;
-    line-height: 1 !important;
-}
 
-#admin-drives .badge--active {
-    background: rgba(61, 220, 151, 0.06) !important;
-    color: var(--good) !important;
-    border-color: rgba(61, 220, 151, 0.2) !important;
-}
-
-#admin-drives .badge--blocked {
-    background: rgba(255, 90, 122, 0.06) !important;
-    color: var(--bad) !important;
-    border-color: rgba(255, 90, 122, 0.2) !important;
-}
 
 /* Drive card body content */
 #admin-drives .drive-card__body {
@@ -928,26 +919,26 @@
 
 #admin-drives .btn-action--toggle:hover {
     color: var(--good) !important;
-    border-color: rgba(61, 220, 151, 0.35) !important;
-    background: rgba(61, 220, 151, 0.06) !important;
+    border-color: rgba(var(--color-success-rgb), 0.35) !important;
+    background: rgba(var(--color-success-rgb), 0.06) !important;
 }
 
 #admin-drives .btn-action--toggle[title*="Close"]:hover {
     color: var(--bad) !important;
-    border-color: rgba(255, 90, 122, 0.35) !important;
-    background: rgba(255, 90, 122, 0.06) !important;
+    border-color: rgba(var(--color-danger-rgb), 0.35) !important;
+    background: rgba(var(--color-danger-rgb), 0.06) !important;
 }
 
 #admin-drives .btn-action--edit:hover {
     color: var(--blue) !important;
-    border-color: rgba(102, 167, 255, 0.35) !important;
-    background: rgba(102, 167, 255, 0.06) !important;
+    border-color: rgba(var(--accent-primary-rgb), 0.35) !important;
+    background: rgba(var(--accent-primary-rgb), 0.06) !important;
 }
 
 #admin-drives .btn-action--delete:hover {
     color: var(--bad) !important;
-    border-color: rgba(255, 90, 122, 0.35) !important;
-    background: rgba(255, 90, 122, 0.06) !important;
+    border-color: rgba(var(--color-danger-rgb), 0.35) !important;
+    background: rgba(var(--color-danger-rgb), 0.06) !important;
 }
 
 /* ====================================================
@@ -1129,8 +1120,8 @@
     gap: 8px;
 }
 .sd-action-buttons-group button {
-    border-color: rgba(255,90,122,0.3);
-    color: #ff5a7a;
+    border-color: rgba(var(--color-danger-rgb),0.3);
+    color: var(--color-danger);
     border-radius: 10px;
 }
 .sd-action-buttons-group button.btn--danger {
@@ -1430,8 +1421,8 @@
     transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease !important;
 }
 .clickable-card:hover {
-    border-color: rgba(124, 107, 255, 0.4) !important;
-    background: rgba(124, 107, 255, 0.05) !important;
+    border-color: rgba(var(--accent-primary-rgb), 0.4) !important;
+    background: rgba(var(--accent-primary-rgb), 0.05) !important;
 }
 .clickable-card:active {
     transform: scale(0.97) !important;
@@ -1505,7 +1496,7 @@
 
 /* Unified Light Mode Compatibility Overrides */
 body.theme-light {
-  --ring: 0 0 0 3px rgba(124, 107, 255, 0.25);
+  --ring: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.25);
 }
 
 body.theme-light .sidebar {

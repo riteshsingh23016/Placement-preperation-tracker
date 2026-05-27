@@ -30,8 +30,8 @@
   background: rgba(255, 255, 255, 0.05);
 }
 .collection.is-active {
-  border-color: rgba(124, 107, 255, 0.22);
-  background: rgba(124, 107, 255, 0.10);
+  border-color: rgba(var(--accent-primary-rgb), 0.22);
+  background: rgba(var(--accent-primary-rgb), 0.10);
   color: rgba(255, 255, 255, 0.90);
 }
 .collection svg {
@@ -116,8 +116,8 @@
 
 .collection--good:hover, 
 .collection--good.is-active {
-  border-color: rgba(61, 220, 151, 0.35) !important;
-  background: rgba(61, 220, 151, 0.08) !important;
+  border-color: rgba(var(--color-success-rgb), 0.35) !important;
+  background: rgba(var(--color-success-rgb), 0.08) !important;
 }
 .collection--good i {
   color: var(--good);
@@ -125,8 +125,8 @@
 
 .collection--blue:hover, 
 .collection--blue.is-active {
-  border-color: rgba(102, 167, 255, 0.35) !important;
-  background: rgba(102, 167, 255, 0.08) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.35) !important;
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
 }
 .collection--blue i {
   color: var(--blue);
@@ -134,8 +134,8 @@
 
 .collection--purple:hover, 
 .collection--purple.is-active {
-  border-color: rgba(176, 107, 255, 0.35) !important;
-  background: rgba(176, 107, 255, 0.08) !important;
+  border-color: rgba(var(--accent-secondary-rgb), 0.35) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.08) !important;
 }
 .collection--purple i {
   color: var(--purple);
@@ -143,8 +143,8 @@
 
 .collection--amber:hover, 
 .collection--amber.is-active {
-  border-color: rgba(255, 204, 102, 0.35) !important;
-  background: rgba(255, 204, 102, 0.08) !important;
+  border-color: rgba(var(--color-warning-rgb), 0.35) !important;
+  background: rgba(var(--color-warning-rgb), 0.08) !important;
 }
 .collection--amber i {
   color: var(--warn);
@@ -152,34 +152,14 @@
 
 .collection--bad:hover, 
 .collection--bad.is-active {
-  border-color: rgba(255, 90, 122, 0.35) !important;
-  background: rgba(255, 90, 122, 0.08) !important;
+  border-color: rgba(var(--color-danger-rgb), 0.35) !important;
+  background: rgba(var(--color-danger-rgb), 0.08) !important;
 }
 .collection--bad i {
   color: var(--bad);
 }
 
-/* Badge variations */
-.badge--blue {
-  border-color: rgba(102, 167, 255, 0.25);
-  background: rgba(102, 167, 255, 0.10);
-  color: rgba(204, 224, 255, 0.92);
-}
-.badge--purple {
-  border-color: rgba(176, 107, 255, 0.25);
-  background: rgba(176, 107, 255, 0.10);
-  color: rgba(235, 204, 255, 0.92);
-}
-.badge--amber {
-  border-color: rgba(255, 204, 102, 0.25);
-  background: rgba(255, 204, 102, 0.10);
-  color: rgba(255, 240, 204, 0.92);
-}
-.badge--bad {
-  border-color: rgba(255, 90, 122, 0.25);
-  background: rgba(255, 90, 122, 0.10);
-  color: rgba(255, 204, 214, 0.92);
-}
+
 
 /* Note card left border color accents */
 .noteCard {
@@ -187,19 +167,19 @@
   transition: transform 160ms ease, border-color 160ms ease, border-left-color 160ms ease, background 160ms ease;
 }
 .noteCard--good {
-  border-left: 3px solid rgba(61, 220, 151, 0.6) !important;
+  border-left: 3px solid rgba(var(--color-success-rgb), 0.6) !important;
 }
 .noteCard--blue {
-  border-left: 3px solid rgba(102, 167, 255, 0.6) !important;
+  border-left: 3px solid rgba(var(--accent-primary-rgb), 0.6) !important;
 }
 .noteCard--purple {
-  border-left: 3px solid rgba(176, 107, 255, 0.6) !important;
+  border-left: 3px solid rgba(var(--accent-secondary-rgb), 0.6) !important;
 }
 .noteCard--amber {
-  border-left: 3px solid rgba(255, 204, 102, 0.6) !important;
+  border-left: 3px solid rgba(var(--color-warning-rgb), 0.6) !important;
 }
 .noteCard--bad {
-  border-left: 3px solid rgba(255, 90, 122, 0.6) !important;
+  border-left: 3px solid rgba(var(--color-danger-rgb), 0.6) !important;
 }
 .noteCard--muted {
   border-left: 3px solid rgba(255, 255, 255, 0.2) !important;
@@ -207,9 +187,9 @@
 
 /* Pinned note card visual glow & accent */
 .noteCard.noteCard--pinned {
-  border-color: rgba(102, 167, 255, 0.3) !important;
-  box-shadow: 0 4px 20px rgba(102, 167, 255, 0.08) !important;
-  background: linear-gradient(180deg, rgba(102, 167, 255, 0.05), rgba(255, 255, 255, 0.03)) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.3) !important;
+  box-shadow: 0 4px 20px rgba(var(--accent-primary-rgb), 0.08) !important;
+  background: linear-gradient(180deg, rgba(var(--accent-primary-rgb), 0.05), rgba(255, 255, 255, 0.03)) !important;
 }
 
 /* Pin button styling */

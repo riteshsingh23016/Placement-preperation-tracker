@@ -42,9 +42,9 @@
   border-radius: 16px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(124, 107, 255, 0.4);
-  background: linear-gradient(135deg, rgba(124, 107, 255, 0.25), rgba(79, 227, 255, 0.15));
-  box-shadow: 0 12px 32px rgba(124, 107, 255, 0.2);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.4);
+  background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 0.25), rgba(var(--color-info-rgb), 0.15));
+  box-shadow: 0 12px 32px rgba(var(--accent-primary-rgb), 0.2);
 }
 .brandmark__icon svg {
   width: 28px;
@@ -109,7 +109,7 @@
   background: rgba(255, 255, 255, 0.04);
 }
 .bullet svg {
-  color: rgba(124, 107, 255, 0.95);
+  color: rgba(var(--accent-primary-rgb), 0.95);
   width: 22px;
   height: 22px;
 }
@@ -210,9 +210,9 @@
   transition: all 0.2s ease;
 }
 .field__control:focus-within {
-  border-color: rgba(124, 107, 255, 0.6);
-  background: rgba(124, 107, 255, 0.05);
-  box-shadow: 0 0 0 4px rgba(124, 107, 255, 0.1);
+  border-color: rgba(var(--accent-primary-rgb), 0.6);
+  background: rgba(var(--accent-primary-rgb), 0.05);
+  box-shadow: 0 0 0 4px rgba(var(--accent-primary-rgb), 0.1);
 }
 .field__icon {
   opacity: 0.5;
@@ -223,7 +223,7 @@
 }
 .field__control:focus-within .field__icon {
   opacity: 1;
-  color: rgba(124, 107, 255, 1);
+  color: rgba(var(--accent-primary-rgb), 1);
 }
 .input {
   flex: 1;
@@ -258,13 +258,13 @@
 .checkbox input {
   width: 16px;
   height: 16px;
-  accent-color: rgba(124, 107, 255, 1);
+  accent-color: rgba(var(--accent-primary-rgb), 1);
   cursor: pointer;
 }
 
 .link {
   font-size: 14px;
-  color: rgba(124, 107, 255, 0.9);
+  color: rgba(var(--accent-primary-rgb), 0.9);
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -281,8 +281,8 @@
   font-weight: 600;
   border-radius: 14px;
   margin-top: 12px;
-  background: linear-gradient(135deg, rgba(124, 107, 255, 1), rgba(90, 70, 255, 1));
-  box-shadow: 0 4px 14px rgba(124, 107, 255, 0.4);
+  background: linear-gradient(135deg, rgba(var(--accent-primary-rgb), 1), rgba(90, 70, 255, 1));
+  box-shadow: 0 4px 14px rgba(var(--accent-primary-rgb), 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -293,7 +293,7 @@
   transition: all 0.2s ease;
 }
 .btn--primary:hover {
-  box-shadow: 0 6px 20px rgba(124, 107, 255, 0.6);
+  box-shadow: 0 6px 20px rgba(var(--accent-primary-rgb), 0.6);
   transform: translateY(-1px);
 }
 
@@ -414,7 +414,7 @@
 
 .role-card:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(124, 107, 255, 0.4);
+  border-color: rgba(var(--accent-primary-rgb), 0.4);
   transform: translateY(-2px);
 }
 
@@ -424,7 +424,7 @@
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: rgba(124, 107, 255, 0.15);
+  background: rgba(var(--accent-primary-rgb), 0.15);
   color: var(--indigo);
   transition: all 0.3s ease;
 }

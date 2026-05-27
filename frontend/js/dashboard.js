@@ -66,11 +66,11 @@ function showEmptyState(canvasId, title, text) {
  * Initialize or update charts
  */
 function renderCharts(data) {
-  const indigo = getCssVar("--indigo") || "#7c6bff";
-  const blue = getCssVar("--blue") || "#66a7ff";
-  const cyan = getCssVar("--cyan") || "#4fe3ff";
-  const good = getCssVar("--good") || "#3ddc97";
-  const bad = getCssVar("--bad") || "#ff5a7a";
+  const indigo = getCssVar("--indigo") || "#14b8a6";
+  const blue = getCssVar("--blue") || "#0d9488";
+  const cyan = getCssVar("--cyan") || "#06b6d4";
+  const good = getCssVar("--good") || "#10b981";
+  const bad = getCssVar("--bad") || "#ef4444";
   const textMuted = getCssVar("--muted") || "rgba(255,255,255,0.7)";
   
   const chartOptions = {
