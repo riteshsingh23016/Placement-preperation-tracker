@@ -120,7 +120,7 @@
 
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
+  --text-muted: #475569;
 
   /* Status Colors */
   --color-success: #059669;
@@ -215,6 +215,13 @@ body.theme-light {
 .theme-light .modal__footer {
   background: rgba(255, 255, 255, 0.75) !important;
   border-top: 1px solid var(--stroke) !important;
+}
+
+.theme-light .mobile-close-sidebar {
+  color: var(--text-muted) !important;
+}
+.theme-light .mobile-close-sidebar:hover {
+  color: var(--text-primary) !important;
 }
 
 *,
@@ -1003,6 +1010,22 @@ body.is-mobile-nav-open .sidebarOverlay {
   .search {
     width: min(380px, 44vw);
   }
+  .mobile-close-sidebar {
+    display: inline-grid !important;
+    border: none !important;
+    background: transparent !important;
+    color: var(--text-muted) !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    place-items: center !important;
+    transition: color 0.2s ease !important;
+    z-index: 100000;
+  }
+  .mobile-close-sidebar:hover {
+    color: #fff !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1081,7 +1104,8 @@ body.is-mobile-nav-open .sidebarOverlay {
     width: 100% !important;
     text-align: center !important;
   }
-  .pill__text {
+  .pill__text,
+  .dropdown-chevron {
     display: none !important;
   }
   .pill {
