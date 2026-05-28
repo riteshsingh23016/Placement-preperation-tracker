@@ -66,8 +66,8 @@
   gap: 6px;
   padding: 6px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-default);
+  background: var(--surface2);
 }
 .segmented__btn {
   border: 0;
@@ -112,7 +112,7 @@
   place-items: center;
   border: 1px solid rgba(var(--accent-primary-rgb), 0.22);
   background: rgba(var(--accent-primary-rgb), 0.08);
-  color: var(--indigo);
+  color: var(--accent-primary);
   transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
 }
 .qa:hover .qa__icon {
@@ -152,8 +152,8 @@
   gap: 12px;
   padding: 12px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-default);
+  background: var(--surface2);
   transition: transform 160ms ease, border-color 160ms ease;
 }
 .activity__item:hover {
@@ -211,8 +211,8 @@
   align-items: center;
   padding: 10px 12px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-default);
+  background: var(--surface2);
   cursor: pointer;
   transition: background 160ms ease;
 }
@@ -255,23 +255,23 @@
   padding: 10px 12px;
   margin-bottom: 8px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-default);
+  background: var(--surface2);
 }
 
 .checklist__input {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-default);
+  background: var(--surface2);
   padding: 10px 12px;
   border-radius: 10px;
-  color: white;
+  color: var(--text);
   outline: none;
   font-size: 14px;
 }
 
 .checklist__input:focus {
-  border-color: var(--blue);
+  border-color: var(--accent-primary);
 }
 
 .checklist__actions {
@@ -296,7 +296,7 @@
   gap: 10px;
 }
 .ats-upload-zone:hover, .ats-upload-zone.is-dragover {
-  border-color: var(--blue);
+  border-color: var(--accent-primary);
   background: rgba(var(--accent-primary-rgb), 0.05);
 }
 .ats-upload-zone__icon {
@@ -329,7 +329,7 @@
   position: absolute;
   inset: 0;
   border: 3px solid rgba(255, 255, 255, 0.06);
-  border-top-color: var(--blue);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -339,7 +339,7 @@
 .ats-scanner__icon {
   width: 32px;
   height: 32px;
-  color: var(--blue);
+  color: var(--accent-primary);
   animation: pulse 1.6s infinite ease-in-out;
 }
 @keyframes pulse {
@@ -364,7 +364,7 @@
 .ats-scanner__progress-bar {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
   border-radius: 99px;
   transition: width 150ms ease-out;
 }

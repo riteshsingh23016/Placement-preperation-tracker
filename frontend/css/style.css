@@ -196,6 +196,27 @@ body.theme-light {
   border-color: var(--stroke2);
 }
 
+.theme-light .user-dropdown {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--stroke) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+.theme-light .user-dropdown__item {
+  color: var(--text-secondary) !important;
+}
+.theme-light .user-dropdown__item:hover {
+  background: var(--surface2) !important;
+  color: var(--text-primary) !important;
+}
+.theme-light .user-dropdown__divider {
+  background: var(--stroke) !important;
+}
+
+.theme-light .modal__footer {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-top: 1px solid var(--stroke) !important;
+}
+
 *,
 *::before,
 *::after {
@@ -615,6 +636,7 @@ input {
   display: flex;
   align-items: center;
   gap: 12px;
+  position: relative;
 }
 .avatar {
   width: 40px;
@@ -731,6 +753,7 @@ input {
   padding: 8px 14px;
   border-radius: 999px;
   transition: border-color 160ms ease;
+  position: relative;
 }
 .pill__dot, .online-dot {
   width: 9px;
@@ -1238,7 +1261,7 @@ body.is-mobile-nav-open .sidebarOverlay {
 .modalOverlay {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 1000000;
   display: grid;
   place-items: center;
   padding: 20px;

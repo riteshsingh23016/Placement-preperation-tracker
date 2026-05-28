@@ -42,7 +42,7 @@
 
 .toast--success .toast__icon { color: var(--good); }
 .toast--error .toast__icon { color: var(--bad); }
-.toast--info .toast__icon { color: var(--blue); }
+.toast--info .toast__icon { color: var(--accent-primary); }
 .toast--warning .toast__icon { color: var(--warn); }
 
 .toast__content {
@@ -138,7 +138,7 @@
 .nc-list .empty-state i {
   width: 48px;
   height: 48px;
-  color: var(--indigo);
+  color: var(--accent-primary);
   opacity: 0.8;
   margin-bottom: 8px;
   background: rgba(var(--accent-primary-rgb), 0.1);
@@ -196,8 +196,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--indigo);
-  box-shadow: 0 0 10px var(--indigo);
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-primary);
 }
 
 .nc-item__icon {
@@ -303,7 +303,7 @@
 }
 
 .nc-item.priority-low {
-  border-left: 3px solid var(--blue) !important;
+  border-left: 3px solid var(--accent-primary) !important;
   background: linear-gradient(90deg, rgba(var(--accent-primary-rgb), 0.02), rgba(var(--accent-primary-rgb), 0.01) 40px, transparent) !important;
 }
 .nc-item.priority-low:hover {
@@ -323,7 +323,7 @@
   border: 1px solid rgba(var(--color-warning-rgb), 0.15);
 }
 .nc-item__icon.icon--priority-low {
-  color: var(--blue);
+  color: var(--accent-primary);
   background: rgba(var(--accent-primary-rgb), 0.1);
   border: 1px solid rgba(var(--accent-primary-rgb), 0.15);
 }
@@ -388,7 +388,7 @@
 .nc-item__open-btn {
   background: rgba(var(--accent-primary-rgb), 0.12);
   border: 1px solid rgba(var(--accent-primary-rgb), 0.2);
-  color: var(--indigo);
+  color: var(--accent-primary);
   font-size: 11px;
   font-weight: 750;
   padding: 4px 10px;
@@ -402,9 +402,9 @@
 }
 
 .nc-item__open-btn:hover {
-  background: var(--indigo);
+  background: var(--accent-primary);
   color: #fff;
-  border-color: var(--indigo);
+  border-color: var(--accent-primary);
   transform: translateY(-1px);
 }
 
@@ -432,4 +432,80 @@
     min-width: 0;
     width: 100%;
   }
+}
+
+/* ====================================================
+   LIGHT MODE THEME OVERRIDES
+   ==================================================== */
+body.theme-light .toast {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--stroke) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+body.theme-light .toast__title {
+  color: var(--text-primary) !important;
+}
+body.theme-light .toast__message {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .nc-panel {
+  background: var(--bg-surface) !important;
+  border: 1px solid var(--stroke) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+body.theme-light .nc-header {
+  background: var(--surface2) !important;
+  border-bottom: 1px solid var(--stroke) !important;
+}
+body.theme-light .nc-header__title {
+  color: var(--text-primary) !important;
+}
+body.theme-light .nc-list .empty-state__title {
+  color: var(--text-primary) !important;
+}
+body.theme-light .nc-item {
+  border-bottom-color: var(--stroke) !important;
+}
+body.theme-light .nc-item:hover {
+  background: var(--surface2) !important;
+  border-color: var(--stroke2) !important;
+}
+body.theme-light .nc-item.is-unread {
+  background: rgba(var(--accent-primary-rgb), 0.06) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.12) !important;
+}
+body.theme-light .nc-item__title {
+  color: var(--text-primary) !important;
+}
+body.theme-light .nc-item__desc {
+  color: var(--text-secondary) !important;
+}
+body.theme-light .nc-item__time {
+  color: var(--text-muted) !important;
+}
+body.theme-light .nc-item.is-announcement {
+  background: var(--surface2) !important;
+}
+body.theme-light .countdown {
+  background: var(--bg-base) !important;
+  color: var(--text-secondary) !important;
+}
+body.theme-light .countdown--urgent {
+  background: rgba(var(--color-danger-rgb), 0.1) !important;
+  color: var(--color-danger) !important;
+  border-color: rgba(var(--color-danger-rgb), 0.15) !important;
+}
+body.theme-light .countdown--soon {
+  background: rgba(var(--color-warning-rgb), 0.1) !important;
+  color: var(--color-warning) !important;
+  border-color: rgba(var(--color-warning-rgb), 0.15) !important;
+}
+body.theme-light .countdown--overdue {
+  background: rgba(var(--color-danger-rgb), 0.15) !important;
+  color: var(--color-danger) !important;
+  border-color: rgba(var(--color-danger-rgb), 0.25) !important;
+}
+body.theme-light .badge-count {
+  border-color: var(--bg-surface) !important;
 }

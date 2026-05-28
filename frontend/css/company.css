@@ -200,7 +200,7 @@
   position: relative; /* Stable container for absolute icon */
   border-radius: var(--radius-lg);
   border: 1px solid var(--stroke);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface2);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
   overflow: hidden;
 }
@@ -208,7 +208,7 @@
 .companyToolbar__search:focus-within {
   border-color: rgba(var(--accent-primary-rgb), 0.45);
   box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.18);
-  background: rgba(255, 255, 255, 0.055);
+  background: var(--surface);
 }
 
 .companyToolbar__search svg {
@@ -1084,17 +1084,277 @@ body.is-page-loading {
   }
 }
 select {
-  background: #1b1f35 !important;
-  color: #ffffff !important;
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
 }
 
 select option {
-  background: #1b1f35 !important;
-  color: #ffffff !important;
+  background: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
 }
 
-input,
-textarea,
-select {
+body:not(.theme-light) input,
+body:not(.theme-light) textarea,
+body:not(.theme-light) select {
   color-scheme: dark;
+}
+body.theme-light input,
+body.theme-light textarea,
+body.theme-light select {
+  color-scheme: light;
+}
+
+/* ====================================================
+   LIGHT MODE THEME OVERRIDES
+   ==================================================== */
+body.theme-light .breadcrumbs {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .breadcrumbs__current {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .companyHeader__title {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .companyHeader__desc {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .companyStat__label {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .companyStat__value {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .companyGrid__aside {
+  border-left-color: var(--stroke) !important;
+}
+
+body.theme-light .companyTable thead th {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .companyTable tbody td {
+  background: var(--surface2) !important;
+  border-top-color: var(--stroke) !important;
+  border-bottom-color: var(--stroke) !important;
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .companyTable tbody tr td:first-child {
+  border-left-color: var(--stroke) !important;
+}
+
+body.theme-light .companyTable tbody tr td:last-child {
+  border-right-color: var(--stroke) !important;
+}
+
+body.theme-light .companyTable tbody tr:hover td {
+  background: rgba(var(--accent-primary-rgb), 0.04) !important;
+  border-top-color: var(--accent-primary) !important;
+  border-left-color: var(--accent-primary) !important;
+  border-right-color: var(--accent-primary) !important;
+}
+
+body.theme-light .companyLogo {
+  border-color: var(--stroke) !important;
+  background: var(--bg-base) !important;
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .statusSelectWrap {
+  background: var(--bg-base) !important;
+}
+
+body.theme-light .statusSelect {
+  border-color: var(--stroke) !important;
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.55)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+body.theme-light .miniMenu__panel {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .miniMenu__item {
+  border-color: var(--stroke) !important;
+  background: var(--bg-base) !important;
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .miniMenu__item:hover {
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
+  border-color: var(--accent-primary) !important;
+}
+
+body.theme-light .miniMenu__hint {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .deleteBody {
+  background: var(--bg-base) !important;
+  border-color: var(--stroke) !important;
+}
+
+body.theme-light .deleteBody__row {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+}
+
+body.theme-light .deleteBody__label {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .deleteBody__value {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .deleteBody__danger {
+  color: var(--color-danger) !important;
+}
+
+body.theme-light .iconAction {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .iconAction:hover {
+  border-color: var(--accent-primary) !important;
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
+  color: var(--accent-primary) !important;
+}
+
+body.theme-light .iconAction--danger:hover {
+  border-color: var(--color-danger) !important;
+  background: rgba(var(--color-danger-rgb), 0.08) !important;
+  color: var(--color-danger) !important;
+}
+
+body.theme-light .companyEmpty__icon {
+  border-color: var(--stroke) !important;
+  background: var(--bg-base) !important;
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .companyEmpty__text {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .recentPanel {
+  box-shadow: var(--shadow-md) !important;
+  background: var(--surface) !important;
+}
+
+body.theme-light .recentItem {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+}
+
+body.theme-light .recentItem:hover {
+  border-color: var(--stroke2) !important;
+  background: var(--bg-base) !important;
+}
+
+body.theme-light .recentItem__role {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .recentItem__time {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .recentItem__reminder {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .recentEmpty {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .viewModalLogo {
+  border-color: var(--stroke) !important;
+  background: var(--bg-base) !important;
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .viewModalBody {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .viewRow {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+}
+
+body.theme-light .viewRow__k {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .viewRow__v {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .companyToolbar__toggle {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+}
+body.theme-light .companyToolbar__toggle:hover {
+  border-color: var(--accent-primary) !important;
+  background: rgba(var(--accent-primary-rgb), 0.05) !important;
+}
+body.theme-light .companyToolbar__toggle.is-active {
+  background: rgba(var(--accent-primary-rgb), 0.1) !important;
+  border-color: var(--accent-primary) !important;
+  color: var(--accent-primary) !important;
+}
+
+body.theme-light .companyToolbar__search svg {
+  color: var(--text-muted) !important;
+}
+body.theme-light .companyToolbar__input {
+  color: var(--text-primary) !important;
+}
+body.theme-light .companyToolbar__input::placeholder {
+  color: var(--text-muted) !important;
+}
+body.theme-light .toolbarField__label {
+  color: var(--text-muted) !important;
+}
+body.theme-light .companySelect {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.55)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+body.theme-light .tableTab {
+  color: var(--text-secondary) !important;
+}
+body.theme-light .tableTab:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+body.theme-light .tableTab.is-active {
+  color: #ffffff !important;
+}
+body.theme-light .tableTab__count {
+  border-color: var(--stroke) !important;
+  background: var(--bg-base) !important;
+  color: var(--text-secondary) !important;
+}
+
+@media (max-width: 1200px) {
+  body.theme-light .companyGrid__aside {
+    border-top-color: var(--stroke) !important;
+  }
+}
+@media (max-width: 720px) {
+  body.theme-light .companyToolbar__controls {
+    border-top-color: var(--stroke) !important;
+  }
 }

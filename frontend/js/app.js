@@ -280,7 +280,7 @@ function renderProfileFields(role, data = {}) {
     <label class="modalField">
       <span class="modalField__label">Full Name <span class="req">*</span></span>
       <input class="modalField__input" type="text" name="name" value="${getVal('name')}" required placeholder="Your Name" />
-      <span class="modalField__error" id="errProfileName" style="color: #ff5a7a; font-size: 11px; margin-top: 4px; display: block;"></span>
+      <span class="modalField__error" id="errProfileName" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
     </label>
     <label class="modalField">
       <span class="modalField__label">Email (Readonly)</span>
@@ -470,7 +470,7 @@ function initUserMenu() {
                   <i data-lucide="eye"></i>
                 </button>
               </div>
-              <span class="modalField__error" id="errCurrentPassword" style="color: #ff5a7a; font-size: 11px; margin-top: 4px; display: block;"></span>
+              <span class="modalField__error" id="errCurrentPassword" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
             </label>
             <label class="modalField">
               <span class="modalField__label">New Password <span class="req">*</span></span>
@@ -480,7 +480,7 @@ function initUserMenu() {
                   <i data-lucide="eye"></i>
                 </button>
               </div>
-              <span class="modalField__error" id="errNewPassword" style="color: #ff5a7a; font-size: 11px; margin-top: 4px; display: block;"></span>
+              <span class="modalField__error" id="errNewPassword" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
             </label>
             <label class="modalField">
               <span class="modalField__label">Confirm New Password <span class="req">*</span></span>
@@ -490,7 +490,7 @@ function initUserMenu() {
                   <i data-lucide="eye"></i>
                 </button>
               </div>
-              <span class="modalField__error" id="errConfirmPassword" style="color: #ff5a7a; font-size: 11px; margin-top: 4px; display: block;"></span>
+              <span class="modalField__error" id="errConfirmPassword" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
             </label>
           </div>
           <footer class="modal__footer" style="margin-top: 20px;">

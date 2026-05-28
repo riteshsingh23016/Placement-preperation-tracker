@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             ${student.isBlocked ? 'Unblock' : 'Block'}
                         </button>
                         <button class="btn btn--ghost btn--sm view-student" data-id="${student._id}">View</button>
-                        <button class="btn btn--ghost btn--sm delete-student btn--danger" data-id="${student._id}" style="color: var(--bad); border-color: rgba(255, 90, 122, 0.2);">Delete</button>
+                        <button class="btn btn--ghost btn--sm delete-student btn--danger" data-id="${student._id}" style="color: var(--bad); border-color: rgba(var(--color-danger-rgb), 0.2);">Delete</button>
                     </div>
                 </td>
             </tr>
@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const resumeEl = qs("#sdResume");
         if (resumeEl) {
             if (student.resumeUrl) {
-                resumeEl.innerHTML = `<strong>Resume:</strong> <a href="${student.resumeUrl}" target="_blank" style="color: #7c6cff; text-decoration: underline;">View Resume</a>`;
+                resumeEl.innerHTML = `<strong>Resume:</strong> <a href="${student.resumeUrl}" target="_blank" style="color: var(--accent-primary); text-decoration: underline;">View Resume</a>`;
             } else {
                 resumeEl.innerHTML = `<strong>Resume:</strong> Not provided`;
             }
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const linkedinEl = qs("#sdLinkedIn");
         if (linkedinEl) {
             if (student.linkedinUrl) {
-                linkedinEl.innerHTML = `<strong>LinkedIn:</strong> <a href="${student.linkedinUrl}" target="_blank" style="color: #7c6cff; text-decoration: underline;">LinkedIn Profile</a>`;
+                linkedinEl.innerHTML = `<strong>LinkedIn:</strong> <a href="${student.linkedinUrl}" target="_blank" style="color: var(--accent-primary); text-decoration: underline;">LinkedIn Profile</a>`;
             } else {
                 linkedinEl.innerHTML = `<strong>LinkedIn:</strong> Not provided`;
             }
@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const githubEl = qs("#sdGitHub");
         if (githubEl) {
             if (student.githubUrl) {
-                githubEl.innerHTML = `<strong>GitHub:</strong> <a href="${student.githubUrl}" target="_blank" style="color: #7c6cff; text-decoration: underline;">GitHub Profile</a>`;
+                githubEl.innerHTML = `<strong>GitHub:</strong> <a href="${student.githubUrl}" target="_blank" style="color: var(--accent-primary); text-decoration: underline;">GitHub Profile</a>`;
             } else {
                 githubEl.innerHTML = `<strong>GitHub:</strong> Not provided`;
             }
@@ -419,8 +419,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const blockBtn = qs("#sdBlockBtn");
         if (blockBtn) {
             blockBtn.textContent = student.isBlocked ? "Unblock Student" : "Block Student";
-            blockBtn.style.color = student.isBlocked ? "#10b981" : "#ff5a7a";
-            blockBtn.style.borderColor = student.isBlocked ? "rgba(16, 185, 129, 0.3)" : "rgba(255, 90, 122, 0.3)";
+            blockBtn.style.color = student.isBlocked ? "var(--color-success)" : "var(--color-danger)";
+            blockBtn.style.borderColor = student.isBlocked ? "rgba(var(--color-success-rgb), 0.3)" : "rgba(var(--color-danger-rgb), 0.3)";
             
             blockBtn.onclick = async () => {
                 const res = await adminApi.patch(`/users/${studentId}/block`);
@@ -430,8 +430,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     const updatedIsBlocked = res.data.isBlocked;
                     qs("#sdStatus").textContent = updatedIsBlocked ? "Blocked" : "Active";
                     blockBtn.textContent = updatedIsBlocked ? "Unblock Student" : "Block Student";
-                    blockBtn.style.color = updatedIsBlocked ? "#10b981" : "#ff5a7a";
-                    blockBtn.style.borderColor = updatedIsBlocked ? "rgba(16, 185, 129, 0.3)" : "rgba(255, 90, 122, 0.3)";
+                    blockBtn.style.color = updatedIsBlocked ? "var(--color-success)" : "var(--color-danger)";
+                    blockBtn.style.borderColor = updatedIsBlocked ? "rgba(var(--color-success-rgb), 0.3)" : "rgba(var(--color-danger-rgb), 0.3)";
                 }
             };
         }

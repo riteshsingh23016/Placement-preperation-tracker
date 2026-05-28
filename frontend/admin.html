@@ -589,20 +589,20 @@
     <!-- Delete Confirmation Modal -->
     <div id="deleteConfirmModal" class="admin-modal-overlay" style="display: none;">
         <div class="modal modal--sm glass" style="max-width: 440px;">
-            <div class="modal__glow" style="background: radial-gradient(300px 100px at 50% 0%, rgba(255, 90, 122, 0.25), transparent 60%);" aria-hidden="true"></div>
+            <div class="modal__glow" style="background: radial-gradient(300px 100px at 50% 0%, rgba(var(--color-danger-rgb), 0.25), transparent 60%);" aria-hidden="true"></div>
             <header class="modal__header" style="flex-direction: column; align-items: center; text-align: center; gap: 12px; margin-bottom: 20px;">
-                <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 90, 122, 0.12); border: 1px solid rgba(255, 90, 122, 0.25); display: grid; place-items: center; color: var(--bad); margin-bottom: 6px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(var(--color-danger-rgb), 0.12); border: 1px solid rgba(var(--color-danger-rgb), 0.25); display: grid; place-items: center; color: var(--color-danger); margin-bottom: 6px;">
                     <i data-lucide="alert-triangle" style="width: 28px; height: 28px;"></i>
                 </div>
-                <h3 class="modal__title" style="font-size: 20px; font-weight: 800; color: #fff;">Delete Student?</h3>
-                <p class="modal__subtitle" style="font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, 0.65);">
-                    This action is <strong style="color: #ff5a7a;">permanent and irreversible</strong>.<br>
+                <h3 class="modal__title" style="font-size: 20px; font-weight: 800; color: var(--text-primary);">Delete Student?</h3>
+                <p class="modal__subtitle" style="font-size: 13px; line-height: 1.5; color: var(--text-secondary);">
+                    This action is <strong style="color: var(--color-danger);">permanent and irreversible</strong>.<br>
                     It will cascadingly delete the student's entire profile, job applications, notes, and custom folders.
                 </p>
             </header>
             <footer class="modal__footer" style="justify-content: center; gap: 12px; border-top: none; padding-top: 0; margin-top: 0;">
                 <button type="button" class="btn btn--ghost" id="cancelDeleteBtn" style="border-radius: 12px;">Cancel</button>
-                <button type="button" class="btn btn--primary glowBtn" id="confirmDeleteBtn" style="background: linear-gradient(135deg, #ff5a7a, #e11d48); border: none; box-shadow: 0 8px 24px rgba(255, 90, 122, 0.35); border-radius: 12px;">
+                <button type="button" class="btn btn--primary glowBtn" id="confirmDeleteBtn" style="background: linear-gradient(135deg, var(--color-danger), #b91c1c); border: none; box-shadow: 0 8px 24px rgba(var(--color-danger-rgb), 0.35); border-radius: 12px;">
                     <i data-lucide="trash-2"></i>
                     <span>Delete Account</span>
                 </button>

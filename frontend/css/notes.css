@@ -129,7 +129,7 @@
   background: rgba(var(--accent-primary-rgb), 0.08) !important;
 }
 .collection--blue i {
-  color: var(--blue);
+  color: var(--accent-primary);
 }
 
 .collection--purple:hover, 
@@ -197,10 +197,10 @@
   transition: transform 120ms ease, color 120ms ease !important;
 }
 .pinBtn.is-pinned {
-  color: var(--blue) !important;
+  color: var(--accent-primary) !important;
 }
 .pinBtn:hover {
-  color: var(--blue) !important;
+  color: var(--accent-primary) !important;
   transform: scale(1.1);
 }
 
@@ -221,6 +221,103 @@
   .noteGrid {
     padding-bottom: 24px !important; /* normal padding since button is in topbar */
   }
+}
+
+/* ====================================================
+   LIGHT MODE THEME OVERRIDES
+   ==================================================== */
+body.theme-light .collection {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .collection:hover {
+  background: var(--surface2) !important;
+  border-color: var(--stroke2) !important;
+}
+
+body.theme-light .collection.is-active {
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
+  border-color: var(--accent-primary) !important;
+  color: var(--accent-primary) !important;
+}
+
+body.theme-light .collection--muted:hover,
+body.theme-light .collection--muted.is-active {
+  border-color: var(--stroke2) !important;
+  background: var(--surface2) !important;
+}
+
+body.theme-light .collection--good:hover,
+body.theme-light .collection--good.is-active {
+  border-color: var(--color-success) !important;
+  background: rgba(var(--color-success-rgb), 0.08) !important;
+}
+
+body.theme-light .collection--blue:hover,
+body.theme-light .collection--blue.is-active {
+  border-color: var(--accent-primary) !important;
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
+}
+
+body.theme-light .collection--purple:hover,
+body.theme-light .collection--purple.is-active {
+  border-color: var(--accent-secondary) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.08) !important;
+}
+
+body.theme-light .collection--amber:hover,
+body.theme-light .collection--amber.is-active {
+  border-color: var(--color-warning) !important;
+  background: rgba(var(--color-warning-rgb), 0.08) !important;
+}
+
+body.theme-light .collection--bad:hover,
+body.theme-light .collection--bad.is-active {
+  border-color: var(--color-danger) !important;
+  background: rgba(var(--color-danger-rgb), 0.08) !important;
+}
+
+body.theme-light .noteCard {
+  border-color: var(--stroke) !important;
+  background: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .noteCard:hover {
+  background: var(--surface2) !important;
+  border-color: var(--stroke2) !important;
+}
+
+body.theme-light .noteCard.is-loading .noteCard__title,
+body.theme-light .noteCard.is-loading .noteCard__excerpt {
+  background: var(--border-default) !important;
+}
+
+body.theme-light .noteCard__time {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .noteCard__title {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .noteCard__excerpt {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .noteCard--muted {
+  border-left: 3px solid var(--stroke2) !important;
+}
+
+body.theme-light .noteCard.noteCard--pinned {
+  border-color: rgba(var(--accent-primary-rgb), 0.35) !important;
+  background: linear-gradient(180deg, rgba(var(--accent-primary-rgb), 0.04), var(--bg-surface)) !important;
+}
+
+body.theme-light .noteCard__date {
+  color: var(--text-muted) !important;
 }
 
 

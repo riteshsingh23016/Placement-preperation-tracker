@@ -250,7 +250,7 @@ function renderNotes() {
       });
 
   if (filtered.length === 0) {
-    container.innerHTML = "<div style='grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--color-text-muted); opacity: 0.7;'>No notes found in this collection. Create your first note!</div>";
+    container.innerHTML = "<div style='grid-column: 1 / -1; padding: 2rem; text-align: center; color: var(--text-muted); opacity: 0.7;'>No notes found in this collection. Create your first note!</div>";
     return;
   }
 

@@ -92,13 +92,13 @@
 }
 
 /* Stat card icon colors using design system variables */
-.stat-card__icon.blue { background: rgba(var(--accent-primary-rgb), 0.15); color: var(--blue); }
-.stat-card__icon.purple { background: rgba(var(--accent-secondary-rgb), 0.15); color: var(--purple); }
+.stat-card__icon.blue { background: rgba(var(--accent-primary-rgb), 0.15); color: var(--accent-primary); }
+.stat-card__icon.purple { background: rgba(var(--accent-secondary-rgb), 0.15); color: var(--accent-secondary); }
 .stat-card__icon.green { background: rgba(var(--color-success-rgb), 0.15); color: var(--good); }
 .stat-card__icon.red { background: rgba(var(--color-danger-rgb), 0.15); color: var(--bad); }
 .stat-card__icon.amber { background: rgba(var(--color-warning-rgb), 0.15); color: var(--warn); }
 .stat-card__icon.cyan { background: rgba(var(--color-info-rgb), 0.15); color: var(--cyan); }
-.stat-card__icon.indigo { background: rgba(var(--accent-primary-rgb), 0.15); color: var(--indigo); }
+.stat-card__icon.indigo { background: rgba(var(--accent-primary-rgb), 0.15); color: var(--accent-primary); }
 .stat-card__icon.pink { background: rgba(var(--accent-secondary-rgb), 0.15); color: #ec4899; }
 
 .stat-card__meta {
@@ -382,7 +382,7 @@
 
 .mini-stat.selected .mini-stat__val { color: var(--good); }
 .mini-stat.rejected .mini-stat__val { color: var(--bad); }
-.mini-stat.interview .mini-stat__val { color: var(--blue); }
+.mini-stat.interview .mini-stat__val { color: var(--accent-primary); }
 
 /* Announcements Page Grid Refinements */
 #admin-announcements .drives-grid {
@@ -758,7 +758,7 @@
     width: 44px;
     height: 44px;
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, var(--indigo), var(--purple));
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: #fff;
     font-weight: 700;
     font-size: 15px;
@@ -854,8 +854,8 @@
     text-overflow: ellipsis;
 }
 
-#admin-drives .meta-icon-purple { color: var(--purple); }
-#admin-drives .meta-icon-blue { color: var(--blue); }
+#admin-drives .meta-icon-purple { color: var(--accent-secondary); }
+#admin-drives .meta-icon-blue { color: var(--accent-primary); }
 #admin-drives .meta-icon-cyan { color: var(--cyan); }
 #admin-drives .meta-icon-green { color: var(--good); }
 
@@ -930,7 +930,7 @@
 }
 
 #admin-drives .btn-action--edit:hover {
-    color: var(--blue) !important;
+    color: var(--accent-primary) !important;
     border-color: rgba(var(--accent-primary-rgb), 0.35) !important;
     background: rgba(var(--accent-primary-rgb), 0.06) !important;
 }
@@ -1035,7 +1035,7 @@
     color: var(--subtle);
 }
 .sd-link-chip a {
-    color: var(--indigo);
+    color: var(--accent-primary);
     text-decoration: none;
     font-weight: 600;
 }
@@ -1548,7 +1548,7 @@ body.theme-light .admin-form-group select:focus,
 body.theme-light .sd-notif-inputs input:focus,
 body.theme-light .sd-notif-inputs textarea:focus,
 body.theme-light .sd-notif-controls select:focus {
-  border-color: var(--indigo) !important;
+  border-color: var(--accent-primary) !important;
   box-shadow: var(--ring) !important;
 }
 
@@ -1596,6 +1596,25 @@ body.theme-light .topbar .miniProfile:hover {
     border-color: var(--stroke) !important;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
   }
+}
+
+body.theme-light .sd-modal-subtitle {
+  color: var(--text-muted) !important;
+}
+body.theme-light .sd-section-title {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--stroke) !important;
+}
+body.theme-light .sd-profile-field span {
+  color: var(--text-primary) !important;
+}
+body.theme-light .sd-link-chip {
+  background: var(--surface2) !important;
+  border: 1px solid var(--stroke) !important;
+}
+body.theme-light #studentDetailModal .table-container {
+  border: 1px solid var(--stroke) !important;
+  background: var(--bg-base) !important;
 }
 
 
