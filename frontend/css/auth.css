@@ -469,3 +469,192 @@
   width: 16px;
   height: 16px;
 }
+
+/* ====================================================
+   LIGHT MODE THEME OVERRIDES FOR AUTHENTICATION FLOW
+   ==================================================== */
+body.theme-light .auth__heroTitle {
+  background: linear-gradient(135deg, #0f172a, #334155) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+body.theme-light .auth__heroText {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .bullet {
+  border: 1px solid var(--stroke) !important;
+  background: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .bullet:hover {
+  background: var(--surface2) !important;
+  border-color: var(--stroke2) !important;
+}
+
+body.theme-light .panel {
+  background: #ffffff !important;
+  border: 1px solid var(--stroke) !important;
+  box-shadow: 0 32px 64px rgba(15, 23, 42, 0.12) !important;
+}
+
+body.theme-light .panel__title {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .panel__subtitle {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .auth__tabs {
+  background: rgba(15, 23, 42, 0.03) !important;
+  border: 1px solid var(--stroke) !important;
+}
+
+body.theme-light .auth__tab {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .auth__tab:hover {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .auth__tab.is-active {
+  background: #ffffff !important;
+  color: var(--accent-primary) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+body.theme-light #authContent[data-active-role="student"] .auth__tab.is-active {
+  color: var(--accent-secondary) !important;
+}
+
+body.theme-light .field__label {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .field__control {
+  border: 1px solid var(--stroke2) !important;
+  background: #ffffff !important;
+}
+
+body.theme-light .field__control:focus-within {
+  border-color: var(--accent-primary) !important;
+  background: #ffffff !important;
+  box-shadow: var(--ring) !important;
+}
+
+body.theme-light #authContent[data-active-role="student"] .field__control:focus-within {
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-secondary-rgb), 0.15) !important;
+}
+
+body.theme-light .field__icon {
+  color: var(--text-muted) !important;
+  opacity: 0.72;
+}
+
+body.theme-light .field__control:focus-within .field__icon {
+  color: var(--accent-primary) !important;
+  opacity: 1;
+}
+
+body.theme-light #authContent[data-active-role="student"] .field__control:focus-within .field__icon {
+  color: var(--accent-secondary) !important;
+}
+
+body.theme-light .input {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .input::placeholder {
+  color: rgba(15, 23, 42, 0.4) !important;
+}
+
+body.theme-light .checkbox {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .checkbox input {
+  accent-color: var(--accent-primary) !important;
+}
+
+body.theme-light #authContent[data-active-role="student"] .checkbox input {
+  accent-color: var(--accent-secondary) !important;
+}
+
+body.theme-light .divider {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .divider::before,
+body.theme-light .divider::after {
+  background: var(--stroke) !important;
+}
+
+body.theme-light .btn--secondary {
+  background: #ffffff !important;
+  border: 1px solid var(--stroke2) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .btn--secondary:hover {
+  background: #f8fafc !important;
+  border-color: var(--text-muted) !important;
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .fineprint {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .role-card {
+  border: 1px solid var(--stroke2) !important;
+  background: #ffffff !important;
+}
+
+body.theme-light .role-card:hover {
+  background: rgba(15, 23, 42, 0.02) !important;
+}
+
+body.theme-light .role-card__icon {
+  background: rgba(15, 23, 42, 0.04) !important;
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .role-card--admin:hover .role-card__icon {
+  background: var(--accent-primary) !important;
+  color: #ffffff !important;
+}
+
+body.theme-light .role-card--student:hover .role-card__icon {
+  background: var(--accent-secondary) !important;
+  color: #ffffff !important;
+}
+
+body.theme-light .role-card:hover {
+  border-color: var(--accent-primary) !important;
+}
+
+body.theme-light .role-card.role-card--student:hover {
+  border-color: var(--accent-secondary) !important;
+}
+
+body.theme-light .role-card__title {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light .role-card__text {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .back-btn {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light .back-btn:hover {
+  color: var(--text-primary) !important;
+}

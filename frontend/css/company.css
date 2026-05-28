@@ -1340,6 +1340,12 @@ body.theme-light .tableTab:hover {
   background: rgba(0, 0, 0, 0.03) !important;
 }
 body.theme-light .tableTab.is-active {
+  background: var(--accent-primary) !important;
+  color: #ffffff !important;
+}
+body.theme-light .tableTab.is-active .tableTab__count {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
   color: #ffffff !important;
 }
 body.theme-light .tableTab__count {

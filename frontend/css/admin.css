@@ -1500,35 +1500,36 @@ body.theme-light {
 }
 
 body.theme-light .sidebar {
-  background: rgba(255, 255, 255, 0.4) !important;
+  background: #ffffff !important;
   border-right: 1px solid var(--stroke) !important;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.02) !important;
 }
 
 body.theme-light .sidebarOverlay {
-  background: rgba(241, 245, 249, 0.4) !important;
+  background: rgba(15, 23, 42, 0.15) !important;
 }
 
 body.theme-light .section-title,
 body.theme-light .admin-section-title {
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .admin-modal-overlay {
-  background: rgba(241, 245, 249, 0.8) !important;
+  background: rgba(15, 23, 42, 0.22) !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 body.theme-light .admin-modal-card {
-  background: var(--surface2) !important;
+  background: #ffffff !important;
   border: 1px solid var(--stroke) !important;
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08) !important;
-  color: var(--text) !important;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .admin-modal-header p,
 body.theme-light .admin-form-group label,
 body.theme-light .sd-notif-title-label {
-  color: var(--muted) !important;
+  color: var(--text-secondary) !important;
 }
 
 body.theme-light .admin-form-group input,
@@ -1537,9 +1538,9 @@ body.theme-light .admin-form-group select,
 body.theme-light .sd-notif-inputs input,
 body.theme-light .sd-notif-inputs textarea,
 body.theme-light .sd-notif-controls select {
-  background: var(--bg0) !important;
-  border: 1px solid var(--stroke) !important;
-  color: var(--text) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--stroke2) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .admin-form-group input:focus,
@@ -1550,51 +1551,54 @@ body.theme-light .sd-notif-inputs textarea:focus,
 body.theme-light .sd-notif-controls select:focus {
   border-color: var(--accent-primary) !important;
   box-shadow: var(--ring) !important;
+  background: #ffffff !important;
 }
 
 body.theme-light .admin-control {
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .admin-select {
-  color: var(--text) !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  color: var(--text-primary) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
 
 body.theme-light .admin-reset-btn {
-  background: var(--bg2) !important;
-  border-color: var(--stroke) !important;
-  color: var(--text) !important;
+  background: #ffffff !important;
+  border-color: var(--stroke2) !important;
+  color: var(--text-secondary) !important;
 }
 
 body.theme-light .admin-reset-btn:hover {
-  background: rgba(15, 23, 42, 0.08) !important;
+  background: #f8fafc !important;
+  border-color: var(--text-muted) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .mobile-close-sidebar {
-  color: var(--muted) !important;
+  color: var(--text-muted) !important;
 }
 body.theme-light .mobile-close-sidebar:hover {
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .user-dropdown {
-  background: var(--surface2) !important;
+  background: #ffffff !important;
   border: 1px solid var(--stroke) !important;
   box-shadow: var(--shadow-md) !important;
-  color: var(--text) !important;
+  color: var(--text-primary) !important;
 }
 
 body.theme-light .topbar .miniProfile:hover {
-  border-color: var(--stroke) !important;
+  border-color: var(--stroke2) !important;
   background-color: rgba(15, 23, 42, 0.04) !important;
 }
 
 @media (max-width: 768px) {
   body.theme-light .admin-table tr {
-    background: var(--surface) !important;
+    background: #ffffff !important;
     border-color: var(--stroke) !important;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04) !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.02) !important;
   }
 }
 
@@ -1609,12 +1613,13 @@ body.theme-light .sd-profile-field span {
   color: var(--text-primary) !important;
 }
 body.theme-light .sd-link-chip {
-  background: var(--surface2) !important;
+  background: rgba(15, 23, 42, 0.02) !important;
   border: 1px solid var(--stroke) !important;
+  color: var(--text-secondary) !important;
 }
 body.theme-light #studentDetailModal .table-container {
   border: 1px solid var(--stroke) !important;
-  background: var(--bg-base) !important;
+  background: #ffffff !important;
 }
 
 

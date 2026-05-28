@@ -93,3 +93,14 @@
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
+
+/* Light Mode Loading Shimmer */
+body.theme-light .is-loading::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(15, 23, 42, 0.05),
+    transparent
+  ) !important;
+}
+

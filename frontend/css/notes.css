@@ -319,6 +319,17 @@ body.theme-light .noteCard.noteCard--pinned {
 body.theme-light .noteCard__date {
   color: var(--text-muted) !important;
 }
+body.theme-light .noteCard__date i,
+body.theme-light .noteCard__date svg {
+  color: var(--text-muted) !important;
+}
+body.theme-light .pinBtn {
+  color: var(--text-muted) !important;
+}
+body.theme-light .pinBtn.is-pinned,
+body.theme-light .pinBtn:hover {
+  color: var(--accent-primary) !important;
+}
 
 
 

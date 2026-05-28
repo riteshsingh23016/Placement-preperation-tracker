@@ -481,3 +481,76 @@
 .ats-insights__list li:last-child {
   margin-bottom: 0;
 }
+
+/* ====================================================
+   LIGHT MODE THEME OVERRIDES FOR DASHBOARD
+   ==================================================== */
+body.theme-light .ats-upload-zone {
+  border-color: var(--stroke2) !important;
+  background: rgba(15, 23, 42, 0.02) !important;
+}
+body.theme-light .ats-upload-zone:hover,
+body.theme-light .ats-upload-zone.is-dragover {
+  border-color: var(--accent-primary) !important;
+  background: rgba(var(--accent-primary-rgb), 0.04) !important;
+}
+body.theme-light .ats-upload-zone__title {
+  color: var(--text-primary) !important;
+}
+body.theme-light .ats-upload-zone__subtitle {
+  color: var(--text-muted) !important;
+}
+body.theme-light .ats-scanner__progress-container {
+  background: rgba(15, 23, 42, 0.08) !important;
+}
+body.theme-light .circle-bg {
+  stroke: rgba(15, 23, 42, 0.06) !important;
+}
+body.theme-light .percentage {
+  fill: var(--text-primary) !important;
+}
+body.theme-light .ats-metrics {
+  background: rgba(15, 23, 42, 0.02) !important;
+  border-color: var(--stroke) !important;
+}
+body.theme-light .ats-metric-item__header {
+  color: var(--text-secondary) !important;
+}
+body.theme-light .ats-metric-item__bar-wrap {
+  background: rgba(15, 23, 42, 0.06) !important;
+}
+body.theme-light .ats-insights {
+  background: rgba(var(--color-danger-rgb), 0.05) !important;
+  border-color: rgba(var(--color-danger-rgb), 0.18) !important;
+}
+body.theme-light .ats-insights__title {
+  color: var(--color-danger) !important;
+}
+body.theme-light .ats-insights__list {
+  color: var(--text-secondary) !important;
+}
+body.theme-light .activity__icon.is-blue {
+  border-color: rgba(var(--accent-primary-rgb), 0.25) !important;
+  background: rgba(var(--accent-primary-rgb), 0.06) !important;
+  color: var(--accent-primary) !important;
+}
+body.theme-light .activity__icon.is-purple {
+  border-color: rgba(var(--accent-secondary-rgb), 0.22) !important;
+  background: rgba(var(--accent-secondary-rgb), 0.06) !important;
+  color: var(--accent-secondary) !important;
+}
+body.theme-light .activity__icon.is-amber {
+  border-color: rgba(var(--color-warning-rgb), 0.25) !important;
+  background: rgba(var(--color-warning-rgb), 0.06) !important;
+  color: var(--color-warning) !important;
+}
+body.theme-light .checklist__input {
+  background: #ffffff !important;
+  border: 1px solid var(--stroke2) !important;
+  color: var(--text-primary) !important;
+}
+body.theme-light .checklist__input:focus {
+  border-color: var(--accent-primary) !important;
+  box-shadow: var(--ring) !important;
+}
+
