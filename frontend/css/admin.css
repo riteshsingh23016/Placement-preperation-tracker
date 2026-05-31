@@ -1532,13 +1532,77 @@ body.theme-light {
 
 body.theme-light .admin-search-box {
   background: #ffffff !important;
-  border-color: var(--stroke2) !important;
+  border: 1px solid rgba(15, 23, 42, 0.20) !important;
 }
 
 body.theme-light .admin-search-box:focus-within {
   border-color: var(--accent-primary) !important;
   box-shadow: var(--ring) !important;
   background: #ffffff !important;
+}
+
+body.theme-light .admin-search-box i {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light .admin-control::placeholder {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+body.theme-light .stat-card {
+  background: #ffffff !important;
+  border: 1px solid var(--stroke) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+body.theme-light .stat-card:hover {
+  border-color: var(--stroke2) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+body.theme-light .stat-card__value {
+  color: var(--text-primary) !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+}
+
+body.theme-light .stat-card__label {
+  color: #475569 !important; /* Slate 600 */
+  font-weight: 600 !important;
+  font-size: 11px !important;
+}
+
+body.theme-light #admin-drives .drive-card {
+  background: #ffffff !important;
+  border: 1px solid var(--stroke) !important;
+  box-shadow: var(--shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.theme-light #admin-drives .drive-card:hover {
+  border-color: var(--stroke2) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+body.theme-light #admin-drives .drive-card__company-name {
+  color: var(--text-primary) !important;
+}
+
+body.theme-light #admin-drives .drive-card__role-title {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light #admin-drives .drive-card__desc {
+  color: var(--text-muted) !important;
+}
+
+body.theme-light #admin-drives .drive-card__meta-item {
+  color: var(--text-secondary) !important;
+}
+
+body.theme-light #admin-drives .drive-card__actions {
+  border-top-color: var(--stroke) !important;
 }
 
 body.theme-light .sidebar {

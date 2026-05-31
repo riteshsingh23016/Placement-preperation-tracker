@@ -114,9 +114,9 @@
   --bg-elevated: #ffffff;
   --bg-card: #ffffff;
 
-  --border-subtle: rgba(15, 23, 42, 0.04);
-  --border-default: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.14);
+  --border-subtle: rgba(15, 23, 42, 0.06);
+  --border-default: rgba(15, 23, 42, 0.10);
+  --border-strong: rgba(15, 23, 42, 0.18);
 
   --text-primary: #0f172a;
   --text-secondary: #334155;
@@ -153,9 +153,9 @@
   --muted: var(--text-secondary);
   --subtle: var(--text-muted);
 
-  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.04), 0 4px 12px -4px rgba(15, 23, 42, 0.03);
-  --shadow-md: 0 4px 12px -1px rgba(15, 23, 42, 0.03), 0 2px 6px -2px rgba(15, 23, 42, 0.02);
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 12px -4px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 16px -1px rgba(15, 23, 42, 0.06), 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.03);
   --shadow-glow: 0 0 12px rgba(var(--accent-primary-rgb), 0.05);
 
   --ring: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.15);
@@ -181,16 +181,21 @@ body.theme-light {
   color: rgba(15, 23, 42, 0.42) !important;
 }
 
+.theme-light .card,
 .theme-light .glass {
   background: #ffffff !important;
   border: 1px solid var(--stroke) !important;
   box-shadow: var(--shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .theme-light .glassHover {
   background: #ffffff !important;
   border: 1px solid var(--stroke) !important;
   box-shadow: var(--shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast) !important;
 }
 .theme-light .glassHover:hover {
@@ -253,14 +258,14 @@ body.theme-light {
   color: var(--accent-primary) !important;
 }
 .theme-light .sidebar .nav__item.is-active {
-  background: rgba(var(--accent-primary-rgb), 0.10) !important;
-  border-color: rgba(var(--accent-primary-rgb), 0.25) !important;
-  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.06) !important;
-  color: var(--accent-primary) !important;
+  background: rgba(var(--accent-primary-rgb), 0.12) !important;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.3) !important;
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.08) !important;
+  color: var(--accent-primary-hover) !important;
   font-weight: 700 !important;
 }
 .theme-light .sidebar .nav__item.is-active i {
-  color: var(--accent-primary) !important;
+  color: var(--accent-primary-hover) !important;
 }
 .theme-light .logo__title {
   color: var(--text-primary) !important;
@@ -295,7 +300,7 @@ body.theme-light {
 /* Search Bar Light Theme */
 .theme-light .search {
   background: #ffffff !important;
-  border: 1px solid var(--stroke2) !important;
+  border: 1px solid rgba(15, 23, 42, 0.20) !important;
 }
 .theme-light .search:focus-within {
   background: #ffffff !important;
@@ -304,6 +309,9 @@ body.theme-light {
 }
 .theme-light .search__input {
   color: var(--text-primary) !important;
+}
+.theme-light .search__input::placeholder {
+  color: rgba(15, 23, 42, 0.55) !important;
 }
 .theme-light .search i {
   color: var(--text-secondary) !important;
@@ -331,17 +339,23 @@ body.theme-light {
 
 /* Metrics Dashboard Cards Light Theme */
 .theme-light .metric__label {
-  color: var(--text-muted) !important;
+  color: #475569 !important; /* Slate 600 */
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
 }
 .theme-light .metric__value {
   color: var(--text-primary) !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
 }
 .theme-light .metric__delta {
-  color: var(--text-muted) !important;
+  color: var(--text-secondary) !important;
 }
 .theme-light .metric__icon {
-  background: rgba(var(--accent-primary-rgb), 0.06) !important;
-  border-color: rgba(var(--accent-primary-rgb), 0.16) !important;
+  background: rgba(var(--accent-primary-rgb), 0.08) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.20) !important;
   color: var(--accent-primary) !important;
   box-shadow: none !important;
 }
@@ -423,6 +437,15 @@ body.theme-light {
   box-shadow: var(--ring) !important;
 }
 
+.theme-light select option {
+  background-color: #ffffff !important;
+  color: var(--text-primary) !important;
+}
+.theme-light select option:checked {
+  background-color: rgba(var(--accent-primary-rgb), 0.15) !important;
+  color: var(--accent-primary-hover) !important;
+}
+
 /* General Button System Contrast Light Theme */
 .theme-light .btn {
   border: 1px solid var(--stroke2) !important;
@@ -489,7 +512,7 @@ body.theme-light {
 .theme-light .auth-modal-overlay,
 .theme-light .admin-modal-overlay,
 .theme-light .modal-overlay {
-  background: rgba(15, 23, 42, 0.22) !important;
+  background: rgba(15, 23, 42, 0.40) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
 }
@@ -501,8 +524,13 @@ body.theme-light {
   box-shadow: 0 24px 64px rgba(15, 23, 42, 0.12) !important;
 }
 .theme-light .auth-modal-overlay .panel__title,
-.theme-light .auth-modal-overlay h1 {
+.theme-light .auth-modal-overlay h1,
+.theme-light .modal__title {
   color: var(--text-primary) !important;
+  font-weight: 750 !important;
+}
+.theme-light .modal__header {
+  border-bottom: 1px solid var(--stroke) !important;
 }
 .theme-light .auth-modal-overlay .panel__subtitle,
 .theme-light .auth-modal-overlay p {

@@ -1124,11 +1124,16 @@ body.theme-light .companyHeader__desc {
 }
 
 body.theme-light .companyStat__label {
-  color: var(--text-muted) !important;
+  color: #475569 !important; /* Slate 600 */
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
 }
 
 body.theme-light .companyStat__value {
   color: var(--text-primary) !important;
+  font-weight: 800 !important;
 }
 
 body.theme-light .companyGrid__aside {
@@ -1137,10 +1142,13 @@ body.theme-light .companyGrid__aside {
 
 body.theme-light .companyTable thead th {
   color: var(--text-muted) !important;
+  background: #f8fafc !important;
+  border-top: 1px solid var(--stroke) !important;
+  border-bottom: 1px solid var(--stroke) !important;
 }
 
 body.theme-light .companyTable tbody td {
-  background: var(--surface2) !important;
+  background: #ffffff !important;
   border-top-color: var(--stroke) !important;
   border-bottom-color: var(--stroke) !important;
   color: var(--text-primary) !important;
