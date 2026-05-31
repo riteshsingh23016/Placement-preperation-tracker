@@ -294,12 +294,12 @@ body.theme-light {
 
 /* Search Bar Light Theme */
 .theme-light .search {
-  background: rgba(15, 23, 42, 0.02) !important;
-  border: 1px solid var(--stroke) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--stroke2) !important;
 }
 .theme-light .search:focus-within {
   background: #ffffff !important;
-  border-color: rgba(var(--accent-primary-rgb), 0.4) !important;
+  border-color: var(--accent-primary) !important;
   box-shadow: var(--ring) !important;
 }
 .theme-light .search__input {
@@ -413,7 +413,7 @@ body.theme-light {
   color: var(--text-primary) !important;
 }
 .theme-light select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.55)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
 .theme-light input:focus,
 .theme-light textarea:focus,
@@ -873,6 +873,20 @@ input {
   background: rgba(255, 255, 255, 0.04);
 }
 
+.status-written-test,
+.status-technical-round,
+.status-hr-round {
+  color: var(--color-info);
+  border: 1px solid rgba(var(--color-info-rgb), 0.25);
+  background: rgba(var(--color-info-rgb), 0.08);
+}
+
+.status-offered {
+  color: var(--color-success);
+  border: 1px solid rgba(var(--color-success-rgb), 0.25);
+  background: rgba(var(--color-success-rgb), 0.08);
+}
+
 /* Layout shell */
 .appShell {
   min-height: 100vh;
@@ -1080,11 +1094,13 @@ input {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 0 16px;
+  height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
   transition: border-color 180ms ease, background 180ms ease;
+  box-sizing: border-box;
 }
 .pageLoadOverlay__pulse {
   width: 48px;
@@ -1101,10 +1117,21 @@ input {
 }
 .search__input {
   width: 100%;
+  height: 100%;
   border: 0;
   outline: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
+}
+.search i {
+  width: 18px;
+  height: 18px;
+  color: var(--subtle);
+  flex-shrink: 0;
 }
 .search__input::placeholder {
   color: rgba(255, 255, 255, 0.45);
@@ -1437,19 +1464,18 @@ body.is-mobile-nav-open .sidebarOverlay {
     width: 100% !important;
     max-width: 100% !important;
     margin: 4px 0 0 0 !important;
-    height: 46px !important;
+    height: 44px !important;
     display: flex !important;
     align-items: center !important;
+    box-sizing: border-box !important;
   }
   .search__input {
     display: block !important;
-    height: 46px !important;
-    padding: 12px 14px 12px 40px !important;
+    height: 100% !important;
+    padding: 0 !important;
     font-size: 14px !important;
-    border-radius: 14px !important;
   }
   .search i {
-    left: 14px !important;
     width: 18px !important;
     height: 18px !important;
   }
@@ -1970,11 +1996,11 @@ select {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   background-color: rgba(255, 255, 255, 0.04);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
-  background-position: right 12px center !important;
+  background-position: right 14px center !important;
   background-size: 14px !important;
-  padding-right: 36px !important;
+  padding-right: 38px !important;
   color: var(--text);
   cursor: pointer;
 }

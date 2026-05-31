@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Privacy Policy for Placement Prep Tracker platform. Understand how we handle account, profile, notes, and placement data." />
+    <title>Privacy Policy - Placement Prep Tracker</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+    <link rel="stylesheet" href="css/notifications.css" />
+    <link rel="stylesheet" href="css/landing.css" />
+    <script src="js/theme.js"></script>
+    <style>
+      .privacy-hero {
+        padding: 120px 24px 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .privacy-container {
+        max-width: 800px;
+        margin: 0 auto 100px;
+        padding: 40px;
+        border-radius: var(--radius-xl);
+      }
+      .privacy-content h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 32px 0 16px;
+        color: var(--text);
+        border-bottom: 1px solid var(--border-default);
+        padding-bottom: 8px;
+      }
+      .privacy-content p {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+      .privacy-content ul {
+        margin: 0 0 20px 24px;
+        color: var(--muted);
+      }
+      .privacy-content li {
+        margin-bottom: 8px;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .privacy-content strong {
+        color: var(--text);
+      }
+      .privacy-content .last-updated {
+        font-size: 14px;
+        color: var(--subtle);
+        margin-bottom: 40px;
+      }
+    </style>
+  </head>
+  <body class="theme-dark" data-page="privacy">
+    <!-- Header/Navbar -->
+    <header class="landing-nav">
+      <div class="landing-nav__container">
+        <div class="landing-nav__left">
+          <a class="brandmark" href="index.html">
+            <div class="brandmark__icon" aria-hidden="true">
+              <i data-lucide="sparkles"></i>
+            </div>
+            <span class="brandmark__title">Placement Tracker</span>
+          </a>
+        </div>
+
+        <div class="landing-nav__right">
+          <button class="iconBtn" type="button" id="landingThemeToggle" aria-label="Toggle theme" style="margin-right: 4px;">
+            <i data-lucide="sun"></i>
+          </button>
+          <a class="btn btn--ghost btn--sm landing-nav__link" href="index.html?auth=login">Sign In</a>
+          <a class="btn btn--primary btn--sm btn--glow" href="index.html?auth=open">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Privacy Hero -->
+    <section class="privacy-hero">
+      <div class="hero-glow-layer" aria-hidden="true" style="opacity: 0.4;"></div>
+      <h1 class="landing-hero__title" style="font-size: 40px; margin-bottom: 12px;">Privacy Policy</h1>
+      <p class="landing-hero__subtitle" style="max-width: 600px; margin: 0 auto; font-size: 16px;">
+        Learn how Placement Prep Tracker collects, secures, and handles your professional data.
+      </p>
+    </section>
+
+    <!-- Privacy Content Section -->
+    <main class="privacy-container glass">
+      <div class="privacy-content">
+        <p class="last-updated">Last Updated: May 31, 2026</p>
+        
+        <p>Welcome to <strong>Placement Prep Tracker</strong>. We respect your privacy and are committed to protecting the personal data you share with us. This Privacy Policy explain how we collect, store, process, and protect your information when you register, coordinate, and prepare for career opportunities on our platform.</p>
+
+        <h2>1. Account Registration</h2>
+        <p>To access the platform, users must register an account. During registration, we collect:</p>
+        <ul>
+          <li><strong>Full Name:</strong> To identify you within institution portals and admin dashboards.</li>
+          <li><strong>Email Address:</strong> Used as your unique account identifier, for sending verification links, and resetting passwords.</li>
+          <li><strong>Hashed Password:</strong> We securely hash your password using industry-standard bcrypt hashing on our server. We never store your password in plaintext.</li>
+        </ul>
+
+        <h2>2. Email Verification & Security</h2>
+        <p>To ensure validity and institution affiliation, new student accounts start in an unverified state. The system generates a secure, timed verification token sent to your email. Accounts remain locked until email verification is complete, protecting the platform from unauthorized access.</p>
+
+        <h2>3. Password Reset & OTP Handling</h2>
+        <p>If you request a password reset, the system generates a secure, numeric 6-digit One-Time Password (OTP) with a strict 15-minute expiration window. OTP requests are subject to server-side rate limits (maximum of 3 requests per 15 minutes) to protect against brute-force and spam abuse.</p>
+
+        <h2>4. Student Profile Data</h2>
+        <p>Students can voluntarily build and share details on their profile page to organize their placement readiness. This information includes:</p>
+        <ul>
+          <li><strong>Academic Credentials:</strong> College Name, course, branch, and graduation year.</li>
+          <li><strong>Contact Info:</strong> Phone number and biography.</li>
+          <li><strong>Professional Resumes & Links:</strong> LinkedIn profile links, GitHub links, and links to hosted resume documents.</li>
+        </ul>
+
+        <h2>5. Application & Placement Pipelines</h2>
+        <p>The core feature of the platform is tracking career pipelines. We host the following data linked to your account:</p>
+        <ul>
+          <li>Company name, job role, package details (LPA), status (e.g. Applied, Interviewing, Selected, Rejected), priority, application date, and custom interview notes.</li>
+          <li>This data is private to you and the platform coordinators, assisting you in visualizing progress.</li>
+        </ul>
+
+        <h2>6. Notes & Preparatory Data</h2>
+        <p>Students can create, pin, and categorize preparation notes (e.g. DSA, System Design, DBMS cheatsheets) within customized collections. These notes are stored securely and remain private to the user's workspace.</p>
+
+        <h2>7. Administrator Access & Moderation</h2>
+        <p>Institution coordinators or system administrators are granted administrative accounts to oversee placement cycles. Administrators have permissions to:</p>
+        <ul>
+          <li>Create and manage institutional placement drives (companies, packages, eligibility, deadlines).</li>
+          <li>Broadcast platform-wide system announcements.</li>
+          <li>Perform account moderation, including blocking/unblocking accounts for security compliance.</li>
+        </ul>
+
+        <h2>8. Email Notifications</h2>
+        <p>The platform dispatches transactional emails essential to security and account operations. These include signup verification emails, OTP codes, and password modification alerts. We do not sell or share your email address for advertising purposes.</p>
+
+        <h2>9. Data Retention & Deletion</h2>
+        <p>We retain your profile, applications, and preparation notes as long as your account remains active. Users can update their profile or request deletion of their records at any time. When an account is removed, all linked notes, applications, and profile documents are scrubbed from the active database.</p>
+
+        <h2>10. Cookies & Local Storage</h2>
+        <p>We do not use tracking or advertising cookies. We utilize standard Web Local Storage (`localStorage`) solely to maintain your authentication token state and preferred user interface theme (light or dark mode) for a smooth session experience.</p>
+
+        <h2>11. Contact Us</h2>
+        <p>If you have any questions or security concerns regarding your data or this Privacy Policy, you can reach out to our system administrator contact at:</p>
+        <p style="font-weight: 500; color: var(--accent-primary);">riteshthelegend10f@gmail.com</p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+      <div class="landing-footer__container">
+        <span class="landing-footer__text">© 2026 Placement Prep Tracker. All rights reserved.</span>
+        <div class="landing-footer__links">
+          <a class="landing-footer__link" href="privacy.html" style="text-decoration: none;">Privacy Policy</a>
+          <button class="landing-footer__link" id="footerTerms" style="background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; color: inherit; transition: color 0.2s;">Terms of Service</button>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialize Lucide icons
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+
+        // Theme toggle action
+        const landingThemeToggle = document.getElementById("landingThemeToggle");
+        if (landingThemeToggle) {
+          landingThemeToggle.addEventListener("click", () => {
+            if (window.toggleTheme) window.toggleTheme();
+          });
+        }
+        
+        // Dynamic Go to Dashboard state
+        const token = localStorage.getItem("token");
+        const userJson = localStorage.getItem("user");
+        if (token && userJson) {
+          try {
+            const user = JSON.parse(userJson);
+            const dashboardHref = user.role === "admin" ? "admin.html" : "dashboard.html";
+            
+            const navCTAs = document.querySelectorAll(".landing-nav__right a");
+            if (navCTAs.length >= 2) {
+              const signInLink = navCTAs[0];
+              const getStartedLink = navCTAs[1];
+              
+              if (signInLink) signInLink.style.display = "none";
+              if (getStartedLink) {
+                getStartedLink.innerHTML = 'Go to Dashboard <i data-lucide="arrow-right"></i>';
+                getStartedLink.href = dashboardHref;
+                if (window.lucide) window.lucide.createIcons({ root: getStartedLink });
+              }
+            }
+          } catch (e) {
+            console.error("Decode failed:", e);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

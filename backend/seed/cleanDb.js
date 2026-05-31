@@ -38,8 +38,8 @@ async function main() {
     console.log("All collections cleared.");
 
     // 2. Seed Admin User
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@placementtracker.com";
-    const adminPassword = process.env.ADMIN_PASSWORD || "Admin@12345";
+    const adminEmail = process.env.ADMIN_EMAIL || "riteshthelegend10f@gmail.com";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
     const adminName = process.env.ADMIN_NAME || "System Admin";
     
     console.log(`Creating Admin user: ${adminEmail}`);
@@ -48,7 +48,8 @@ async function main() {
       email: adminEmail,
       password: adminPassword, // Raw password, hashed by pre-save hook
       role: "admin",
-      isBlocked: false
+      isBlocked: false,
+      isVerified: true
     });
     console.log("Admin user created.");
 
@@ -63,7 +64,8 @@ async function main() {
       email: studentEmail,
       password: studentPassword, // Raw password, hashed by pre-save hook
       role: "student",
-      isBlocked: false
+      isBlocked: false,
+      isVerified: true
     });
     console.log("Student user created.");
 

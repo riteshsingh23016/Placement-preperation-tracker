@@ -168,6 +168,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Auto-trigger auth modal if redirected from legal/outer pages with query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("auth") === "open" || urlParams.get("auth") === "login") {
+    setTimeout(() => {
+      if (window.openAuthModal) window.openAuthModal();
+    }, 150);
+  }
+
   // Pre-initialize icons on landing specific divs
   if (window.lucide) {
     window.lucide.createIcons();

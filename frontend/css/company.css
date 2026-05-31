@@ -196,7 +196,7 @@
 
 .companyToolbar__search {
   flex: 1 1 300px;
-  height: 42px;
+  height: 44px;
   position: relative; /* Stable container for absolute icon */
   border-radius: var(--radius-lg);
   border: 1px solid var(--stroke);
@@ -233,7 +233,7 @@
   color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   box-sizing: border-box;
-  line-height: 42px; /* Visual vertical centering */
+  line-height: 44px; /* Visual vertical centering */
 }
 
 .companyToolbar__input::placeholder {

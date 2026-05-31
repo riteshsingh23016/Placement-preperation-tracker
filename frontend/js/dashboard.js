@@ -68,11 +68,11 @@ function showEmptyState(canvasId, title, text) {
  * Initialize or update charts
  */
 function renderCharts(data) {
-  const indigo = getCssVar("--indigo") || "#14b8a6";
-  const blue = getCssVar("--blue") || "#0d9488";
-  const cyan = getCssVar("--cyan") || "#06b6d4";
-  const good = getCssVar("--good") || "#10b981";
-  const bad = getCssVar("--bad") || "#ef4444";
+  const indigo = getCssVar("--accent-primary") || "#14b8a6";
+  const blue = getCssVar("--accent-primary-hover") || "#0d9488";
+  const cyan = getCssVar("--color-info") || "#06b6d4";
+  const good = getCssVar("--color-success") || "#10b981";
+  const bad = getCssVar("--color-danger") || "#ef4444";
   const textMuted = getCssVar("--muted") || "rgba(255,255,255,0.7)";
   
   const isLight = document.documentElement.classList.contains("theme-light") || document.body.classList.contains("theme-light");
@@ -263,8 +263,19 @@ function renderCharts(data) {
         ...chartOptions,
         indexAxis: 'y',
         scales: {
-          y: { ...chartOptions.scales.y, grid: { display: false } },
-          x: { ...chartOptions.scales.x, grid: { display: true, color: gridColor } }
+          y: { 
+            grid: { display: false },
+            ticks: { color: textMuted, font: { size: 11 } }
+          },
+          x: { 
+            beginAtZero: true,
+            grid: { display: true, color: gridColor },
+            ticks: { 
+              color: textMuted, 
+              precision: 0,
+              font: { size: 11 }
+            }
+          }
         }
       }
     });

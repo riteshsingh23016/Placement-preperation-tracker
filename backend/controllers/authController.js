@@ -1,6 +1,22 @@
 const User = require("../models/user");
 const Collection = require("../models/collection");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
+
+const otpRateLimiter = new Map();
+
+const isRateLimited = (email) => {
+  const now = Date.now();
+  const requests = otpRateLimiter.get(email) || [];
+  const recentRequests = requests.filter(time => now - time < 15 * 60 * 1000);
+  if (recentRequests.length >= 3) {
+    return true;
+  }
+  recentRequests.push(now);
+  otpRateLimiter.set(email, recentRequests);
+  return false;
+};
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || "default_jwt_secret_for_dev_only", {
@@ -61,12 +77,18 @@ exports.signup = async (req, res) => {
       });
     }
 
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+
     const user = await User.create({
       name,
       email,
       password,
       role: "student",
       isBlocked: false,
+      isVerified: false,
+      verificationToken,
+      verificationTokenExpires,
     });
 
     if (!user) {
@@ -82,15 +104,33 @@ exports.signup = async (req, res) => {
       { name: "OS + CN", user: user._id, icon: "globe", color: "amber" },
     ]);
 
+    const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const verificationLink = `${appUrl}/api/auth/verify-email/${verificationToken}`;
+
+    await sendEmail({
+      email: user.email,
+      subject: "Verify Your Email - Placement Prep Tracker",
+      text: `Hello ${user.name},\n\nPlease verify your email address by clicking the link below:\n\n${verificationLink}\n\nThis link is valid for 24 hours.`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <h2 style="color: #4f46e5; margin-bottom: 16px;">Email Verification</h2>
+          <p>Hello <strong>${user.name}</strong>,</p>
+          <p>Thank you for registering on Placement Prep Tracker. Please click the button below to verify your email address and activate your account:</p>
+          <div style="margin: 24px 0;">
+            <a href="${verificationLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+          </div>
+          <p style="color: #64748b; font-size: 14px;">This link is valid for 24 hours. If the button doesn't work, copy and paste this URL into your browser:</p>
+          <p style="color: #64748b; font-size: 14px; word-break: break-all;">${verificationLink}</p>
+        </div>
+      `,
+    });
+
     res.status(201).json({
       success: true,
+      message: "Verification email sent. Please check your inbox.",
       data: {
-        _id: user._id,
-        name: user.name,
         email: user.email,
-        role: user.role,
-        isBlocked: user.isBlocked,
-        token: generateToken(user._id),
+        isVerified: false,
       },
     });
   } catch (err) {
@@ -136,6 +176,14 @@ exports.login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "Invalid credentials",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Please verify your email address before logging in.",
+        isNotVerified: true,
       });
     }
 
@@ -319,5 +367,201 @@ exports.changePassword = async (req, res) => {
       success: false,
       message: err.message || "Failed to change password",
     });
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({
+      verificationToken: token,
+      verificationTokenExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.redirect("/index.html?verified=false&error=invalid_or_expired_token");
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    res.redirect("/index.html?verified=true");
+  } catch (err) {
+    console.error("[Auth] Verify Email Error:", err.message);
+    res.redirect("/index.html?verified=false&error=server_error");
+  }
+};
+
+exports.resendVerification = async (req, res) => {
+  try {
+    let { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Please provide an email address." });
+    }
+
+    email = email.trim().toLowerCase();
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ success: false, message: "This account is already verified." });
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+    await user.save();
+
+    const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const verificationLink = `${appUrl}/api/auth/verify-email/${verificationToken}`;
+
+    await sendEmail({
+      email: user.email,
+      subject: "Verify Your Email - Placement Prep Tracker",
+      text: `Hello ${user.name},\n\nPlease verify your email address by clicking the link below:\n\n${verificationLink}\n\nThis link is valid for 24 hours.`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <h2 style="color: #4f46e5; margin-bottom: 16px;">Email Verification</h2>
+          <p>Hello <strong>${user.name}</strong>,</p>
+          <p>Please click the button below to verify your email address and activate your account:</p>
+          <div style="margin: 24px 0;">
+            <a href="${verificationLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+          </div>
+          <p style="color: #64748b; font-size: 14px;">This link is valid for 24 hours. If the button doesn't work, copy and paste this URL into your browser:</p>
+          <p style="color: #64748b; font-size: 14px; word-break: break-all;">${verificationLink}</p>
+        </div>
+      `,
+    });
+
+    res.status(200).json({ success: true, message: "Verification email resent successfully." });
+  } catch (err) {
+    console.error("[Auth] Resend Verification Error:", err.message);
+    res.status(500).json({ success: false, message: err.message || "Failed to resend verification email." });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    let { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Please provide an email address." });
+    }
+
+    email = email.trim().toLowerCase();
+
+    if (isRateLimited(email)) {
+      return res.status(429).json({
+        success: false,
+        message: "Too many password reset requests. Please try again after 15 minutes.",
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(200).json({
+        success: true,
+        message: "If that email is registered, we have sent a password reset OTP code.",
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.resetPasswordOTP = otp;
+    user.resetPasswordOTPExpires = Date.now() + 15 * 60 * 1000;
+    await user.save();
+
+    await sendEmail({
+      email: user.email,
+      subject: "Password Reset OTP - Placement Prep Tracker",
+      text: `Hello ${user.name},\n\nYour password reset verification code is: ${otp}\n\nThis OTP is valid for 15 minutes.`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <h2 style="color: #4f46e5; margin-bottom: 16px;">Password Reset Code</h2>
+          <p>Hello <strong>${user.name}</strong>,</p>
+          <p>You requested a password reset. Please use the following 6-digit verification code to complete the process:</p>
+          <div style="margin: 24px 0; text-align: center;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block;">${otp}</span>
+          </div>
+          <p style="color: #64748b; font-size: 14px;">This code is valid for 15 minutes. If you did not request this, you can safely ignore this email.</p>
+        </div>
+      `,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "If that email is registered, we have sent a password reset OTP code.",
+    });
+  } catch (err) {
+    console.error("[Auth] Forgot Password Error:", err.message);
+    res.status(500).json({ success: false, message: err.message || "Failed to process forgot password request." });
+  }
+};
+
+exports.verifyOtp = async (req, res) => {
+  try {
+    let { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: "Please provide email and OTP code." });
+    }
+
+    email = email.trim().toLowerCase();
+    otp = otp.trim();
+
+    const user = await User.findOne({
+      email,
+      resetPasswordOTP: otp,
+      resetPasswordOTPExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid or expired OTP code." });
+    }
+
+    res.status(200).json({ success: true, message: "OTP code verified successfully." });
+  } catch (err) {
+    console.error("[Auth] Verify OTP Error:", err.message);
+    res.status(500).json({ success: false, message: err.message || "Failed to verify OTP code." });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    let { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ success: false, message: "Please provide all required fields." });
+    }
+
+    email = email.trim().toLowerCase();
+    otp = otp.trim();
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: "New password must be at least 6 characters long." });
+    }
+
+    const user = await User.findOne({
+      email,
+      resetPasswordOTP: otp,
+      resetPasswordOTPExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid or expired OTP code." });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordOTP = undefined;
+    user.resetPasswordOTPExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Password reset successfully. You can now login." });
+  } catch (err) {
+    console.error("[Auth] Reset Password Error:", err.message);
+    res.status(500).json({ success: false, message: err.message || "Failed to reset password." });
   }
 };

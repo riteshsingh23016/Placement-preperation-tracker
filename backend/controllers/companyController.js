@@ -380,10 +380,13 @@ exports.seedDemoData = async (req, res) => {
       });
     }
 
-    const companies = [
-      "TCS", "Infosys", "Wipro", "Cognizant", "Accenture", 
-      "Capgemini", "HCL", "Tech Mahindra", "IBM", "Deloitte", 
-      "Zoho", "Persistent Systems", "LTIMindtree", "Hexaware", "Mindtree"
+    const companiesToSeed = [
+      "TCS", "TCS", "TCS", "TCS", "TCS",
+      "Infosys", "Infosys", "Infosys", "Infosys",
+      "Wipro", "Wipro", "Wipro",
+      "Cognizant", "Cognizant",
+      "Accenture", "Accenture",
+      "Zoho", "IBM"
     ];
 
     const roles = ["SDE", "Full Stack Developer", "Backend Engineer", "Frontend Developer", "Data Analyst", "DevOps Intern"];
@@ -427,13 +430,14 @@ exports.seedDemoData = async (req, res) => {
           interviewDate.setDate(appliedDate.getDate() + 14);
         }
 
+        const companyName = companiesToSeed[companyIdx % companiesToSeed.length];
         demoRecords.push({
-          companyName: companies[companyIdx % companies.length],
+          companyName: companyName,
           role: roles[Math.floor(Math.random() * roles.length)],
           package: `${Math.floor(Math.random() * 10) + 8}-${Math.floor(Math.random() * 15) + 15} LPA`,
           status: status,
           priority: priorities[Math.floor(Math.random() * priorities.length)],
-          notes: `Demo data for ${companies[companyIdx % companies.length]}. This is a sample application record.`,
+          notes: `Demo data for ${companyName}. This is a sample application record.`,
           appliedDate: appliedDate,
           interviewDate: interviewDate,
           user: userId,

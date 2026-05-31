@@ -10,8 +10,8 @@ const seedAdmin = async () => {
     await connectDB();
 
     const name = process.env.ADMIN_NAME || "System Admin";
-    const email = process.env.ADMIN_EMAIL || "admin@placementtracker.com";
-    const password = process.env.ADMIN_PASSWORD || "Admin@12345";
+    const email = process.env.ADMIN_EMAIL || "riteshthelegend10f@gmail.com";
+    const password = process.env.ADMIN_PASSWORD || "admin123";
 
     if (!email || !password) {
       console.error("Error: ADMIN_EMAIL or ADMIN_PASSWORD not found in .env");
@@ -31,6 +31,7 @@ const seedAdmin = async () => {
       password,
       role: "admin",
       isBlocked: false,
+      isVerified: true,
     });
 
     if (admin) {

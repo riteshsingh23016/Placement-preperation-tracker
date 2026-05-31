@@ -73,8 +73,8 @@ async function main() {
     console.log("Connected to MongoDB successfully.");
 
     // --- 1. SEED DEFAULT ADMIN IF NOT EXISTS ---
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@placementtracker.com";
-    const adminPassword = process.env.ADMIN_PASSWORD || "Admin@12345";
+    const adminEmail = process.env.ADMIN_EMAIL || "riteshthelegend10f@gmail.com";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
     const adminName = process.env.ADMIN_NAME || "System Admin";
 
     let admin = await User.findOne({ email: adminEmail.toLowerCase().trim() }).select("+password");
@@ -85,7 +85,8 @@ async function main() {
         email: adminEmail,
         password: adminPassword, // Raw password, will be hashed once by pre-save hook
         role: "admin",
-        isBlocked: false
+        isBlocked: false,
+        isVerified: true
       });
       console.log("Admin account created.");
     } else {
@@ -94,6 +95,7 @@ async function main() {
       if (!isMatch) {
         console.log(`Admin password mismatch (possibly double-hashed). Resetting password...`);
         admin.password = adminPassword; // Triggers pre-save hook on save
+        admin.isVerified = true;
         await admin.save();
         console.log("Admin password updated successfully.");
       } else {
@@ -114,7 +116,8 @@ async function main() {
         email: demoStudentEmail,
         password: demoStudentPassword, // Raw password, will be hashed once by pre-save hook
         role: "student",
-        isBlocked: false
+        isBlocked: false,
+        isVerified: true
       });
       console.log("Clean Demo Student created.");
 
@@ -203,6 +206,7 @@ async function main() {
       if (!isMatch) {
         console.log(`Demo student password mismatch (possibly double-hashed). Resetting password...`);
         demoStudent.password = demoStudentPassword; // Triggers pre-save hook on save
+        demoStudent.isVerified = true;
         await demoStudent.save();
         console.log("Demo student password updated successfully.");
       } else {

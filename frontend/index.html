@@ -473,7 +473,7 @@
       <div class="landing-footer__container">
         <span class="landing-footer__text">© 2026 Placement Prep Tracker. All rights reserved.</span>
         <div class="landing-footer__links">
-          <button class="landing-footer__link" id="footerPrivacy" style="background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; color: inherit; transition: color 0.2s;">Privacy Policy</button>
+          <a class="landing-footer__link" href="privacy.html" style="text-decoration: none;">Privacy Policy</a>
           <button class="landing-footer__link" id="footerTerms" style="background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; color: inherit; transition: color 0.2s;">Terms of Service</button>
         </div>
       </div>
@@ -591,9 +591,20 @@
             </button>
 
             <p class="fineprint">
-              By continuing, you agree to the <button type="button" class="linkBtn" id="authTerms" style="font-size: inherit; display: inline; padding: 0; background: none; border: none; color: var(--indigo); cursor: pointer; text-decoration: underline;">Terms</button> and <button type="button" class="linkBtn" id="authPrivacy" style="font-size: inherit; display: inline; padding: 0; background: none; border: none; color: var(--indigo); cursor: pointer; text-decoration: underline;">Privacy Policy</button>.
+              By continuing, you agree to the <button type="button" class="linkBtn" id="authTerms" style="font-size: inherit; display: inline; padding: 0; background: none; border: none; color: var(--indigo); cursor: pointer; text-decoration: underline;">Terms</button> and <a href="privacy.html" target="_blank" class="linkBtn" style="font-size: inherit; display: inline; padding: 0; background: none; border: none; color: var(--indigo); cursor: pointer; text-decoration: underline;">Privacy Policy</a>.
             </p>
           </form>
+
+          <div id="verificationInfoState" style="display: none; text-align: center; padding: 24px 0;">
+            <div class="success-icon-wrap" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25); display: grid; place-items: center; margin: 0 auto 20px; color: var(--indigo); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);">
+              <i data-lucide="mail" style="width: 28px; height: 28px;"></i>
+            </div>
+            <h2 class="panel__title" style="margin-bottom: 8px;">Verify Your Email</h2>
+            <p class="panel__subtitle" style="margin-bottom: 24px; line-height: 1.5;">We have sent a verification link to <strong id="verificationEmailDisplay" style="color: var(--text);">you@college.edu</strong>.<br>Please verify your email address to activate your account.</p>
+            <button class="btn btn--secondary btn--lg" id="verificationDoneBtn" type="button" style="width: 100%;">
+              <span>Done</span>
+            </button>
+          </div>
         </div>
         
         <div id="toastStack" class="toastStack" aria-live="polite"></div>
@@ -678,13 +689,80 @@
           </form>
         </div>
 
-        <!-- Step 2: Success Confirmation State -->
+        <!-- Step 2: OTP Verification Form -->
+        <div id="forgotOtpState" style="display: none;">
+          <h2 class="panel__title" style="margin-bottom: 8px;">Enter Verification OTP</h2>
+          <p class="panel__subtitle" style="margin-bottom: 24px;">Please enter the 6-digit verification code sent to <span id="recoveryEmailDisplay" style="font-weight: 600; color: var(--text);"></span>, along with your new password.</p>
+          
+          <form class="form" id="otpResetForm" novalidate>
+            <input type="hidden" id="otpEmailHidden" />
+            <label class="field">
+              <span class="field__label">6-Digit OTP</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="key-round"></i>
+                <input
+                  class="input"
+                  type="text"
+                  name="otp"
+                  id="forgotOtpInput"
+                  placeholder="123456"
+                  pattern="[0-9]{6}"
+                  maxlength="6"
+                  required
+                />
+              </span>
+            </label>
+
+            <label class="field">
+              <span class="field__label">New Password</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="lock"></i>
+                <input
+                  class="input"
+                  type="password"
+                  name="newPassword"
+                  id="forgotNewPasswordInput"
+                  placeholder="••••••••"
+                  required
+                />
+                <button class="password-toggle-btn togglePassword" type="button" aria-label="Toggle password visibility">
+                  <i data-lucide="eye"></i>
+                </button>
+              </span>
+            </label>
+
+            <label class="field">
+              <span class="field__label">Confirm New Password</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="lock"></i>
+                <input
+                  class="input"
+                  type="password"
+                  name="confirmPassword"
+                  id="forgotConfirmPasswordInput"
+                  placeholder="••••••••"
+                  required
+                />
+                <button class="password-toggle-btn togglePassword" type="button" aria-label="Toggle password visibility">
+                  <i data-lucide="eye"></i>
+                </button>
+              </span>
+            </label>
+
+            <button class="btn btn--primary btn--lg" type="submit" style="margin-top: 8px;">
+              <span>Reset Password</span>
+              <i data-lucide="check"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Step 3: Success Confirmation State -->
         <div id="forgotSuccessState" style="display: none; text-align: center; padding: 12px 0;">
           <div class="success-icon-wrap" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); display: grid; place-items: center; margin: 0 auto 20px; color: var(--good); box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);">
             <i data-lucide="check" style="width: 28px; height: 28px;"></i>
           </div>
-          <h2 class="panel__title" style="margin-bottom: 8px;">Reset Link Sent!</h2>
-          <p class="panel__subtitle" style="margin-bottom: 24px; line-height: 1.5;">We have sent a password recovery link to <strong id="recoveryEmailDisplay" style="color: var(--text);">email@domain.com</strong>. Please check your inbox.</p>
+          <h2 class="panel__title" style="margin-bottom: 8px;">Password Reset!</h2>
+          <p class="panel__subtitle" style="margin-bottom: 24px; line-height: 1.5;">Your password has been successfully reset. You can now log in using your new credentials.</p>
           <button class="btn btn--secondary btn--lg" id="forgotSuccessDoneBtn" type="button" style="width: 100%;">
             <span>Done</span>
           </button>

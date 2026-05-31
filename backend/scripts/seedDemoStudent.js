@@ -33,18 +33,23 @@ async function main() {
     console.log("Connected to MongoDB successfully.");
 
     // 1. GET OR CREATE ADMIN USER (needed to author announcements)
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@placementtracker.com";
+    const adminEmail = process.env.ADMIN_EMAIL || "riteshthelegend10f@gmail.com";
     let admin = await User.findOne({ email: adminEmail.toLowerCase().trim() });
     if (!admin) {
       console.log(`Admin account not found. Seeding default admin...`);
       admin = await User.create({
         name: process.env.ADMIN_NAME || "System Admin",
         email: adminEmail,
-        password: process.env.ADMIN_PASSWORD || "Admin@12345", // Raw password, hashed by pre-save
+        password: process.env.ADMIN_PASSWORD || "admin123", // Raw password, hashed by pre-save
         role: "admin",
-        isBlocked: false
+        isBlocked: false,
+        isVerified: true
       });
       console.log("Admin account created.");
+    } else {
+      console.log("Admin account found. Ensuring verified status...");
+      admin.isVerified = true;
+      await admin.save();
     }
 
     // 2. SEED/RESET STUDENT ACCOUNT
@@ -60,7 +65,8 @@ async function main() {
         email: studentEmail,
         password: studentPassword, // Raw password, hashed by pre-save
         role: "student",
-        isBlocked: false
+        isBlocked: false,
+        isVerified: true
       });
       console.log("Student account created.");
     } else {
@@ -68,6 +74,7 @@ async function main() {
       student.name = studentName;
       student.role = "student";
       student.isBlocked = false;
+      student.isVerified = true;
       student.password = studentPassword; // Triggers pre-save password hashing
       await student.save();
       console.log("Student account updated.");

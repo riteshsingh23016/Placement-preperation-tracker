@@ -74,6 +74,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const panelSubtitle = qs("#panelSubtitle");
   const authTabs = qs("#authTabs");
 
+  // Verification State Elements
+  const verificationInfoState = qs("#verificationInfoState");
+  const verificationEmailDisplay = qs("#verificationEmailDisplay");
+  const verificationDoneBtn = qs("#verificationDoneBtn");
+
+  // Forgot Password OTP Elements
+  const forgotOtpState = qs("#forgotOtpState");
+  const otpResetForm = qs("#otpResetForm");
+  const otpEmailHidden = qs("#otpEmailHidden");
+
+  // Check URL query parameters for verification status
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("verified") === "true") {
+    toast("Email verified successfully! You can now sign in.", "success");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (urlParams.get("verified") === "false") {
+    const err = urlParams.get("error") || "verification_failed";
+    const msg = err === "invalid_or_expired_token"
+      ? "The verification link is invalid or has expired. Please sign up again or resend verification."
+      : "Email verification failed.";
+    toast(msg, "error");
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   // Role Selection Logic
   roleCards.forEach(card => {
     card.addEventListener("click", () => {
@@ -93,6 +117,10 @@ document.addEventListener("DOMContentLoaded", () => {
     roleSelection.style.display = "none";
     authContent.style.display = "block";
     authContent.setAttribute("data-active-role", selectedRole);
+    
+    // Reset verification info states if backing out or reloading
+    if (verificationInfoState) verificationInfoState.style.display = "none";
+    if (authForm) authForm.style.display = "block";
     
     if (selectedRole === "admin") {
       panelTitle.textContent = "Admin Portal";
@@ -144,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Password toggle
   qsa(".togglePassword, #togglePassword").forEach(toggle => {
     toggle.addEventListener("click", () => {
-      const control = toggle.closest(".field__control");
+      const control = toggle.closest(".field__control") || toggle.closest(".field");
       const input = qs("input", control);
       if (!input) return;
       const next = input.type === "password" ? "text" : "password";
@@ -176,8 +204,10 @@ document.addEventListener("DOMContentLoaded", () => {
     forgotBtn.addEventListener("click", () => {
       // Reset state views
       if (forgotInputState) forgotInputState.style.display = "block";
+      if (forgotOtpState) forgotOtpState.style.display = "none";
       if (forgotSuccessState) forgotSuccessState.style.display = "none";
       if (forgotForm) forgotForm.reset();
+      if (otpResetForm) otpResetForm.reset();
       
       // Close parent auth modal overlay first
       const authModal = qs("#authModal");
@@ -218,8 +248,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeForgotModal();
   });
 
+  const API_BASE = `${window.APP_API_BASE}/auth`;
+
   if (forgotForm) {
-    forgotForm.addEventListener("submit", (e) => {
+    forgotForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const emailInput = qs("#forgotEmailInput");
       const email = emailInput ? emailInput.value.trim() : "";
@@ -230,18 +262,85 @@ document.addEventListener("DOMContentLoaded", () => {
         return toast("Please enter a valid email address.", "error");
       }
 
-      // Simulate sending password reset email
-      if (recoveryEmailDisplay) recoveryEmailDisplay.textContent = email;
-      if (forgotInputState) forgotInputState.style.display = "none";
-      if (forgotSuccessState) forgotSuccessState.style.display = "block";
-      if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotSuccessState });
-      toast("Password reset email sent (Simulation).", "success");
+      try {
+        const res = await fetch(`${API_BASE}/forgot-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || "Failed to process request");
+
+        if (otpEmailHidden) otpEmailHidden.value = email;
+        if (recoveryEmailDisplay) recoveryEmailDisplay.textContent = email;
+        if (forgotInputState) forgotInputState.style.display = "none";
+        if (forgotOtpState) {
+          forgotOtpState.style.display = "block";
+          if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotOtpState });
+        }
+        toast("Verification OTP code sent to your email.", "success");
+      } catch (err) {
+        toast(err.message, "error");
+      }
     });
   }
 
+  if (otpResetForm) {
+    otpResetForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = otpEmailHidden ? otpEmailHidden.value : "";
+      const otpInput = qs("#forgotOtpInput");
+      const otp = otpInput ? otpInput.value.trim() : "";
+      const newPasswordInput = qs("#forgotNewPasswordInput");
+      const newPassword = newPasswordInput ? newPasswordInput.value : "";
+      const confirmPasswordInput = qs("#forgotConfirmPasswordInput");
+      const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : "";
 
+      if (!otp || !newPassword || !confirmPassword) {
+        return toast("Please fill in all fields.", "error");
+      }
+      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+        return toast("OTP must be a 6-digit number.", "error");
+      }
+      if (newPassword !== confirmPassword) {
+        return toast("Passwords do not match.", "error");
+      }
+      if (newPassword.length < 6) {
+        return toast("Password must be at least 6 characters.", "error");
+      }
 
-  const API_BASE = `${window.APP_API_BASE}/auth`;
+      try {
+        const res = await fetch(`${API_BASE}/reset-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp, newPassword })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || "Failed to reset password");
+
+        if (forgotOtpState) forgotOtpState.style.display = "none";
+        if (forgotSuccessState) {
+          forgotSuccessState.style.display = "block";
+          if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotSuccessState });
+        }
+        toast("Password updated successfully!", "success");
+      } catch (err) {
+        toast(err.message, "error");
+      }
+    });
+  }
+
+  if (verificationDoneBtn) {
+    verificationDoneBtn.addEventListener("click", () => {
+      if (verificationInfoState) verificationInfoState.style.display = "none";
+      if (authForm) {
+        authForm.style.display = "block";
+        authForm.reset();
+      }
+      if (authTabs) authTabs.style.display = "flex";
+      switchToTab("login");
+    });
+  }
 
   const handleAuth = async (url, body) => {
     try {
@@ -274,6 +373,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const handleSignup = async (url, body) => {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "Registration failed");
+
+      if (verificationEmailDisplay) verificationEmailDisplay.textContent = body.email;
+      
+      if (authForm) authForm.style.display = "none";
+      if (authTabs) authTabs.style.display = "none";
+      panelTitle.textContent = "Check Your Email";
+      panelSubtitle.textContent = "Please verify your account to get started.";
+      
+      if (verificationInfoState) {
+        verificationInfoState.style.display = "block";
+        if (window.lucide?.createIcons) window.lucide.createIcons({ root: verificationInfoState });
+      }
+      toast("Verification email sent. Please check your inbox.", "success");
+    } catch (err) {
+      toast(err.message, "error");
+    }
+  };
+
   if (authForm) {
     authForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -295,7 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         const name = authForm.name.value.trim();
         if (!name || !email || !password) return toast("Fill all fields", "error");
-        handleAuth(`${API_BASE}/signup`, { name, email, password });
+        handleSignup(`${API_BASE}/signup`, { name, email, password });
       }
     });
   }
