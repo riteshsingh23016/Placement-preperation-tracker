@@ -473,8 +473,8 @@
       <div class="landing-footer__container">
         <span class="landing-footer__text">© 2026 Placement Prep Tracker. All rights reserved.</span>
         <div class="landing-footer__links">
-          <a class="landing-footer__link" href="#showcase">Privacy Policy</a>
-          <a class="landing-footer__link" href="#features">Terms of Service</a>
+          <button class="landing-footer__link" id="footerPrivacy" style="background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; color: inherit; transition: color 0.2s;">Privacy Policy</button>
+          <button class="landing-footer__link" id="footerTerms" style="background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; color: inherit; transition: color 0.2s;">Terms of Service</button>
         </div>
       </div>
     </footer>
@@ -591,12 +591,104 @@
             </button>
 
             <p class="fineprint">
-              By continuing, you agree to the Terms and Privacy Policy.
+              By continuing, you agree to the <button type="button" class="linkBtn" id="authTerms" style="font-size: inherit; display: inline; padding: 0; background: none; border: none; color: var(--indigo); cursor: pointer; text-decoration: underline;">Terms</button> and <button type="button" class="linkBtn" id="authPrivacy" style="font-size: inherit; display: inline; padding: 0; background: none; border: none; color: var(--indigo); cursor: pointer; text-decoration: underline;">Privacy Policy</button>.
             </p>
           </form>
         </div>
         
         <div id="toastStack" class="toastStack" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="auth-modal-overlay" id="privacyModal" hidden>
+      <div class="panel glass" style="max-width: 600px !important;">
+        <button class="auth-modal-close-btn" id="privacyClose" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+        <h2 class="panel__title" style="margin-bottom: 12px; font-size: 24px;">Privacy Policy</h2>
+        <div class="legal-content" style="max-height: 400px; overflow-y: auto; text-align: left; padding-right: 8px; font-size: 14px; line-height: 1.6; color: var(--muted);">
+          <p style="margin-bottom: 12px;">Last updated: May 31, 2026</p>
+          <p style="margin-bottom: 12px;">Welcome to Placement Prep Tracker. We value your privacy and are committed to protecting your personal data. This Privacy Policy outlines how we collect, use, and store information when you use our placement coordination and tracking platform.</p>
+          <h3 style="color: var(--text); margin: 16px 0 8px 0; font-size: 16px; font-weight: 700;">1. Information We Collect</h3>
+          <p style="margin-bottom: 12px;">We collect basic registration data (such as name, email address, and account passwords) to create and secure your profile. For students, we also host tracking details regarding your company applications, interview rounds, and notes.</p>
+          <h3 style="color: var(--text); margin: 16px 0 8px 0; font-size: 16px; font-weight: 700;">2. How We Use Your Data</h3>
+          <p style="margin-bottom: 12px;">Your personal and application progress data is only used to manage your pipeline, coordinate placement schedules, and analyze metrics within your authorized institution workspace. We do not sell or share your data with external advertisers.</p>
+          <h3 style="color: var(--text); margin: 16px 0 8px 0; font-size: 16px; font-weight: 700;">3. Data Security</h3>
+          <p style="margin-bottom: 12px;">We utilize encrypted database links and token-based API authentication to prevent unauthorized database access. You are responsible for maintaining the confidentiality of your login passwords.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="auth-modal-overlay" id="termsModal" hidden>
+      <div class="panel glass" style="max-width: 600px !important;">
+        <button class="auth-modal-close-btn" id="termsClose" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+        <h2 class="panel__title" style="margin-bottom: 12px; font-size: 24px;">Terms of Service</h2>
+        <div class="legal-content" style="max-height: 400px; overflow-y: auto; text-align: left; padding-right: 8px; font-size: 14px; line-height: 1.6; color: var(--muted);">
+          <p style="margin-bottom: 12px;">Last updated: May 31, 2026</p>
+          <p style="margin-bottom: 12px;">By accessing or using the Placement Prep Tracker platform, you agree to comply with and be bound by the following terms and conditions. Please read them carefully.</p>
+          <h3 style="color: var(--text); margin: 16px 0 8px 0; font-size: 16px; font-weight: 700;">1. Account Authorization</h3>
+          <p style="margin-bottom: 12px;">Access is authorized solely for students and placement administrators affiliated with registered institutions. You agree to provide accurate registration information and not share your credential tokens.</p>
+          <h3 style="color: var(--text); margin: 16px 0 8px 0; font-size: 16px; font-weight: 700;">2. User Conduct</h3>
+          <p style="margin-bottom: 12px;">You agree not to upload harmful scripts, forge authorization headers, or manipulate application metrics maliciously. Failure to comply may result in account termination by system administrators.</p>
+          <h3 style="color: var(--text); margin: 16px 0 8px 0; font-size: 16px; font-weight: 700;">3. Disclaimer of Warranties</h3>
+          <p style="margin-bottom: 12px;">The platform is provided on an "as-is" basis for organizing career applications. We do not guarantee placement outcomes or secure hiring offers from external corporate organizations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="auth-modal-overlay" id="forgotPasswordModal" hidden>
+      <div class="panel glass" style="max-width: 440px !important;">
+        <button class="auth-modal-close-btn" id="forgotClose" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+
+        <!-- Step 1: Input Email Form -->
+        <div id="forgotInputState">
+          <h2 class="panel__title" style="margin-bottom: 8px;">Reset Password</h2>
+          <p class="panel__subtitle" style="margin-bottom: 24px;">Enter your registered email address and we'll send you a link to reset your password.</p>
+          
+          <form class="form" id="forgotForm" novalidate>
+            <label class="field">
+              <span class="field__label">Email Address</span>
+              <span class="field__control">
+                <i class="field__icon" data-lucide="mail"></i>
+                <input
+                  class="input"
+                  type="email"
+                  name="email"
+                  id="forgotEmailInput"
+                  placeholder="you@college.edu"
+                  autocomplete="email"
+                  inputmode="email"
+                  spellcheck="false"
+                  required
+                />
+              </span>
+            </label>
+
+            <button class="btn btn--primary btn--lg" type="submit" style="margin-top: 8px;">
+              <span>Send Reset Link</span>
+              <i data-lucide="send"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Step 2: Success Confirmation State -->
+        <div id="forgotSuccessState" style="display: none; text-align: center; padding: 12px 0;">
+          <div class="success-icon-wrap" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); display: grid; place-items: center; margin: 0 auto 20px; color: var(--good); box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);">
+            <i data-lucide="check" style="width: 28px; height: 28px;"></i>
+          </div>
+          <h2 class="panel__title" style="margin-bottom: 8px;">Reset Link Sent!</h2>
+          <p class="panel__subtitle" style="margin-bottom: 24px; line-height: 1.5;">We have sent a password recovery link to <strong id="recoveryEmailDisplay" style="color: var(--text);">email@domain.com</strong>. Please check your inbox.</p>
+          <button class="btn btn--secondary btn--lg" id="forgotSuccessDoneBtn" type="button" style="width: 100%;">
+            <span>Done</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -606,5 +698,6 @@
     <script src="js/app.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/landing.js"></script>
+    <script src="js/legal.js"></script>
   </body>
 </html>

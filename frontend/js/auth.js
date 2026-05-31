@@ -164,9 +164,78 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const forgotBtn = qs("#forgotPassword");
-  if (forgotBtn) {
+  const forgotModal = qs("#forgotPasswordModal");
+  const forgotClose = qs("#forgotClose");
+  const forgotForm = qs("#forgotForm");
+  const forgotInputState = qs("#forgotInputState");
+  const forgotSuccessState = qs("#forgotSuccessState");
+  const recoveryEmailDisplay = qs("#recoveryEmailDisplay");
+  const forgotSuccessDoneBtn = qs("#forgotSuccessDoneBtn");
+
+  if (forgotBtn && forgotModal) {
     forgotBtn.addEventListener("click", () => {
-      toast("Password reset is not available in the demo.", "info");
+      // Reset state views
+      if (forgotInputState) forgotInputState.style.display = "block";
+      if (forgotSuccessState) forgotSuccessState.style.display = "none";
+      if (forgotForm) forgotForm.reset();
+      
+      // Close parent auth modal overlay first
+      const authModal = qs("#authModal");
+      if (authModal) {
+        authModal.classList.remove("is-open");
+        setTimeout(() => {
+          authModal.setAttribute("hidden", "");
+        }, 350);
+      }
+
+      forgotModal.removeAttribute("hidden");
+      setTimeout(() => {
+        forgotModal.classList.add("is-open");
+        if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotModal });
+      }, 10);
+    });
+  }
+
+  const closeForgotModal = () => {
+    if (forgotModal) {
+      forgotModal.classList.remove("is-open");
+      setTimeout(() => {
+        if (!forgotModal.classList.contains("is-open")) {
+          forgotModal.setAttribute("hidden", "");
+        }
+      }, 350);
+    }
+  };
+
+  if (forgotClose) forgotClose.addEventListener("click", closeForgotModal);
+  if (forgotSuccessDoneBtn) forgotSuccessDoneBtn.addEventListener("click", closeForgotModal);
+  if (forgotModal) {
+    forgotModal.addEventListener("click", (e) => {
+      if (e.target === forgotModal) closeForgotModal();
+    });
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeForgotModal();
+  });
+
+  if (forgotForm) {
+    forgotForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const emailInput = qs("#forgotEmailInput");
+      const email = emailInput ? emailInput.value.trim() : "";
+      if (!email) {
+        return toast("Please enter your email address.", "error");
+      }
+      if (!isValidEmail(email)) {
+        return toast("Please enter a valid email address.", "error");
+      }
+
+      // Simulate sending password reset email
+      if (recoveryEmailDisplay) recoveryEmailDisplay.textContent = email;
+      if (forgotInputState) forgotInputState.style.display = "none";
+      if (forgotSuccessState) forgotSuccessState.style.display = "block";
+      if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotSuccessState });
+      toast("Password reset email sent (Simulation).", "success");
     });
   }
 

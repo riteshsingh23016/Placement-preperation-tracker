@@ -555,7 +555,7 @@ body.theme-light {
 .theme-light .glass-input,
 .theme-light .companySelect,
 .theme-light .admin-select {
-  background: #ffffff !important;
+  background-color: #ffffff !important;
   border: 1px solid var(--stroke2) !important;
   color: var(--text-primary) !important;
 }

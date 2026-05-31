@@ -1538,7 +1538,7 @@ body.theme-light .admin-form-group select,
 body.theme-light .sd-notif-inputs input,
 body.theme-light .sd-notif-inputs textarea,
 body.theme-light .sd-notif-controls select {
-  background: #ffffff !important;
+  background-color: #ffffff !important;
   border: 1px solid var(--stroke2) !important;
   color: var(--text-primary) !important;
 }

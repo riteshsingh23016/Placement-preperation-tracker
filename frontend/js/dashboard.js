@@ -1,6 +1,8 @@
 /* Dashboard Analytics & Charts */
 
 let charts = {};
+window.charts = charts;
+let cachedAnalyticsData = null;
 
 function qs(sel, root = document) {
   return root.querySelector(sel);
@@ -73,6 +75,13 @@ function renderCharts(data) {
   const bad = getCssVar("--bad") || "#ef4444";
   const textMuted = getCssVar("--muted") || "rgba(255,255,255,0.7)";
   
+  const isLight = document.documentElement.classList.contains("theme-light") || document.body.classList.contains("theme-light");
+  const gridColor = isLight ? "rgba(15, 23, 42, 0.06)" : "rgba(255, 255, 255, 0.05)";
+  const tooltipBg = isLight ? "rgba(255, 255, 255, 0.96)" : "rgba(10, 15, 30, 0.92)";
+  const tooltipBorder = isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(255, 255, 255, 0.12)";
+  const tooltipTitleColor = isLight ? "#0f172a" : "#ffffff";
+  const tooltipBodyColor = isLight ? "#475569" : "rgba(255, 255, 255, 0.7)";
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -81,12 +90,14 @@ function renderCharts(data) {
         display: false,
       },
       tooltip: {
-        backgroundColor: "rgba(10, 15, 30, 0.92)",
-        borderColor: "rgba(255,255,255,0.12)",
+        backgroundColor: tooltipBg,
+        borderColor: tooltipBorder,
         borderWidth: 1,
         padding: 12,
         titleFont: { size: 14, weight: 'bold' },
+        titleColor: tooltipTitleColor,
         bodyFont: { size: 13 },
+        bodyColor: tooltipBodyColor,
         displayColors: true,
       }
     },
@@ -94,7 +105,7 @@ function renderCharts(data) {
       x: { grid: { display: false }, ticks: { color: textMuted, font: { size: 11 } } },
       y: { 
         beginAtZero: true,
-        grid: { color: "rgba(255,255,255,0.05)" }, 
+        grid: { color: gridColor }, 
         ticks: { 
           color: textMuted, 
           precision: 0,
@@ -253,7 +264,7 @@ function renderCharts(data) {
         indexAxis: 'y',
         scales: {
           y: { ...chartOptions.scales.y, grid: { display: false } },
-          x: { ...chartOptions.scales.x, grid: { display: true, color: "rgba(255,255,255,0.05)" } }
+          x: { ...chartOptions.scales.x, grid: { display: true, color: gridColor } }
         }
       }
     });
@@ -284,6 +295,7 @@ async function loadDashboardAnalytics() {
     const res = await window.CompanyApi.getAnalytics();
     if (!res.success) throw new Error(res.message);
     const data = res.data;
+    cachedAnalyticsData = data;
 
     // Update Summary Metrics with Animation
     const s = data.summary;
@@ -686,5 +698,12 @@ document.addEventListener("DOMContentLoaded", () => {
         chart.resize();
       }
     });
+  });
+
+  // Re-render charts on theme change
+  window.addEventListener('themeChanged', () => {
+    if (cachedAnalyticsData) {
+      renderCharts(cachedAnalyticsData);
+    }
   });
 });
