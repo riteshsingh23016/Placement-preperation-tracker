@@ -65,6 +65,21 @@ function showEmptyState(canvasId, title, text) {
 }
 
 /**
+ * Restores chart canvas visibility after being hidden by showEmptyState
+ */
+function restoreCanvas(canvasId) {
+  const canvas = qs(`#${canvasId}`);
+  if (!canvas) return null;
+  const container = canvas.parentElement;
+  const emptyState = container.querySelector(".empty-state");
+  if (emptyState) {
+    emptyState.remove();
+  }
+  canvas.style.display = "block";
+  return canvas;
+}
+
+/**
  * Initialize or update charts
  */
 function renderCharts(data) {
@@ -171,6 +186,7 @@ function renderCharts(data) {
 
   // 2. Status Chart (Doughnut)
   if (data.statusDistribution && data.statusDistribution.length > 0) {
+    restoreCanvas("statusChart");
     const ctx = qs("#statusChart").getContext("2d");
     const labels = data.statusDistribution.map(item => item._id);
     const values = data.statusDistribution.map(item => item.count);
@@ -208,6 +224,7 @@ function renderCharts(data) {
 
   // 3. Priority Mix (Bar)
   if (data.priorityDistribution && data.priorityDistribution.length > 0) {
+    restoreCanvas("priorityChart");
     const ctx = qs("#priorityChart").getContext("2d");
     const labels = data.priorityDistribution.map(item => item._id);
     const values = data.priorityDistribution.map(item => item.count);
@@ -235,6 +252,7 @@ function renderCharts(data) {
 
   // 4. Company Chart (Horizontal Bar)
   if (data.companyDistribution && data.companyDistribution.length > 0) {
+    restoreCanvas("companyChart");
     const ctx = qs("#companyChart").getContext("2d");
     
     // Truncate long company names

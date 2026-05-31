@@ -264,11 +264,7 @@
 }
 
 .companySelect {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.55)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 36px;
+  /* Inherits appearance and arrow image from style.css */
 }
 
 .glowBtn {
@@ -521,13 +517,10 @@
   width: 100%;
   font-size: 12px;
   font-weight: 650;
-  padding: 8px 32px 8px 10px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.55)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
-    no-repeat right 8px center;
+  background-color: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.88);
-  appearance: none;
   cursor: pointer;
   transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
@@ -1183,7 +1176,6 @@ body.theme-light .statusSelect {
   border-color: var(--stroke) !important;
   background-color: var(--bg-surface) !important;
   color: var(--text-primary) !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.55)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
 }
 
 body.theme-light .miniMenu__panel {
@@ -1339,7 +1331,7 @@ body.theme-light .toolbarField__label {
   color: var(--text-muted) !important;
 }
 body.theme-light .companySelect {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(15,23,42,0.55)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  /* Inherits light-mode arrow image from style.css */
 }
 body.theme-light .tableTab {
   color: var(--text-secondary) !important;

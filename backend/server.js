@@ -11,6 +11,7 @@ const collectionRoutes = require("./routes/collectionRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
+const sendEmail = require("./utils/sendEmail");
 
 dotenv.config();
 
@@ -31,6 +32,26 @@ app.use("/api/collections", collectionRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/announcements", announcementRoutes);
+
+app.get("/api/debug/email-test", async (req, res) => {
+  try {
+    console.log("Running GET /api/debug/email-test...");
+    const info = await sendEmail({
+      email: "riteshthelegend10f@gmail.com",
+      subject: "Test Email - Placement Prep Tracker",
+      text: "This is a debug test email verifying that the SMTP configuration is working properly.",
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; max-width: 600px; margin: auto;">
+          <h2 style="color: #0d9488;">SMTP Test Successful</h2>
+          <p>This is a debug test email verifying that the SMTP configuration is working properly on the Placement Prep Tracker platform.</p>
+        </div>
+      `
+    });
+    res.json({ success: true, message: "Email sent successfully", messageId: info.messageId, details: info });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to send email", error: error.message });
+  }
+});
 
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 

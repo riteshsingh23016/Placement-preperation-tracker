@@ -29,8 +29,13 @@ const sendEmail = async ({ email, subject, text, html }) => {
         },
       });
 
+      // Verify connection configuration
+      await transporter.verify();
+
       const fromName = process.env.FROM_NAME || 'Placement Prep Tracker';
       const fromEmail = process.env.FROM_EMAIL || process.env.SMTP_USER;
+
+      console.log("Sending OTP to:", email);
 
       const info = await transporter.sendMail({
         from: `"${fromName}" <${fromEmail}>`,
@@ -40,10 +45,10 @@ const sendEmail = async ({ email, subject, text, html }) => {
         html,
       });
 
-      console.log(`[Email Service] Sent email to ${email}. Message ID: ${info.messageId}`);
+      console.log("Email sent:", info.messageId);
       return info;
     } catch (error) {
-      console.error(`[Email Service] SMTP error sending to ${email}:`, error.message);
+      console.error(error);
       // Fail gracefully or throw? For auth flows, we throw to propagate back to user
       throw new Error(`Failed to send email to ${email}. Error: ${error.message}`);
     }

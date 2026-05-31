@@ -2227,3 +2227,21 @@ input::-webkit-credentials-auto-fill-button {
     padding-bottom: 96px !important;
   }
 }
+
+/* --- SEARCH BAR CONSISTENCY (PHASE 10) --- */
+.search,
+.admin-search-box,
+.companyToolbar__search {
+  height: 44px !important;
+  border-radius: 12px !important;
+  box-sizing: border-box !important;
+}
+
+.search__input,
+.admin-control,
+.companyToolbar__input {
+  font-size: 14px !important;
+  font-family: inherit !important;
+  height: 100% !important;
+}
+
