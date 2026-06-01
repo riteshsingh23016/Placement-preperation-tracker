@@ -99,6 +99,7 @@ exports.signup = async (req, res) => {
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("[SIGNUP OTP GENERATED]");
     const verificationOTPExpires = Date.now() + 24 * 60 * 60 * 1000;
     console.log(`[Signup Flow] Verification Token & OTP generated: Token: ${verificationToken.substring(0, 10)}..., OTP: ${verificationOTP}`);
 
@@ -118,6 +119,7 @@ exports.signup = async (req, res) => {
     if (!user) {
       return res.status(400).json({ success: false, message: "Failed to create user in database" });
     }
+    console.log("[SIGNUP OTP SAVED]");
     console.log("[Signup Flow] User created in database successfully. isVerified: false");
 
     // Provision default collections
@@ -132,7 +134,7 @@ exports.signup = async (req, res) => {
     const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`;
     const verificationLink = `${appUrl}/api/auth/verify-email/${verificationToken}`;
 
-    await sendEmail({
+    const emailResult = await sendEmail({
       email: user.email,
       subject: "Verify Your Email - Placement Prep Tracker",
       text: `Hello ${user.name},\n\nPlease verify your email address by clicking the link below:\n\n${verificationLink}\n\nAlternatively, you can enter the following 6-digit code on the verification screen:\n\nVerification Code: ${verificationOTP}\n\nThis code and link are valid for 24 hours.`,
@@ -153,6 +155,10 @@ exports.signup = async (req, res) => {
         </div>
       `,
     });
+    console.log("[SIGNUP EMAIL SENT]");
+    if (emailResult && emailResult.messageId) {
+      console.log(`[RESEND MESSAGE ID] ${emailResult.messageId}`);
+    }
     console.log("[Signup Flow] Verification email sent successfully to:", user.email);
 
     res.status(201).json({
@@ -450,17 +456,19 @@ exports.resendVerification = async (req, res) => {
 
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("[SIGNUP OTP GENERATED]");
 
     user.verificationToken = verificationToken;
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     user.verificationOTP = verificationOTP;
     user.verificationOTPExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
+    console.log("[SIGNUP OTP SAVED]");
 
     const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`;
     const verificationLink = `${appUrl}/api/auth/verify-email/${verificationToken}`;
 
-    await sendEmail({
+    const emailResult = await sendEmail({
       email: user.email,
       subject: "Verify Your Email - Placement Prep Tracker",
       text: `Hello ${user.name},\n\nPlease verify your email address by clicking the link below:\n\n${verificationLink}\n\nAlternatively, you can enter the following 6-digit code on the verification screen:\n\nVerification Code: ${verificationOTP}\n\nThis code and link are valid for 24 hours.`,
@@ -481,6 +489,10 @@ exports.resendVerification = async (req, res) => {
         </div>
       `,
     });
+    console.log("[SIGNUP EMAIL SENT]");
+    if (emailResult && emailResult.messageId) {
+      console.log(`[RESEND MESSAGE ID] ${emailResult.messageId}`);
+    }
 
     res.status(200).json({ success: true, message: "Verification email resent successfully." });
   } catch (err) {
@@ -535,17 +547,18 @@ exports.forgotPassword = async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("[OTP GENERATED]");
+    console.log("[FORGOT OTP GENERATED]");
     console.log("[Forgot Password Flow] OTP generated:", otp);
 
     user.resetPasswordOTP = otp;
     user.resetPasswordOTPExpires = Date.now() + 15 * 60 * 1000;
     await user.save();
+    console.log("[FORGOT OTP SAVED]");
     console.log("[Forgot Password Flow] OTP stored successfully in database.");
 
     console.log("[Forgot Password Flow] Dispatching email...");
     try {
-      await sendEmail({
+      const emailResult = await sendEmail({
         email: user.email,
         subject: "Password Reset OTP - Placement Prep Tracker",
         text: `Hello ${user.name},\n\nYour password reset verification code is: ${otp}\n\nThis OTP is valid for 15 minutes.`,
@@ -561,7 +574,10 @@ exports.forgotPassword = async (req, res) => {
           </div>
         `,
       });
-      console.log("[RESEND EMAIL SENT]");
+      console.log("[FORGOT EMAIL SENT]");
+      if (emailResult && emailResult.messageId) {
+        console.log(`[RESEND MESSAGE ID] ${emailResult.messageId}`);
+      }
       console.log("[Forgot Password Flow] Email sent successfully.");
     } catch (emailErr) {
       console.log("[RESEND EMAIL FAILED]");
