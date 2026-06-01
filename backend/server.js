@@ -79,6 +79,39 @@ app.get("/api/debug/email-test", async (req, res) => {
   }
 });
 
+app.get("/api/debug/resend-logs", async (req, res) => {
+  console.log("Running GET /api/debug/resend-logs...");
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    return res.status(200).json({
+      success: false,
+      error: "RESEND_API_KEY not configured."
+    });
+  }
+
+  try {
+    const axios = require("axios");
+    const response = await axios.get("https://api.resend.com/emails", {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+      timeout: 10000,
+    });
+
+    return res.json({
+      success: true,
+      emails: response.data.data
+    });
+  } catch (error) {
+    const errorData = error.response ? error.response.data : error.message;
+    return res.status(500).json({
+      success: false,
+      error: errorData
+    });
+  }
+});
+
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
 app.use((req, res) => {
