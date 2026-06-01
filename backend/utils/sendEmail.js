@@ -42,6 +42,7 @@ const sendEmail = async ({ email, subject, text, html }) => {
 
       // Verify connection configuration
       await transporter.verify();
+      console.log("SMTP connection success");
 
       const fromName = process.env.FROM_NAME || 'Placement Prep Tracker';
       const fromEmail = process.env.FROM_EMAIL || process.env.SMTP_USER;
@@ -59,11 +60,16 @@ const sendEmail = async ({ email, subject, text, html }) => {
       console.log("Email sent:", info.messageId);
       return info;
     } catch (error) {
-      console.error(error);
+      if (error.code === 'EAUTH' || error.message.toLowerCase().includes('auth') || error.message.toLowerCase().includes('password')) {
+        console.error("SMTP authentication failure:", error.message);
+      } else {
+        console.error("SMTP connection/configuration failure:", error);
+      }
       // Fail gracefully or throw? For auth flows, we throw to propagate back to user
       throw new Error(`Failed to send email to ${email}. Error: ${error.message}`);
     }
   } else {
+    console.log("Missing SMTP credentials. Falling back to Console logging.");
     // Graceful fallback to console logging for local testing/dev environments
     console.log('\n==================================================');
     console.log('📬  [DEVELOPMENT MOCK EMAIL SENT]');

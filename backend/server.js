@@ -34,10 +34,60 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/announcements", announcementRoutes);
 
 app.get("/api/debug/email-test", async (req, res) => {
+  console.log("Running GET /api/debug/email-test...");
+  
+  const isSmtpConfigured = 
+    process.env.SMTP_HOST && 
+    process.env.SMTP_PORT && 
+    process.env.SMTP_USER && 
+    process.env.SMTP_PASS;
+
+  if (!isSmtpConfigured) {
+    console.log("SMTP not configured in environment variables.");
+    return res.status(200).json({
+      success: false,
+      smtpConnected: false,
+      messageId: null,
+      error: "SMTP environment variables are not configured."
+    });
+  }
+
   try {
-    console.log("Running GET /api/debug/email-test...");
-    const info = await sendEmail({
-      email: "riteshthelegend10f@gmail.com",
+    const nodemailer = require("nodemailer");
+    
+    // Normalize and sanitize variables just like sendEmail.js
+    const host = (process.env.SMTP_HOST || '').trim().replace(/^["']|["']$/g, '');
+    const portVal = (process.env.SMTP_PORT || '').toString().trim().replace(/^["']|["']$/g, '');
+    const port = parseInt(portVal, 10) || 587;
+    const secureVal = (process.env.SMTP_SECURE || '').toString().trim().replace(/^["']|["']$/g, '').toLowerCase();
+    const secure = secureVal === 'true' || port === 465;
+    const user = (process.env.SMTP_USER || '').trim().replace(/^["']|["']$/g, '');
+    let pass = (process.env.SMTP_PASS || '');
+    pass = pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '');
+
+    console.log(`[Debug Email Route] Re-creating test transporter for: ${host}:${port}, secure: ${secure}, user: ${user}`);
+    
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure,
+      auth: {
+        user,
+        pass,
+      },
+    });
+
+    console.log("[Debug Email Route] Verifying connection...");
+    await transporter.verify();
+    console.log("[Debug Email Route] SMTP connection success.");
+
+    const fromName = process.env.FROM_NAME || 'Placement Prep Tracker';
+    const fromEmail = process.env.FROM_EMAIL || user;
+
+    console.log("[Debug Email Route] Sending email to riteshthelegend10f@gmail.com...");
+    const info = await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: "riteshthelegend10f@gmail.com",
       subject: "Test Email - Placement Prep Tracker",
       text: "This is a debug test email verifying that the SMTP configuration is working properly.",
       html: `
@@ -47,9 +97,22 @@ app.get("/api/debug/email-test", async (req, res) => {
         </div>
       `
     });
-    res.json({ success: true, message: "Email sent successfully", messageId: info.messageId, details: info });
+
+    console.log("[Debug Email Route] Email sent successfully:", info.messageId);
+    return res.json({
+      success: true,
+      smtpConnected: true,
+      messageId: info.messageId,
+      error: null
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to send email", error: error.message });
+    console.error("[Debug Email Route] Error:", error);
+    return res.status(500).json({
+      success: false,
+      smtpConnected: false,
+      messageId: null,
+      error: error.message
+    });
   }
 });
 

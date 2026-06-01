@@ -54,6 +54,7 @@ const isValidEmail = (email) => {
 exports.signup = async (req, res) => {
   try {
     let { name, email, password } = req.body;
+    console.log("[Signup Flow] Request body received for:", email);
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: "Please provide all required fields" });
@@ -81,6 +82,7 @@ exports.signup = async (req, res) => {
     const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
     const verificationOTPExpires = Date.now() + 24 * 60 * 60 * 1000;
+    console.log(`[Signup Flow] Verification Token & OTP generated: Token: ${verificationToken.substring(0, 10)}..., OTP: ${verificationOTP}`);
 
     const user = await User.create({
       name,
@@ -98,6 +100,7 @@ exports.signup = async (req, res) => {
     if (!user) {
       return res.status(400).json({ success: false, message: "Failed to create user in database" });
     }
+    console.log("[Signup Flow] User created in database successfully. isVerified: false");
 
     // Provision default collections
     await Collection.insertMany([
@@ -132,6 +135,7 @@ exports.signup = async (req, res) => {
         </div>
       `,
     });
+    console.log("[Signup Flow] Verification email sent successfully to:", user.email);
 
     res.status(201).json({
       success: true,
@@ -142,7 +146,7 @@ exports.signup = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("[Auth] Signup Error:", err.message);
+    console.error("[Signup Flow] Error thrown:", err);
     res.status(500).json({
       success: false,
       message: err.message || "Failed to sign up",
@@ -381,25 +385,29 @@ exports.changePassword = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
+    console.log("[Email Verification Link Flow] Token received:", token ? token.substring(0, 10) + "..." : "null");
     const user = await User.findOne({
       verificationToken: token,
       verificationTokenExpires: { $gt: Date.now() },
     });
 
     if (!user) {
+      console.log("[Email Verification Link Flow] Verification failed: user not found or expired token.");
       return res.redirect("/index.html?verified=false&error=invalid_or_expired_token");
     }
 
+    console.log("[Email Verification Link Flow] User found:", user.email);
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationTokenExpires = undefined;
     user.verificationOTP = undefined;
     user.verificationOTPExpires = undefined;
     await user.save();
+    console.log("[Email Verification Link Flow] Email verified successfully. Database updated.");
 
     res.redirect("/index.html?verified=true");
   } catch (err) {
-    console.error("[Auth] Verify Email Error:", err.message);
+    console.error("[Email Verification Link Flow] Error thrown:", err);
     res.redirect("/index.html?verified=false&error=server_error");
   }
 };
@@ -466,6 +474,7 @@ exports.resendVerification = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     let { email } = req.body;
+    console.log("[Forgot Password Flow] Email received:", email);
     if (!email) {
       return res.status(400).json({ success: false, message: "Please provide an email address." });
     }
@@ -473,6 +482,7 @@ exports.forgotPassword = async (req, res) => {
     email = email.trim().toLowerCase();
 
     if (isRateLimited(email)) {
+      console.log("[Forgot Password Flow] Request blocked by rate limiting.");
       return res.status(429).json({
         success: false,
         message: "Too many password reset requests. Please try again after 15 minutes.",
@@ -482,6 +492,7 @@ exports.forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log("[Forgot Password Flow] User email not found in database. Still returning success to prevent enumeration.");
       return res.status(200).json({
         success: true,
         message: "If that email is registered, we have sent a password reset OTP code.",
@@ -489,11 +500,14 @@ exports.forgotPassword = async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("[Forgot Password Flow] OTP generated:", otp);
 
     user.resetPasswordOTP = otp;
     user.resetPasswordOTPExpires = Date.now() + 15 * 60 * 1000;
     await user.save();
+    console.log("[Forgot Password Flow] OTP stored successfully in database.");
 
+    console.log("[Forgot Password Flow] Dispatching email...");
     await sendEmail({
       email: user.email,
       subject: "Password Reset OTP - Placement Prep Tracker",
@@ -510,13 +524,14 @@ exports.forgotPassword = async (req, res) => {
         </div>
       `,
     });
+    console.log("[Forgot Password Flow] Email sent successfully.");
 
     res.status(200).json({
       success: true,
       message: "If that email is registered, we have sent a password reset OTP code.",
     });
   } catch (err) {
-    console.error("[Auth] Forgot Password Error:", err.message);
+    console.error("[Forgot Password Flow] Error thrown:", err);
     res.status(500).json({ success: false, message: err.message || "Failed to process forgot password request." });
   }
 };
@@ -587,6 +602,7 @@ exports.resetPassword = async (req, res) => {
 exports.verifyEmailOtp = async (req, res) => {
   try {
     let { email, otp } = req.body;
+    console.log(`[Email Verification OTP Flow] Parameters received: email: ${email}, otp: ${otp}`);
     if (!email || !otp) {
       return res.status(400).json({ success: false, message: "Please provide email and verification code." });
     }
@@ -601,19 +617,22 @@ exports.verifyEmailOtp = async (req, res) => {
     });
 
     if (!user) {
+      console.log("[Email Verification OTP Flow] Verification failed: invalid or expired OTP code.");
       return res.status(400).json({ success: false, message: "Invalid or expired verification code." });
     }
 
+    console.log("[Email Verification OTP Flow] User found with matching active OTP code:", user.email);
     user.isVerified = true;
     user.verificationToken = undefined;
     user.verificationTokenExpires = undefined;
     user.verificationOTP = undefined;
     user.verificationOTPExpires = undefined;
     await user.save();
+    console.log("[Email Verification OTP Flow] Email verified successfully via OTP. Database updated.");
 
     res.status(200).json({ success: true, message: "Email verified successfully. You can now login." });
   } catch (err) {
-    console.error("[Auth] Verify Email OTP Error:", err.message);
+    console.error("[Email Verification OTP Flow] Error thrown:", err);
     res.status(500).json({ success: false, message: err.message || "Failed to verify email code." });
   }
 };
