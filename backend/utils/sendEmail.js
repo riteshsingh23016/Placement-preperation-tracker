@@ -1,79 +1,51 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 /**
- * Sends an email using Nodemailer if SMTP settings are present in the environment variables,
+ * Sends an email using Resend API if RESEND_API_KEY settings are present in the environment variables,
  * otherwise logs the email content to the console as a fallback for local development.
  * 
- * Required env keys for SMTP:
- * - SMTP_HOST
- * - SMTP_PORT
- * - SMTP_USER
- * - SMTP_PASS
+ * Required env keys for Resend:
+ * - RESEND_API_KEY
+ * - FROM_EMAIL
  */
 const sendEmail = async ({ email, subject, text, html }) => {
-  const isSmtpConfigured = 
-    process.env.SMTP_HOST && 
-    process.env.SMTP_PORT && 
-    process.env.SMTP_USER && 
-    process.env.SMTP_PASS;
+  const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 
-  if (isSmtpConfigured) {
+  if (apiKey) {
     try {
-      const host = (process.env.SMTP_HOST || '').trim().replace(/^["']|["']$/g, '');
-      const portVal = (process.env.SMTP_PORT || '').toString().trim().replace(/^["']|["']$/g, '');
-      const port = parseInt(portVal, 10) || 587;
-      const secureVal = (process.env.SMTP_SECURE || '').toString().trim().replace(/^["']|["']$/g, '').toLowerCase();
-      const secure = secureVal === 'true' || port === 465;
-      const user = (process.env.SMTP_USER || '').trim().replace(/^["']|["']$/g, '');
-      
-      // Sanitize app password by stripping spaces and quotes
-      let pass = (process.env.SMTP_PASS || '');
-      pass = pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '');
+      console.log("Sending email to:", email);
 
-      const transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure,
-        auth: {
-          user,
-          pass,
+      const response = await axios.post(
+        'https://api.resend.com/emails',
+        {
+          from: fromEmail,
+          to: [email],
+          subject: subject,
+          html: html || text,
+          text: text,
         },
-        family: 4,
-      });
+        {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        }
+      );
 
-      // Verify connection configuration
-      await transporter.verify();
-      console.log("[SMTP CONNECTED]");
-      console.log("SMTP connection success");
-
-      const fromName = process.env.FROM_NAME || 'Placement Prep Tracker';
-      const fromEmail = process.env.FROM_EMAIL || process.env.SMTP_USER;
-
-      console.log("Sending OTP to:", email);
-
-      const info = await transporter.sendMail({
-        from: `"${fromName}" <${fromEmail}>`,
-        to: email,
-        subject,
-        text,
-        html,
-      });
-
-      console.log("[EMAIL SENT]");
-      console.log("Email sent:", info.messageId);
-      return info;
+      console.log("[RESEND EMAIL SENT]");
+      console.log("Email sent successfully via Resend, message ID:", response.data.id);
+      return { messageId: response.data.id, data: response.data };
     } catch (error) {
-      console.log("[EMAIL FAILED]");
-      if (error.code === 'EAUTH' || error.message.toLowerCase().includes('auth') || error.message.toLowerCase().includes('password')) {
-        console.error("SMTP authentication failure:", error.message);
-      } else {
-        console.error("SMTP connection/configuration failure:", error);
-      }
-      // Fail gracefully or throw? For auth flows, we throw to propagate back to user
-      throw new Error(`Failed to send email to ${email}. Error: ${error.message}`);
+      console.log("[RESEND EMAIL FAILED]");
+      const status = error.response ? error.response.status : 'No Response';
+      const errorData = error.response ? JSON.stringify(error.response.data) : error.message;
+      console.error(`Resend API connection failure (status: ${status}):`, errorData);
+      throw new Error(`Failed to send email to ${email} via Resend. Error: ${errorData}`);
     }
   } else {
-    console.log("Missing SMTP credentials. Falling back to Console logging.");
+    console.log("Missing RESEND_API_KEY. Falling back to Console logging.");
     // Graceful fallback to console logging for local testing/dev environments
     console.log('\n==================================================');
     console.log('📬  [DEVELOPMENT MOCK EMAIL SENT]');
@@ -86,9 +58,10 @@ const sendEmail = async ({ email, subject, text, html }) => {
       console.log(`HTML:\n${html}`);
     }
     console.log('==================================================\n');
-    console.log("[EMAIL SENT]");
+    console.log("[RESEND EMAIL SENT]");
     return { mock: true, messageId: `mock_${Date.now()}` };
   }
 };
 
 module.exports = sendEmail;
+

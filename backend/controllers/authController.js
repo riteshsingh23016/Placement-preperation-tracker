@@ -561,10 +561,10 @@ exports.forgotPassword = async (req, res) => {
           </div>
         `,
       });
-      console.log("[EMAIL SENT]");
+      console.log("[RESEND EMAIL SENT]");
       console.log("[Forgot Password Flow] Email sent successfully.");
     } catch (emailErr) {
-      console.log("[EMAIL FAILED]");
+      console.log("[RESEND EMAIL FAILED]");
       console.error("[Forgot Password Flow] Email dispatch failed:", emailErr);
       throw emailErr;
     }

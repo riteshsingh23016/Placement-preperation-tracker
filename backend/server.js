@@ -36,19 +36,15 @@ app.use("/api/announcements", announcementRoutes);
 app.get("/api/debug/email-test", async (req, res) => {
   console.log("Running GET /api/debug/email-test...");
   
-  const isSmtpConfigured = 
-    process.env.SMTP_HOST && 
-    process.env.SMTP_PORT && 
-    process.env.SMTP_USER && 
-    process.env.SMTP_PASS;
+  const hasResendConfig = !!process.env.RESEND_API_KEY;
 
-  if (!isSmtpConfigured) {
-    console.log("SMTP not configured in environment variables.");
+  if (!hasResendConfig) {
+    console.log("Resend API key not configured in environment variables.");
     return res.status(200).json({
       success: false,
-      smtpConnected: false,
+      resendConnected: false,
       messageId: null,
-      error: "SMTP environment variables are not configured."
+      error: "RESEND_API_KEY environment variable is not configured."
     });
   }
 
@@ -56,19 +52,19 @@ app.get("/api/debug/email-test", async (req, res) => {
     const info = await sendEmail({
       email: "riteshthelegend10f@gmail.com",
       subject: "Test Email - Placement Prep Tracker",
-      text: "This is a debug test email verifying that the SMTP configuration is working properly.",
+      text: "This is a debug test email verifying that the Resend integration is working properly.",
       html: `
         <div style="font-family: sans-serif; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; max-width: 600px; margin: auto;">
-          <h2 style="color: #0d9488;">SMTP Test Successful</h2>
-          <p>This is a debug test email verifying that the SMTP configuration is working properly on the Placement Prep Tracker platform.</p>
+          <h2 style="color: #4f46e5;">Resend Integration Successful</h2>
+          <p>This is a debug test email verifying that the Resend API integration is working properly on the Placement Prep Tracker platform.</p>
         </div>
       `
     });
 
-    console.log("[Debug Email Route] Email sent successfully:", info.messageId);
+    console.log("[Debug Email Route] Email sent successfully via Resend:", info.messageId);
     return res.json({
       success: true,
-      smtpConnected: true,
+      resendConnected: true,
       messageId: info.messageId,
       error: null
     });
@@ -76,7 +72,7 @@ app.get("/api/debug/email-test", async (req, res) => {
     console.error("[Debug Email Route] Error:", error);
     return res.status(500).json({
       success: false,
-      smtpConnected: false,
+      resendConnected: false,
       messageId: null,
       error: error.message
     });
@@ -102,48 +98,26 @@ async function start() {
   try {
     await connectDB();
     
-    // SMTP Startup Verification & Logs
-    if (process.env.SMTP_HOST) console.log("SMTP_HOST loaded");
-    if (process.env.SMTP_PORT) console.log("SMTP_PORT loaded");
-    if (process.env.SMTP_USER) console.log("SMTP_USER loaded");
-    if (process.env.SMTP_PASS) console.log("SMTP_PASS loaded");
+    // Resend Startup Verification & Logs
+    if (process.env.RESEND_API_KEY) console.log("RESEND_API_KEY loaded");
+    if (process.env.FROM_EMAIL) console.log("FROM_EMAIL loaded");
 
-    const isSmtpConfigured = 
-      process.env.SMTP_HOST && 
-      process.env.SMTP_PORT && 
-      process.env.SMTP_USER && 
-      process.env.SMTP_PASS;
-
-    if (isSmtpConfigured) {
+    if (process.env.RESEND_API_KEY) {
       // Run verification asynchronously to prevent blocking server boot
       (async () => {
         try {
-          const nodemailer = require("nodemailer");
-          const host = (process.env.SMTP_HOST || '').trim().replace(/^["']|["']$/g, '');
-          const portVal = (process.env.SMTP_PORT || '').toString().trim().replace(/^["']|["']$/g, '');
-          const port = parseInt(portVal, 10) || 587;
-          const secureVal = (process.env.SMTP_SECURE || '').toString().trim().replace(/^["']|["']$/g, '').toLowerCase();
-          const secure = secureVal === 'true' || port === 465;
-          const user = (process.env.SMTP_USER || '').trim().replace(/^["']|["']$/g, '');
-          let pass = (process.env.SMTP_PASS || '');
-          pass = pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '');
-
-          const transporter = nodemailer.createTransport({
-            host,
-            port,
-            secure,
-            auth: {
-              user,
-              pass,
+          const axios = require("axios");
+          await axios.get("https://api.resend.com/domains", {
+            headers: {
+              'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
             },
-            family: 4,
+            timeout: 5000,
           });
-
-          await transporter.verify();
-          console.log("SMTP CONNECTED SUCCESSFULLY");
+          console.log("RESEND CONNECTED SUCCESSFULLY");
         } catch (err) {
-          console.log("SMTP AUTH FAILED");
-          console.error("[SMTP Startup] Connection verification failed:", err.message);
+          console.log("RESEND AUTH FAILED");
+          const errorMsg = err.response ? JSON.stringify(err.response.data) : err.message;
+          console.error("[Resend Startup] Verification failed:", errorMsg);
         }
       })();
     }
