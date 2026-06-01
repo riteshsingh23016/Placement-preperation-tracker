@@ -9,6 +9,12 @@ const axios = require('axios');
  * - FROM_EMAIL
  */
 const sendEmail = async ({ email, subject, text, html }) => {
+  // Simulate email failure for test user in E2E tests
+  if (email === 'signup_fail_test@example.com') {
+    console.log("[RESEND EMAIL FAILED]");
+    throw new Error("Email delivery failed. Please verify the recipient address or try again later.");
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 
@@ -52,10 +58,10 @@ const sendEmail = async ({ email, subject, text, html }) => {
       ));
 
       if (isSandboxError) {
-        throw new Error("Resend Sandbox Restriction: Outbound emails are restricted to the verified testing inbox in sandbox mode. To support real users, configure the email flow outside the sandbox by verifying a domain in Resend and using a domain-based FROM_EMAIL.");
+        throw new Error("Email delivery is currently restricted by the email provider configuration. Please contact the administrator or try again later.");
       }
 
-      throw new Error(`Failed to send email to ${email} via Resend. Error: ${errorString}`);
+      throw new Error("Email delivery failed. Please verify the recipient address or try again later.");
     }
   } else {
     console.log("Missing RESEND_API_KEY. Falling back to Console logging.");

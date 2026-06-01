@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 
 const otpRateLimiter = new Map();
-const DISABLE_RATE_LIMITER = process.env.DISABLE_RATE_LIMITER !== 'false';
+const DISABLE_RATE_LIMITER = process.env.DISABLE_RATE_LIMITER === 'true';
 
 const checkForgotPasswordRateLimit = (email, ip) => {
   const now = Date.now();
@@ -167,7 +167,7 @@ exports.signup = async (req, res) => {
       await User.deleteOne({ _id: user._id });
       await Collection.deleteMany({ user: user._id });
 
-      const isSandbox = emailErr.message && emailErr.message.includes("Resend Sandbox Restriction");
+      const isSandbox = emailErr.message && emailErr.message.includes("restricted by the email provider");
       return res.status(isSandbox ? 403 : 500).json({
         success: false,
         message: emailErr.message || "Failed to send verification email.",
@@ -511,7 +511,7 @@ exports.resendVerification = async (req, res) => {
       }
     } catch (emailErr) {
       console.error("[Resend Verification Flow] Email dispatch failed:", emailErr);
-      const isSandbox = emailErr.message && emailErr.message.includes("Resend Sandbox Restriction");
+      const isSandbox = emailErr.message && emailErr.message.includes("restricted by the email provider");
       return res.status(isSandbox ? 403 : 500).json({
         success: false,
         message: emailErr.message || "Failed to resend verification email.",
@@ -616,7 +616,7 @@ exports.forgotPassword = async (req, res) => {
     });
   } catch (err) {
     console.error("[Forgot Password Flow] Error thrown:", err);
-    const isSandbox = err.message && err.message.includes("Resend Sandbox Restriction");
+    const isSandbox = err.message && err.message.includes("restricted by the email provider");
     res.status(isSandbox ? 403 : 500).json({
       success: false,
       message: err.message || "Failed to process forgot password request.",

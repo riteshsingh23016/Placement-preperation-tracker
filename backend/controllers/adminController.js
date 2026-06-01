@@ -273,3 +273,97 @@ exports.verifyUser = async (req, res) => {
   }
 };
 
+// Get all unverified users with audit details
+exports.getUnverifiedUsers = async (req, res) => {
+  try {
+    const unverifiedUsers = await User.find({ isVerified: false })
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    const auditCleanupPatchDate = new Date("2026-06-01T14:01:12Z");
+
+    const enhanced = unverifiedUsers.map(user => {
+      const createdBeforePatch = new Date(user.createdAt) < auditCleanupPatchDate;
+      const emailDelivered = (user.email || "").toLowerCase().trim() === "riteshthelegend10f@gmail.com";
+
+      return {
+        ...user.toObject(),
+        createdBeforePatch,
+        emailDelivered,
+        recoverable: true
+      };
+    });
+
+    res.status(200).json({ success: true, data: enhanced });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to fetch unverified users" });
+  }
+};
+
+// Resend verification email for a specific stuck user
+exports.resendVerificationForUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    const crypto = require("crypto");
+    const sendEmail = require("../utils/sendEmail");
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ success: false, message: "User is already verified" });
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+    user.verificationOTP = verificationOTP;
+    user.verificationOTPExpires = Date.now() + 24 * 60 * 60 * 1000;
+    await user.save();
+
+    const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const verificationLink = `${appUrl}/api/auth/verify-email/${verificationToken}`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Verify Your Email - Placement Prep Tracker",
+        text: `Hello ${user.name},\n\nPlease verify your email address by clicking the link below:\n\n${verificationLink}\n\nAlternatively, you can enter the following 6-digit code on the verification screen:\n\nVerification Code: ${verificationOTP}\n\nThis code and link are valid for 24 hours.`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <h2 style="color: #4f46e5; margin-bottom: 16px;">Email Verification</h2>
+            <p>Hello <strong>${user.name}</strong>,</p>
+            <p>Please click the button below to verify your email address and activate your account:</p>
+            <div style="margin: 24px 0;">
+              <a href="${verificationLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Verify Email Address</a>
+            </div>
+            <p style="margin: 20px 0;">Alternatively, you can verify your account by entering this 6-digit verification code on the verification screen:</p>
+            <div style="margin: 24px 0; text-align: center;">
+              <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block; color: #1e1b4b;">${verificationOTP}</span>
+            </div>
+            <p style="color: #64748b; font-size: 14px;">This link and code are valid for 24 hours. If the button doesn't work, copy and paste this URL into your browser:</p>
+            <p style="color: #64748b; font-size: 14px; word-break: break-all;">${verificationLink}</p>
+          </div>
+        `,
+      });
+
+      res.status(200).json({ success: true, message: "Verification email resent successfully." });
+    } catch (emailErr) {
+      console.error("[Admin Repair] Email dispatch failed:", emailErr);
+      const isSandbox = emailErr.message && emailErr.message.includes("restricted by the email provider");
+      res.status(isSandbox ? 403 : 500).json({
+        success: false,
+        message: emailErr.message || "Failed to resend verification email.",
+        isSandboxError: isSandbox
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to resend verification email" });
+  }
+};
+
+

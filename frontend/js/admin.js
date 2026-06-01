@@ -1086,6 +1086,132 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.lucide) window.lucide.createIcons();
     };
 
+    const renderRepairs = async () => {
+        const tbody = qs("#repairsTableBody");
+        if (!tbody) return;
+
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; opacity: 0.6;">Loading stuck users...</td></tr>`;
+
+        const res = await adminApi.get("/unverified");
+        const stuckUsers = res || [];
+
+        if (stuckUsers.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; opacity: 0.6;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                            <i data-lucide="shield-check" style="width: 48px; height: 48px; color: var(--color-success);"></i>
+                            <p>No stuck users found! All accounts are verified or successfully registered.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            if (window.lucide) window.lucide.createIcons({ root: tbody });
+            return;
+        }
+
+        tbody.innerHTML = stuckUsers.map(user => `
+            <tr>
+                <td>
+                    <div class="user-cell">
+                        <div class="user-cell__avatar">${user.name ? user.name.charAt(0) : '?'}</div>
+                        <div class="user-cell__name">${user.name}</div>
+                    </div>
+                </td>
+                <td>${user.email}</td>
+                <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                <td>
+                    <span class="badge ${user.createdBeforePatch ? 'badge--blocked' : 'badge--active'}">
+                        ${user.createdBeforePatch ? 'Before Patch' : 'After Patch'}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge ${user.emailDelivered ? 'badge--active' : 'badge--warning'}">
+                        ${user.emailDelivered ? 'Delivered' : 'Sandbox Restricted'}
+                    </span>
+                </td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn--ghost btn--sm repair-verify" data-id="${user._id}" style="color: var(--color-success); border-color: rgba(var(--color-success-rgb), 0.2);">
+                            Verify Now
+                        </button>
+                        <button class="btn btn--ghost btn--sm repair-resend" data-id="${user._id}">
+                            Resend Email
+                        </button>
+                        <button class="btn btn--ghost btn--sm repair-delete btn--danger" data-id="${user._id}" style="color: var(--bad); border-color: rgba(var(--color-danger-rgb), 0.2);">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join("");
+
+        if (window.lucide) window.lucide.createIcons({ root: tbody });
+
+        // Bind Verify Action
+        qsa(".repair-verify").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id = btn.dataset.id;
+                const token = localStorage.getItem("token");
+                try {
+                    const response = await fetch(`${window.APP_API_BASE}/admin/users/${id}/verify`, {
+                        method: "PATCH",
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        if (window.Toast) window.Toast.success("Success", "User marked as verified!");
+                        renderRepairs();
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (err) {
+                    if (window.Toast) window.Toast.error("Error", err.message || "Failed to verify user");
+                }
+            });
+        });
+
+        // Bind Resend Action
+        qsa(".repair-resend").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id = btn.dataset.id;
+                const token = localStorage.getItem("token");
+                const originalHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.textContent = "Sending...";
+                try {
+                    const response = await fetch(`${window.APP_API_BASE}/admin/users/${id}/resend`, {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        if (window.Toast) window.Toast.success("Success", "Verification email resent!");
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (err) {
+                    if (window.Toast) window.Toast.error("Email Error", err.message || "Failed to resend verification");
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            });
+        });
+
+        // Bind Delete Action
+        qsa(".repair-delete").forEach(btn => {
+            btn.addEventListener("click", () => {
+                deletingStudentId = btn.dataset.id;
+                const delModal = qs("#deleteConfirmModal");
+                if (delModal) {
+                    delModal.style.display = "flex";
+                    if (window.lucide) window.lucide.createIcons({ root: delModal });
+                }
+            });
+        });
+    };
+
     const renderReports = async () => {
         const data = await adminApi.get("/stats") || fallbackStats;
         const container = qs("#reportsStats");
@@ -1152,7 +1278,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             applications: "All Applications",
                             drives: "Placement Drives",
                             reports: "Reports & Analytics",
-                            announcements: "Announcements"
+                            announcements: "Announcements",
+                            repairs: "Verification Repairs"
                         };
                         const titleEl = qs("#activeSectionTitle");
                         if (titleEl) titleEl.textContent = titles[target] || "Admin Portal";
@@ -1168,6 +1295,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (target === "drives") renderDrives();
                 if (target === "reports") renderReports();
                 if (target === "announcements") renderAnnouncements();
+                if (target === "repairs") renderRepairs();
             });
         });
 
@@ -1256,6 +1384,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     deleteModal.style.display = "none";
                     closeStudentDetailModal();
                     renderStudents();
+                    
+                    const repairsSection = qs("#admin-repairs");
+                    if (repairsSection && repairsSection.classList.contains("active")) {
+                        renderRepairs();
+                    }
                 } else {
                     if (window.Toast) window.Toast.error("Error", "Failed to delete student");
                 }

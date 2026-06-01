@@ -60,6 +60,10 @@
                     <i data-lucide="user-cog"></i>
                     <span>User Management</span>
                 </button>
+                <button class="nav__item" data-section="repairs" id="navRepairs">
+                    <i data-lucide="wrench"></i>
+                    <span>Verification Repairs</span>
+                </button>
                 <button class="nav__item" id="navSettings">
                     <i data-lucide="settings"></i>
                     <span>Settings/Profile</span>
@@ -344,6 +348,30 @@
                     </div>
                     <div class="drives-grid" id="announcementsContainer">
                         <!-- Loaded via JS -->
+                    </div>
+                </section>
+
+                <!-- Repairs Section -->
+                <section id="admin-repairs" class="admin-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Verification Repairs (Stuck Users)</h2>
+                    </div>
+                    <div class="table-container glass">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Email</th>
+                                    <th>Registered</th>
+                                    <th>Patch Status</th>
+                                    <th>Email Delivery</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="repairsTableBody">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </section>
             </div>
