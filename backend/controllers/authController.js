@@ -5,18 +5,36 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 
 const otpRateLimiter = new Map();
+const DISABLE_RATE_LIMITER = process.env.DISABLE_RATE_LIMITER !== 'false';
 
-const isRateLimited = (email) => {
+const checkForgotPasswordRateLimit = (email, ip) => {
   const now = Date.now();
   const requests = otpRateLimiter.get(email) || [];
   const recentRequests = requests.filter(time => now - time < 15 * 60 * 1000);
-  if (recentRequests.length >= 3) {
-    return true;
+  
+  const attemptCount = recentRequests.length;
+  const isLimited = attemptCount >= 3;
+  
+  const oldestTime = recentRequests[0] || now;
+  const resetTime = new Date(oldestTime + 15 * 60 * 1000).toISOString();
+
+  if (!isLimited) {
+    recentRequests.push(now);
+    otpRateLimiter.set(email, recentRequests);
   }
-  recentRequests.push(now);
-  otpRateLimiter.set(email, recentRequests);
-  return false;
+
+  const remainingAttempts = isLimited ? 0 : Math.max(0, 3 - recentRequests.length);
+
+  return {
+    isLimited,
+    ip,
+    email,
+    attemptCount: isLimited ? attemptCount : recentRequests.length,
+    remainingAttempts,
+    resetTime
+  };
 };
+
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || "default_jwt_secret_for_dev_only", {
@@ -472,6 +490,7 @@ exports.resendVerification = async (req, res) => {
 };
 
 exports.forgotPassword = async (req, res) => {
+  console.log("[FORGOT PASSWORD START]");
   try {
     let { email } = req.body;
     console.log("[Forgot Password Flow] Email received:", email);
@@ -481,12 +500,28 @@ exports.forgotPassword = async (req, res) => {
 
     email = email.trim().toLowerCase();
 
-    if (isRateLimited(email)) {
+    // Check rate limit and log the details
+    const rateLimitInfo = checkForgotPasswordRateLimit(email, req.ip);
+    console.log(`[Rate Limit Audit] IP: ${rateLimitInfo.ip}, Email: ${rateLimitInfo.email}, Attempt Count: ${rateLimitInfo.attemptCount}, Remaining Attempts: ${rateLimitInfo.remainingAttempts}, Reset Time: ${rateLimitInfo.resetTime}`);
+
+    const isBypassed = DISABLE_RATE_LIMITER || process.env.DISABLE_RATE_LIMITER === 'true';
+
+    if (rateLimitInfo.isLimited && !isBypassed) {
       console.log("[Forgot Password Flow] Request blocked by rate limiting.");
       return res.status(429).json({
         success: false,
+        error: "Too Many Requests",
         message: "Too many password reset requests. Please try again after 15 minutes.",
+        ip: rateLimitInfo.ip,
+        email: rateLimitInfo.email,
+        attemptCount: rateLimitInfo.attemptCount,
+        remainingAttempts: rateLimitInfo.remainingAttempts,
+        resetTime: rateLimitInfo.resetTime
       });
+    }
+
+    if (rateLimitInfo.isLimited && isBypassed) {
+      console.log(`[Bypass] Rate limit would have blocked (Attempt Count: ${rateLimitInfo.attemptCount}), but rate limiting is disabled for debugging.`);
     }
 
     const user = await User.findOne({ email });
@@ -500,6 +535,7 @@ exports.forgotPassword = async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("[OTP GENERATED]");
     console.log("[Forgot Password Flow] OTP generated:", otp);
 
     user.resetPasswordOTP = otp;
@@ -508,23 +544,30 @@ exports.forgotPassword = async (req, res) => {
     console.log("[Forgot Password Flow] OTP stored successfully in database.");
 
     console.log("[Forgot Password Flow] Dispatching email...");
-    await sendEmail({
-      email: user.email,
-      subject: "Password Reset OTP - Placement Prep Tracker",
-      text: `Hello ${user.name},\n\nYour password reset verification code is: ${otp}\n\nThis OTP is valid for 15 minutes.`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <h2 style="color: #4f46e5; margin-bottom: 16px;">Password Reset Code</h2>
-          <p>Hello <strong>${user.name}</strong>,</p>
-          <p>You requested a password reset. Please use the following 6-digit verification code to complete the process:</p>
-          <div style="margin: 24px 0; text-align: center;">
-            <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block;">${otp}</span>
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Password Reset OTP - Placement Prep Tracker",
+        text: `Hello ${user.name},\n\nYour password reset verification code is: ${otp}\n\nThis OTP is valid for 15 minutes.`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <h2 style="color: #4f46e5; margin-bottom: 16px;">Password Reset Code</h2>
+            <p>Hello <strong>${user.name}</strong>,</p>
+            <p>You requested a password reset. Please use the following 6-digit verification code to complete the process:</p>
+            <div style="margin: 24px 0; text-align: center;">
+              <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block;">${otp}</span>
+            </div>
+            <p style="color: #64748b; font-size: 14px;">This code is valid for 15 minutes. If you did not request this, you can safely ignore this email.</p>
           </div>
-          <p style="color: #64748b; font-size: 14px;">This code is valid for 15 minutes. If you did not request this, you can safely ignore this email.</p>
-        </div>
-      `,
-    });
-    console.log("[Forgot Password Flow] Email sent successfully.");
+        `,
+      });
+      console.log("[EMAIL SENT]");
+      console.log("[Forgot Password Flow] Email sent successfully.");
+    } catch (emailErr) {
+      console.log("[EMAIL FAILED]");
+      console.error("[Forgot Password Flow] Email dispatch failed:", emailErr);
+      throw emailErr;
+    }
 
     res.status(200).json({
       success: true,

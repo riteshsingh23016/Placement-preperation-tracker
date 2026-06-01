@@ -42,6 +42,7 @@ const sendEmail = async ({ email, subject, text, html }) => {
 
       // Verify connection configuration
       await transporter.verify();
+      console.log("[SMTP CONNECTED]");
       console.log("SMTP connection success");
 
       const fromName = process.env.FROM_NAME || 'Placement Prep Tracker';
@@ -57,9 +58,11 @@ const sendEmail = async ({ email, subject, text, html }) => {
         html,
       });
 
+      console.log("[EMAIL SENT]");
       console.log("Email sent:", info.messageId);
       return info;
     } catch (error) {
+      console.log("[EMAIL FAILED]");
       if (error.code === 'EAUTH' || error.message.toLowerCase().includes('auth') || error.message.toLowerCase().includes('password')) {
         console.error("SMTP authentication failure:", error.message);
       } else {
@@ -82,6 +85,7 @@ const sendEmail = async ({ email, subject, text, html }) => {
       console.log(`HTML:\n${html}`);
     }
     console.log('==================================================\n');
+    console.log("[EMAIL SENT]");
     return { mock: true, messageId: `mock_${Date.now()}` };
   }
 };
