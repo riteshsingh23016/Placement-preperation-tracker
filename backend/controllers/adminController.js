@@ -241,3 +241,35 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to delete user" });
   }
 };
+
+// Verify a user manually
+exports.verifyUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (user.role === "admin") {
+      return res.status(403).json({ success: false, message: "Cannot verify an admin" });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    user.verificationOTP = undefined;
+    user.verificationOTPExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ 
+      success: true, 
+      message: "User verified successfully",
+      data: { isVerified: user.isVerified }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to verify user" });
+  }
+};
+

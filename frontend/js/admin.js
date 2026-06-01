@@ -212,12 +212,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${student.applicationCount || 0}</td>
                 <td>${student.selectedCount || 0}</td>
                 <td>
-                    <span class="badge ${student.isBlocked ? 'badge--blocked' : 'badge--active'}">
-                        ${student.isBlocked ? 'Blocked' : 'Active'}
-                    </span>
+                    <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                        <span class="badge ${student.isBlocked ? 'badge--blocked' : 'badge--active'}">
+                            ${student.isBlocked ? 'Blocked' : 'Active'}
+                        </span>
+                        <span class="badge ${student.isVerified ? 'badge--active' : 'badge--warning'}">
+                            ${student.isVerified ? 'Verified' : 'Unverified'}
+                        </span>
+                    </div>
                 </td>
                 <td>
                     <div style="display: flex; gap: 8px;">
+                        ${!student.isVerified ? `
+                        <button class="btn btn--ghost btn--sm verify-toggle" data-id="${student._id}" style="color: var(--accent-primary); border-color: rgba(var(--accent-primary-rgb), 0.2);">
+                            Verify
+                        </button>
+                        ` : ''}
                         <button class="btn btn--ghost btn--sm block-toggle" data-id="${student._id}">
                             ${student.isBlocked ? 'Unblock' : 'Block'}
                         </button>
@@ -229,6 +239,25 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
 
         // Attach listeners
+        qsa(".verify-toggle").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id = btn.dataset.id;
+                const res = await adminApi.patch(`/users/${id}/verify`);
+                if (res) {
+                    if (window.Toast) window.Toast.success("Success", res.message);
+                    renderStudents();
+                } else {
+                    // Local state toggle for demo
+                    const s = students.find(x => x._id === id);
+                    if (s) {
+                        s.isVerified = true;
+                        renderStudents();
+                        if (window.Toast) window.Toast.info("Demo Mode", `Marked ${s.name} as verified`);
+                    }
+                }
+            });
+        });
+
         qsa(".block-toggle").forEach(btn => {
             btn.addEventListener("click", async () => {
                 const id = btn.dataset.id;
@@ -333,7 +362,12 @@ document.addEventListener("DOMContentLoaded", () => {
         qs("#sdCourseBranch").textContent = courseBranch;
         qs("#sdGradYear").textContent = student.graduationYear || "Not provided";
         qs("#sdRollNumber").textContent = "Not provided"; // roll number is not in schema
-        qs("#sdStatus").textContent = student.isBlocked ? "Blocked" : "Active";
+                qs("#sdStatus").textContent = student.isBlocked ? "Blocked" : "Active";
+        const verificationEl = qs("#sdVerification");
+        if (verificationEl) {
+            verificationEl.textContent = student.isVerified ? "Verified" : "Unverified";
+            verificationEl.style.color = student.isVerified ? "var(--color-success)" : "var(--color-warning)";
+        }
         qs("#sdJoined").textContent = student.createdAt ? new Date(student.createdAt).toLocaleDateString() : "Not provided";
         qs("#sdSkills").textContent = student.skills || "Not provided";
 
@@ -434,6 +468,30 @@ document.addEventListener("DOMContentLoaded", () => {
                     blockBtn.style.borderColor = updatedIsBlocked ? "rgba(var(--color-success-rgb), 0.3)" : "rgba(var(--color-danger-rgb), 0.3)";
                 }
             };
+        }
+
+        const verifyBtn = qs("#sdVerifyBtn");
+        if (verifyBtn) {
+            if (student.isVerified) {
+                verifyBtn.style.display = "none";
+            } else {
+                verifyBtn.style.display = "inline-block";
+                verifyBtn.style.color = "var(--color-success)";
+                verifyBtn.style.borderColor = "rgba(var(--color-success-rgb), 0.3)";
+                verifyBtn.onclick = async () => {
+                    const res = await adminApi.patch(`/users/${studentId}/verify`);
+                    if (res) {
+                        if (window.Toast) window.Toast.success("Success", res.message);
+                        renderStudents();
+                        const verificationEl2 = qs("#sdVerification");
+                        if (verificationEl2) {
+                            verificationEl2.textContent = "Verified";
+                            verificationEl2.style.color = "var(--color-success)";
+                        }
+                        verifyBtn.style.display = "none";
+                    }
+                };
+            }
         }
 
         const deleteBtn = qs("#sdDeleteBtn");

@@ -12,7 +12,8 @@ const {
   getStudentApplications,
   getStudentNotes,
   sendStudentNotification,
-  deleteUser
+  deleteUser,
+  verifyUser
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.use(admin);
 router.get("/stats", getStats);
 router.get("/users", getUsers);
 router.patch("/users/:id/block", toggleBlock);
+router.patch("/users/:id/verify", verifyUser);
 router.delete("/users/:id", deleteUser);
 router.get("/applications", getApplications);
 
