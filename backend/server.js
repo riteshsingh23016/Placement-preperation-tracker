@@ -115,34 +115,37 @@ async function start() {
       process.env.SMTP_PASS;
 
     if (isSmtpConfigured) {
-      try {
-        const nodemailer = require("nodemailer");
-        const host = (process.env.SMTP_HOST || '').trim().replace(/^["']|["']$/g, '');
-        const portVal = (process.env.SMTP_PORT || '').toString().trim().replace(/^["']|["']$/g, '');
-        const port = parseInt(portVal, 10) || 587;
-        const secureVal = (process.env.SMTP_SECURE || '').toString().trim().replace(/^["']|["']$/g, '').toLowerCase();
-        const secure = secureVal === 'true' || port === 465;
-        const user = (process.env.SMTP_USER || '').trim().replace(/^["']|["']$/g, '');
-        let pass = (process.env.SMTP_PASS || '');
-        pass = pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '');
+      // Run verification asynchronously to prevent blocking server boot
+      (async () => {
+        try {
+          const nodemailer = require("nodemailer");
+          const host = (process.env.SMTP_HOST || '').trim().replace(/^["']|["']$/g, '');
+          const portVal = (process.env.SMTP_PORT || '').toString().trim().replace(/^["']|["']$/g, '');
+          const port = parseInt(portVal, 10) || 587;
+          const secureVal = (process.env.SMTP_SECURE || '').toString().trim().replace(/^["']|["']$/g, '').toLowerCase();
+          const secure = secureVal === 'true' || port === 465;
+          const user = (process.env.SMTP_USER || '').trim().replace(/^["']|["']$/g, '');
+          let pass = (process.env.SMTP_PASS || '');
+          pass = pass.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '');
 
-        const transporter = nodemailer.createTransport({
-          host,
-          port,
-          secure,
-          auth: {
-            user,
-            pass,
-          },
-          family: 4,
-        });
+          const transporter = nodemailer.createTransport({
+            host,
+            port,
+            secure,
+            auth: {
+              user,
+              pass,
+            },
+            family: 4,
+          });
 
-        await transporter.verify();
-        console.log("SMTP CONNECTED SUCCESSFULLY");
-      } catch (err) {
-        console.log("SMTP AUTH FAILED");
-        console.error("[SMTP Startup] Connection verification failed:", err.message);
-      }
+          await transporter.verify();
+          console.log("SMTP CONNECTED SUCCESSFULLY");
+        } catch (err) {
+          console.log("SMTP AUTH FAILED");
+          console.error("[SMTP Startup] Connection verification failed:", err.message);
+        }
+      })();
     }
     
     // Auto-verify existing users created prior to the deployment timestamp to prevent lockouts
