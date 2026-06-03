@@ -274,7 +274,26 @@ function renderProfileFields(role, data = {}) {
   const container = document.getElementById("profileFieldsContainer");
   if (!container) return;
 
-  const getVal = (field) => data[field] || "";
+  const getVal = (field) => {
+    if (field === "email") {
+      if (data.email) return data.email;
+      if (data.user && data.user.email) return data.user.email;
+      if (data.profile && data.profile.email) return data.profile.email;
+      if (data.currentUser && data.currentUser.email) return data.currentUser.email;
+
+      try {
+        const userStr = localStorage.getItem("user");
+        if (userStr) {
+          const u = JSON.parse(userStr);
+          if (u.email) return u.email;
+          if (u.user && u.user.email) return u.user.email;
+          if (u.profile && u.profile.email) return u.profile.email;
+          if (u.currentUser && u.currentUser.email) return u.currentUser.email;
+        }
+      } catch (e) {}
+    }
+    return data[field] || "";
+  };
 
   let html = `
     <label class="modalField">
@@ -547,13 +566,43 @@ function initUserMenu() {
     e.stopPropagation();
     dropdown.classList.remove("is-open");
     
-    // Fetch profile details
+    // 1. Try to load cached user from localStorage
+    let cachedUser = null;
+    try {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        cachedUser = JSON.parse(userStr);
+      }
+    } catch (err) {
+      console.error("Failed to parse cached user for profile rendering", err);
+    }
+
+    if (cachedUser) {
+      // Instantly render form with fallback values from localStorage
+      renderProfileFields(userRole, cachedUser);
+    } else {
+      // Render clean loading state if no cache is available
+      const container = document.getElementById("profileFieldsContainer");
+      if (container) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--text-secondary); gap: 10px;">
+            <i data-lucide="loader-2" style="animation: spin 1s linear infinite;"></i>
+            <span>Loading profile details...</span>
+          </div>
+        `;
+      }
+    }
+
+    // Instantly open the profile modal overlay to guarantee maximum responsiveness
+    if (window.lucide) window.lucide.createIcons({ root: profileModalOverlay });
+    window.openModalOverlay(profileModalOverlay);
+
+    // 2. Fetch fresh profile details from API
     try {
       const res = await profileRequest("/auth/profile");
       if (res.success) {
         renderProfileFields(userRole, res.data);
         if (window.lucide) window.lucide.createIcons({ root: profileModalOverlay });
-        window.openModalOverlay(profileModalOverlay);
       } else {
         window.Toast.error("Error", res.message || "Failed to load profile");
       }
