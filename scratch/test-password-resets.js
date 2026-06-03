@@ -282,6 +282,87 @@ async function cleanupAndTest() {
       process.exit(1);
     }
 
+    // Test 11: Admin Forgot Password Request (OTP flow)
+    console.log("\n--- TEST 11: Admin Forgot Password Request (OTP flow) ---");
+    const adminForgotRes = await post("http://localhost:5000/api/auth/forgot-password", {
+      email: adminEmail,
+      role: "admin"
+    });
+    console.log("Response Status:", adminForgotRes.status);
+    console.log("Response Data:", adminForgotRes.data);
+    if (adminForgotRes.status === 200 && adminForgotRes.data.success === true) {
+      console.log("✅ Success: Admin forgot password request accepted!");
+    } else {
+      console.error("❌ Fail: Admin forgot password request failed!");
+      process.exit(1);
+    }
+
+    // Test 12: Verify Admin OTP in MongoDB and Reset Password
+    console.log("\n--- TEST 12: Verify Admin OTP and Perform Reset ---");
+    const adminUserCheck = await User.findOne({ email: adminEmail });
+    if (adminUserCheck && adminUserCheck.resetPasswordOTP) {
+      console.log("✅ Success: Generated reset OTP found in MongoDB:", adminUserCheck.resetPasswordOTP);
+    } else {
+      console.error("❌ Fail: Reset OTP was not generated in MongoDB!");
+      process.exit(1);
+    }
+
+    const resetOtp = adminUserCheck.resetPasswordOTP;
+    const newAdminPass = "NewStrongAdminPass123!";
+
+    // Test weak password reset block
+    console.log("Verifying weak password reset block for Admin...");
+    const weakResetRes = await post("http://localhost:5000/api/auth/reset-password", {
+      email: adminEmail,
+      otp: resetOtp,
+      newPassword: "weak"
+    });
+    console.log("Weak Reset Status:", weakResetRes.status);
+    if (weakResetRes.status === 400 && weakResetRes.data.success === false) {
+      console.log("✅ Success: Weak password reset attempt blocked!");
+    } else {
+      console.error("❌ Fail: Weak password reset attempt allowed!");
+      process.exit(1);
+    }
+
+    // Perform actual strong password reset
+    const resetRes = await post("http://localhost:5000/api/auth/reset-password", {
+      email: adminEmail,
+      otp: resetOtp,
+      newPassword: newAdminPass
+    });
+    console.log("Reset Response Status:", resetRes.status);
+    console.log("Reset Response Data:", resetRes.data);
+    if (resetRes.status === 200 && resetRes.data.success === true) {
+      console.log("✅ Success: Admin password reset with OTP completed!");
+    } else {
+      console.error("❌ Fail: Admin password reset failed!");
+      process.exit(1);
+    }
+
+    // Test 13: Log in Admin with the new password
+    console.log("\n--- TEST 13: Admin Login with New Password ---");
+    const newAdminLogin = await post("http://localhost:5000/api/auth/login", {
+      email: adminEmail,
+      password: newAdminPass
+    });
+    console.log("Response Status:", newAdminLogin.status);
+    if (newAdminLogin.status === 200 && newAdminLogin.data.success === true) {
+      console.log("✅ Success: Admin logged in with new password successfully!");
+    } else {
+      console.error("❌ Fail: Admin login with new password failed!");
+      process.exit(1);
+    }
+
+    // Restore Admin password to default "admin123" for safety
+    console.log("\nRestoring Admin password back to default 'admin123'...");
+    const adminUserRestore = await User.findOne({ email: adminEmail });
+    if (adminUserRestore) {
+      adminUserRestore.password = "admin123";
+      await adminUserRestore.save();
+      console.log("Admin password restored.");
+    }
+
     // Clean up DB
     console.log("\nCleaning up test data from DB...");
     await PasswordResetRequest.deleteOne({ _id: resetReq._id });

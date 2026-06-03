@@ -539,8 +539,8 @@ exports.resendVerification = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   console.log("[FORGOT PASSWORD START]");
   try {
-    let { email } = req.body;
-    console.log("[Forgot Password Flow] Email received:", email);
+    let { email, role } = req.body;
+    console.log(`[Forgot Password Flow] Email received: ${email}, Role: ${role}`);
     if (!email) {
       return res.status(400).json({ success: false, message: "Please provide an email address." });
     }
@@ -573,46 +573,103 @@ exports.forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) {
-      console.log("[Forgot Password Flow] User email not found in database. Still returning success to prevent enumeration.");
+    // Branching by role: explicit detection, with fallback to user's database role or student
+    const targetRole = role || (user ? user.role : "student");
+    console.log(`[Forgot Password] Branching to role: ${targetRole}`);
+
+    if (targetRole === "admin") {
+      if (!user || user.role !== "admin") {
+        console.log("[Forgot Password Flow] Admin email not found. Return generic success message to prevent enumeration.");
+        return res.status(200).json({
+          success: true,
+          message: "Verification OTP code sent to your email."
+        });
+      }
+
+      // Admin flow: Email OTP
+      const resetPasswordOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      user.resetPasswordOTP = resetPasswordOTP;
+      user.resetPasswordOTPExpires = Date.now() + 15 * 60 * 1000; // 15 mins validity
+      await user.save();
+
+      console.log(`[Forgot Password] Admin OTP generated: ${resetPasswordOTP}`);
+
+      try {
+        const message = `Hello Admin ${user.name},\n\nYou requested a password reset. Please enter the following 6-digit verification code to reset your password:\n\nOTP Code: ${resetPasswordOTP}\n\nThis OTP is valid for 15 minutes.`;
+        const html = `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <h2 style="color: #4f46e5; margin-bottom: 16px;">Password Reset Request</h2>
+            <p>Hello <strong>Admin ${user.name}</strong>,</p>
+            <p>You requested a password reset. Please enter the following 6-digit code on the reset password screen to update your credentials:</p>
+            <div style="margin: 24px 0; text-align: center;">
+              <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block; color: #1e1b4b;">${resetPasswordOTP}</span>
+            </div>
+            <p style="color: #64748b; font-size: 14px;">This code is valid for 15 minutes. If you did not request this, please ignore this email.</p>
+          </div>
+        `;
+
+        await sendEmail({
+          email: user.email,
+          subject: "Password Reset OTP - Placement Prep Tracker",
+          text: message,
+          html: html
+        });
+
+        console.log(`[Forgot Password] Reset email successfully sent to admin: ${user.email}`);
+        return res.status(200).json({
+          success: true,
+          message: "Verification OTP code sent to your email."
+        });
+      } catch (emailErr) {
+        console.error("[Forgot Password] Admin reset email failed:", emailErr);
+        const isSandbox = emailErr.message && emailErr.message.includes("restricted by the email provider");
+        return res.status(isSandbox ? 403 : 500).json({
+          success: false,
+          message: emailErr.message || "Failed to send verification email.",
+          isSandboxError: isSandbox
+        });
+      }
+    } else {
+      // Student flow: Request to Admin
+      if (!user) {
+        console.log("[Forgot Password Flow] Student user email not found in database. Still returning success to prevent enumeration.");
+        return res.status(200).json({
+          success: true,
+          message: "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.",
+        });
+      }
+
+      // Create Password Reset Request in MongoDB
+      await PasswordResetRequest.create({
+        user: user._id,
+        email: user.email,
+        status: "pending"
+      });
+
+      // Create Notification for Admin
+      const adminUser = await User.findOne({ role: "admin" });
+      if (adminUser) {
+        await Notification.create({
+          user: adminUser._id,
+          type: "system",
+          title: "Password Reset Request",
+          message: `Student ${user.name} (${user.email}) requested a password reset.`,
+          priority: "high"
+        });
+      }
+
+      console.log(`[Forgot Password] Admin notification filed for student ${user.email}`);
+
       return res.status(200).json({
         success: true,
         message: "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.",
       });
     }
-
-    // Create Password Reset Request in MongoDB
-    await PasswordResetRequest.create({
-      user: user._id,
-      email: user.email,
-      status: "pending"
-    });
-
-    // Create Notification for Admin
-    const adminUser = await User.findOne({ role: "admin" });
-    if (adminUser) {
-      await Notification.create({
-        user: adminUser._id,
-        type: "system",
-        title: "Password Reset Request",
-        message: `Student ${user.name} (${user.email}) requested a password reset.`,
-        priority: "high"
-      });
-    }
-
-    console.log(`[Forgot Password] Admin notification filed for ${user.email}`);
-
-    res.status(200).json({
-      success: true,
-      message: "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.",
-    });
   } catch (err) {
     console.error("[Forgot Password Flow] Error thrown:", err);
-    const isSandbox = err.message && err.message.includes("restricted by the email provider");
-    res.status(isSandbox ? 403 : 500).json({
+    res.status(500).json({
       success: false,
-      message: err.message || "Failed to process forgot password request.",
-      isSandboxError: isSandbox
+      message: err.message || "Failed to process forgot password request."
     });
   }
 };
@@ -654,8 +711,11 @@ exports.resetPassword = async (req, res) => {
     email = email.trim().toLowerCase();
     otp = otp.trim();
 
-    if (newPassword.length < 6) {
-      return res.status(400).json({ success: false, message: "New password must be at least 6 characters long." });
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+      });
     }
 
     const user = await User.findOne({

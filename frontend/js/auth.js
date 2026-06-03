@@ -309,6 +309,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (forgotForm) forgotForm.reset();
       if (otpResetForm) otpResetForm.reset();
 
+      // Dynamic text updates based on role
+      const inputTitle = qs("#forgotInputState .panel__title");
+      const inputSubtitle = qs("#forgotInputState .panel__subtitle");
+      const submitBtnSpan = qs("#forgotForm button[type='submit'] span");
+
+      if (selectedRole === "admin") {
+        if (inputTitle) inputTitle.textContent = "Reset Admin Password";
+        if (inputSubtitle) inputSubtitle.textContent = "Enter your registered admin email address and we'll send you a 6-digit OTP code to reset your password.";
+        if (submitBtnSpan) submitBtnSpan.textContent = "Send OTP Code";
+      } else {
+        if (inputTitle) inputTitle.textContent = "Reset Student Password";
+        if (inputSubtitle) inputSubtitle.textContent = "Enter your registered email address to request a password reset. Your request will be sent to the administrator for approval.";
+        if (submitBtnSpan) submitBtnSpan.textContent = "Submit Request";
+      }
+
       const forgotWarningBox = document.getElementById("forgotWarningBox");
       if (forgotWarningBox) forgotWarningBox.style.display = "none";
       
@@ -376,7 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(`${API_BASE}/forgot-password`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({ email, role: selectedRole })
         });
         const data = await res.json();
         if (!data.success) {
@@ -391,19 +406,31 @@ document.addEventListener("DOMContentLoaded", () => {
           throw new Error(data.message || "Failed to process request");
         }
 
-        // In the admin-mediated flow, we directly transition to success confirmation state
-        const forgotSuccessTitle = qs("#forgotSuccessTitle");
-        const forgotSuccessText = qs("#forgotSuccessText");
-        if (forgotSuccessTitle) forgotSuccessTitle.textContent = "Request Submitted!";
-        if (forgotSuccessText) forgotSuccessText.textContent = data.message || "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.";
+        if (selectedRole === "admin") {
+          // Normal OTP flow: transition to Step 2 OTP Verification Form
+          if (otpEmailHidden) otpEmailHidden.value = email;
+          if (recoveryEmailDisplay) recoveryEmailDisplay.textContent = email;
+          if (forgotInputState) forgotInputState.style.display = "none";
+          if (forgotOtpState) {
+            forgotOtpState.style.display = "block";
+            if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotOtpState });
+          }
+          toast("Verification OTP code sent to your email.", "success");
+        } else {
+          // Student flow: transition directly to Step 3 Success Confirmation State
+          const forgotSuccessTitle = qs("#forgotSuccessTitle");
+          const forgotSuccessText = qs("#forgotSuccessText");
+          if (forgotSuccessTitle) forgotSuccessTitle.textContent = "Request Submitted!";
+          if (forgotSuccessText) forgotSuccessText.textContent = data.message || "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.";
 
-        if (forgotInputState) forgotInputState.style.display = "none";
-        if (forgotOtpState) forgotOtpState.style.display = "none";
-        if (forgotSuccessState) {
-          forgotSuccessState.style.display = "block";
-          if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotSuccessState });
+          if (forgotInputState) forgotInputState.style.display = "none";
+          if (forgotOtpState) forgotOtpState.style.display = "none";
+          if (forgotSuccessState) {
+            forgotSuccessState.style.display = "block";
+            if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotSuccessState });
+          }
+          toast(data.message || "Request submitted to administrator.", "success");
         }
-        toast(data.message || "Request submitted to administrator.", "success");
       } catch (err) {
         toast(err.message, "error");
       }
