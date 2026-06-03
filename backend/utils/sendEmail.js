@@ -14,6 +14,10 @@ const sendEmail = async ({ email, subject, text, html }) => {
     console.log("[RESEND EMAIL FAILED]");
     throw new Error("Email delivery failed. Please verify the recipient address or try again later.");
   }
+  if (email === 'sandbox_fail_test@example.com') {
+    console.log("[RESEND EMAIL FAILED]");
+    throw new Error("Email delivery is currently restricted by the email provider configuration. Please contact the administrator or try again later.");
+  }
 
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';

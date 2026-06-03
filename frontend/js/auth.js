@@ -130,6 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
     authContent.style.display = "block";
     authContent.setAttribute("data-active-role", selectedRole);
     
+    // Clear and reset form to start empty and override browser autofill leaks
+    if (authForm) {
+      authForm.reset();
+      authForm.email.value = "";
+      authForm.password.value = "";
+      if (authForm.name) authForm.name.value = "";
+    }
+    
     // Reset verification info states if backing out or reloading
     if (verificationInfoState) verificationInfoState.style.display = "none";
     if (authForm) authForm.style.display = "block";
@@ -171,6 +179,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (resendWarningBox) resendWarningBox.style.display = "none";
     const verificationWarningBox = document.getElementById("verificationWarningBox");
     if (verificationWarningBox) verificationWarningBox.style.display = "none";
+
+    // Clear form inputs on tab switch to prevent browser autofill/crossover leaks
+    if (authForm) {
+      authForm.reset();
+      authForm.email.value = "";
+      authForm.password.value = "";
+      if (authForm.name) authForm.name.value = "";
+    }
     
     if (currentMode === "signup") {
       if (nameField) nameField.style.display = "grid";
@@ -201,8 +217,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!input) return;
       const next = input.type === "password" ? "text" : "password";
       input.type = next;
-      const icon = toggle.querySelector("[data-lucide]");
-      if (icon) icon.setAttribute("data-lucide", next === "password" ? "eye" : "eye-off");
+      // Reconstruct element content to ensure fresh Lucide render of the eye/eye-off icon
+      toggle.innerHTML = `<i data-lucide="${next === "password" ? "eye" : "eye-off"}"></i>`;
       if (window.lucide?.createIcons) window.lucide.createIcons({ root: toggle });
     });
   });
@@ -310,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
               forgotWarningBox.style.display = "block";
               if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotWarningBox });
             }
-            throw new Error("Resend Sandbox Restriction: Outbound email failed.");
+            return; // Return early without throwing to prevent duplicate toast
           }
           throw new Error(data.message || "Failed to process request");
         }
@@ -446,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
             resendWarningBox.style.display = "block";
             if (window.lucide?.createIcons) window.lucide.createIcons({ root: resendWarningBox });
           }
-          throw new Error("Resend Sandbox Restriction: Outbound email failed.");
+          return; // Return early without throwing to prevent duplicate toast
         }
         throw new Error(data.message || "Registration failed");
       }
@@ -534,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
             verificationWarningBox.style.display = "block";
             if (window.lucide?.createIcons) window.lucide.createIcons({ root: verificationWarningBox });
           }
-          throw new Error("Resend Sandbox Restriction: Outbound email failed.");
+          return; // Return early without throwing to prevent duplicate toast
         }
         throw new Error(data.message || "Failed to resend email");
       }
