@@ -167,10 +167,15 @@ async function cleanupAndTest() {
       process.exit(1);
     }
 
-    // Since verification is required, let's auto-verify the student directly in DB to allow testing login
-    console.log("\nAuto-verifying user in database...");
-    await User.updateOne({ email: testEmail }, { isVerified: true });
-    console.log("User verified.");
+    // Check if the user is already verified in MongoDB (assert immediate verification after student signup)
+    console.log("\nVerifying user's isVerified status in database...");
+    const createdUser = await User.findOne({ email: testEmail });
+    if (createdUser && createdUser.isVerified === true) {
+      console.log("✅ Success: Student is verified immediately upon signup!");
+    } else {
+      console.error("❌ Fail: Student is not verified immediately upon signup!");
+      process.exit(1);
+    }
 
     // Test 4: Student Login
     console.log("\n--- TEST 4: Student Login ---");

@@ -117,31 +117,19 @@ exports.signup = async (req, res) => {
       });
     }
 
-    const verificationToken = crypto.randomBytes(32).toString("hex");
-    const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
-    const verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("[SIGNUP OTP GENERATED]");
-    const verificationOTPExpires = Date.now() + 24 * 60 * 60 * 1000;
-    console.log(`[Signup Flow] Verification Token & OTP generated: Token: ${verificationToken.substring(0, 10)}..., OTP: ${verificationOTP}`);
-
     const user = await User.create({
       name,
       email,
       password,
       role: "student",
       isBlocked: false,
-      isVerified: false,
-      verificationToken,
-      verificationTokenExpires,
-      verificationOTP,
-      verificationOTPExpires,
+      isVerified: true,
     });
 
     if (!user) {
       return res.status(400).json({ success: false, message: "Failed to create user in database" });
     }
-    console.log("[SIGNUP OTP SAVED]");
-    console.log("[Signup Flow] User created in database successfully. isVerified: false");
+    console.log("[Signup Flow] User created in database successfully. isVerified: true");
 
     // Provision default collections
     await Collection.insertMany([
@@ -152,56 +140,12 @@ exports.signup = async (req, res) => {
       { name: "OS + CN", user: user._id, icon: "globe", color: "amber" },
     ]);
 
-    const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 5000}`;
-    const verificationLink = `${appUrl}/api/auth/verify-email/${verificationToken}`;
-
-    let emailResult;
-    try {
-      emailResult = await sendEmail({
-        email: user.email,
-        subject: "Verify Your Email - Placement Prep Tracker",
-        text: `Hello ${user.name},\n\nPlease verify your email address by clicking the link below:\n\n${verificationLink}\n\nAlternatively, you can enter the following 6-digit code on the verification screen:\n\nVerification Code: ${verificationOTP}\n\nThis code and link are valid for 24 hours.`,
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <h2 style="color: #4f46e5; margin-bottom: 16px;">Email Verification</h2>
-            <p>Hello <strong>${user.name}</strong>,</p>
-            <p>Thank you for registering on Placement Prep Tracker. Please click the button below to verify your email address and activate your account:</p>
-            <div style="margin: 24px 0;">
-              <a href="${verificationLink}" style="background-color: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Verify Email Address</a>
-            </div>
-            <p style="margin: 20px 0;">Alternatively, you can verify your account by entering this 6-digit verification code on the verification screen:</p>
-            <div style="margin: 24px 0; text-align: center;">
-              <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block; color: #1e1b4b;">${verificationOTP}</span>
-            </div>
-            <p style="color: #64748b; font-size: 14px;">This link and code are valid for 24 hours. If the button doesn't work, copy and paste this URL into your browser:</p>
-            <p style="color: #64748b; font-size: 14px; word-break: break-all;">${verificationLink}</p>
-          </div>
-        `,
-      });
-      console.log("[SIGNUP EMAIL SENT]");
-      if (emailResult && emailResult.messageId) {
-        console.log(`[RESEND MESSAGE ID] ${emailResult.messageId}`);
-      }
-      console.log("[Signup Flow] Verification email sent successfully to:", user.email);
-    } catch (emailErr) {
-      console.error("[Signup Flow] Email dispatch failed, deleting created user record:", emailErr);
-      await User.deleteOne({ _id: user._id });
-      await Collection.deleteMany({ user: user._id });
-
-      const isSandbox = emailErr.message && emailErr.message.includes("restricted by the email provider");
-      return res.status(isSandbox ? 403 : 500).json({
-        success: false,
-        message: emailErr.message || "Failed to send verification email.",
-        isSandboxError: isSandbox
-      });
-    }
-
     res.status(201).json({
       success: true,
-      message: "Verification email sent. Please check your inbox.",
+      message: "Registration successful. You can now log in.",
       data: {
         email: user.email,
-        isVerified: false,
+        isVerified: true,
       },
     });
   } catch (err) {
@@ -250,7 +194,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    if (!user.isVerified) {
+    if (user.role === "admin" && !user.isVerified) {
       return res.status(403).json({
         success: false,
         message: "Please verify your email address before logging in.",

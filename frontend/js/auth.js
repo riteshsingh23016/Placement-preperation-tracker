@@ -94,6 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const verificationEmailDisplay = qs("#verificationEmailDisplay");
   const verificationDoneBtn = qs("#verificationDoneBtn");
 
+  // Signup Success Elements
+  const signupSuccessState = qs("#signupSuccessState");
+  const signupSuccessSignInBtn = qs("#signupSuccessSignInBtn");
+
   // Verification & Warning Elements
   const unverifiedAlert = qs("#unverifiedAlert");
   const verifyAccountBtn = qs("#verifyAccountBtn");
@@ -545,10 +549,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const handleSignup = async (url, body) => {
-    const resendWarningBox = document.getElementById("resendWarningBox");
-    const resendWarningText = document.getElementById("resendWarningText");
-    if (resendWarningBox) resendWarningBox.style.display = "none";
-
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -557,34 +557,35 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await res.json();
       if (!data.success) {
-        if (res.status === 403 && data.isSandboxError) {
-          if (resendWarningBox && resendWarningText) {
-            resendWarningText.textContent = data.message;
-            resendWarningBox.style.display = "block";
-            if (window.lucide?.createIcons) window.lucide.createIcons({ root: resendWarningBox });
-          }
-          return; // Return early without throwing to prevent duplicate toast
-        }
         throw new Error(data.message || "Registration failed");
       }
 
-      unverifiedEmail = body.email;
-      if (verificationEmailDisplay) verificationEmailDisplay.textContent = body.email;
-      
       if (authForm) authForm.style.display = "none";
       if (authTabs) authTabs.style.display = "none";
-      panelTitle.textContent = "Check Your Email";
-      panelSubtitle.textContent = "Please verify your account to get started.";
+      if (panelTitle) panelTitle.textContent = "Registration Successful!";
+      if (panelSubtitle) panelSubtitle.textContent = "Your student account has been created successfully.";
       
-      if (verificationInfoState) {
-        verificationInfoState.style.display = "block";
-        if (window.lucide?.createIcons) window.lucide.createIcons({ root: verificationInfoState });
+      if (signupSuccessState) {
+        signupSuccessState.style.display = "block";
+        if (window.lucide?.createIcons) window.lucide.createIcons({ root: signupSuccessState });
       }
-      toast("Verification email and OTP sent. Please check your inbox.", "success");
+      toast("Registration successful! You can now sign in.", "success");
     } catch (err) {
       toast(err.message, "error");
     }
   };
+
+  if (signupSuccessSignInBtn) {
+    signupSuccessSignInBtn.addEventListener("click", () => {
+      if (signupSuccessState) signupSuccessState.style.display = "none";
+      if (authForm) {
+        authForm.style.display = "block";
+        authForm.reset();
+      }
+      if (authTabs) authTabs.style.display = "flex";
+      switchToTab("login");
+    });
+  }
 
   if (authForm) {
     authForm.addEventListener("submit", (e) => {

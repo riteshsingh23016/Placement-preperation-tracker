@@ -641,6 +641,18 @@
             </p>
           </form>
 
+          <div id="signupSuccessState" style="display: none; text-align: center; padding: 12px 0;">
+            <div class="success-icon-wrap" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); display: grid; place-items: center; margin: 0 auto 20px; color: #10b981; box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);">
+              <i data-lucide="check-circle" style="width: 28px; height: 28px;"></i>
+            </div>
+            <h2 class="panel__title" style="margin-bottom: 8px;">Registration Successful!</h2>
+            <p class="panel__subtitle" style="margin-bottom: 24px; line-height: 1.5;">Your student account has been created successfully.<br>You can now sign in using your credentials.</p>
+            <button class="btn btn--primary btn--lg" id="signupSuccessSignInBtn" type="button" style="width: 100%;">
+              <span>Go to Sign In</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+
           <div id="verificationInfoState" style="display: none; text-align: center; padding: 12px 0;">
             <div class="success-icon-wrap" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25); display: grid; place-items: center; margin: 0 auto 20px; color: var(--indigo); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);">
               <i data-lucide="mail" style="width: 28px; height: 28px;"></i>
