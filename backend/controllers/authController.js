@@ -3,6 +3,20 @@ const Collection = require("../models/collection");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
+const PasswordResetRequest = require("../models/PasswordResetRequest");
+const Notification = require("../models/notification");
+
+const isValidPassword = (password) => {
+  if (!password || typeof password !== 'string') return false;
+  if (password.length < 8) return false;
+  
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+  return hasUppercase && hasLowercase && hasNumber && hasSpecial;
+};
 
 const otpRateLimiter = new Map();
 const DISABLE_RATE_LIMITER = process.env.DISABLE_RATE_LIMITER === 'true';
@@ -81,6 +95,13 @@ exports.signup = async (req, res) => {
     // Validation
     if (!isValidEmail(email)) {
       return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+      });
     }
 
     // Normalization
@@ -365,21 +386,10 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    if (newPassword.length < 8) {
+    if (!isValidPassword(newPassword)) {
       return res.status(400).json({
         success: false,
-        message: "New password must be at least 8 characters long",
-      });
-    }
-
-    const hasUppercase = /[A-Z]/.test(newPassword);
-    const hasLowercase = /[a-z]/.test(newPassword);
-    const hasNumber = /[0-9]/.test(newPassword);
-
-    if (!hasUppercase || !hasLowercase || !hasNumber) {
-      return res.status(400).json({
-        success: false,
-        message: "New password must contain at least one uppercase letter, one lowercase letter, and one number",
+        message: "New password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
       });
     }
 
@@ -567,52 +577,34 @@ exports.forgotPassword = async (req, res) => {
       console.log("[Forgot Password Flow] User email not found in database. Still returning success to prevent enumeration.");
       return res.status(200).json({
         success: true,
-        message: "If that email is registered, we have sent a password reset OTP code.",
+        message: "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.",
       });
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log("[FORGOT OTP GENERATED]");
-    console.log("[Forgot Password Flow] OTP generated:", otp);
+    // Create Password Reset Request in MongoDB
+    await PasswordResetRequest.create({
+      user: user._id,
+      email: user.email,
+      status: "pending"
+    });
 
-    user.resetPasswordOTP = otp;
-    user.resetPasswordOTPExpires = Date.now() + 15 * 60 * 1000;
-    await user.save();
-    console.log("[FORGOT OTP SAVED]");
-    console.log("[Forgot Password Flow] OTP stored successfully in database.");
-
-    console.log("[Forgot Password Flow] Dispatching email...");
-    try {
-      const emailResult = await sendEmail({
-        email: user.email,
-        subject: "Password Reset OTP - Placement Prep Tracker",
-        text: `Hello ${user.name},\n\nYour password reset verification code is: ${otp}\n\nThis OTP is valid for 15 minutes.`,
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-            <h2 style="color: #4f46e5; margin-bottom: 16px;">Password Reset Code</h2>
-            <p>Hello <strong>${user.name}</strong>,</p>
-            <p>You requested a password reset. Please use the following 6-digit verification code to complete the process:</p>
-            <div style="margin: 24px 0; text-align: center;">
-              <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: inline-block;">${otp}</span>
-            </div>
-            <p style="color: #64748b; font-size: 14px;">This code is valid for 15 minutes. If you did not request this, you can safely ignore this email.</p>
-          </div>
-        `,
+    // Create Notification for Admin
+    const adminUser = await User.findOne({ role: "admin" });
+    if (adminUser) {
+      await Notification.create({
+        user: adminUser._id,
+        type: "system",
+        title: "Password Reset Request",
+        message: `Student ${user.name} (${user.email}) requested a password reset.`,
+        priority: "high"
       });
-      console.log("[FORGOT EMAIL SENT]");
-      if (emailResult && emailResult.messageId) {
-        console.log(`[RESEND MESSAGE ID] ${emailResult.messageId}`);
-      }
-      console.log("[Forgot Password Flow] Email sent successfully.");
-    } catch (emailErr) {
-      console.log("[RESEND EMAIL FAILED]");
-      console.error("[Forgot Password Flow] Email dispatch failed:", emailErr);
-      throw emailErr;
     }
+
+    console.log(`[Forgot Password] Admin notification filed for ${user.email}`);
 
     res.status(200).json({
       success: true,
-      message: "If that email is registered, we have sent a password reset OTP code.",
+      message: "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.",
     });
   } catch (err) {
     console.error("[Forgot Password Flow] Error thrown:", err);

@@ -55,6 +55,21 @@ function isValidEmail(email) {
   return true;
 }
 
+/**
+ * Validates password format according to strong password criteria
+ */
+function isValidPassword(password) {
+  if (!password || typeof password !== 'string') return false;
+  if (password.length < 8) return false;
+  
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+  return hasUppercase && hasLowercase && hasNumber && hasSpecial;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let currentMode = "login";
   let selectedRole = null;
@@ -165,6 +180,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const updatePasswordRequirements = (password) => {
+    const rules = [
+      { id: "reqLength", met: password.length >= 8 },
+      { id: "reqUpper", met: /[A-Z]/.test(password) },
+      { id: "reqLower", met: /[a-z]/.test(password) },
+      { id: "reqNumber", met: /[0-9]/.test(password) },
+      { id: "reqSpecial", met: /[^A-Za-z0-9]/.test(password) }
+    ];
+
+    rules.forEach(rule => {
+      const el = document.getElementById(rule.id);
+      if (!el) return;
+      const icon = el.querySelector(".req-icon");
+      if (rule.met) {
+        el.style.color = "var(--color-success, #10b981)";
+        if (icon) {
+          icon.textContent = "✓";
+          icon.style.color = "var(--color-success, #10b981)";
+        }
+      } else {
+        el.style.color = "var(--muted, #6b7280)";
+        if (icon) {
+          icon.textContent = "○";
+          icon.style.color = "var(--muted, #6b7280)";
+        }
+      }
+    });
+  };
+
   function switchToTab(target) {
     const tabs = qsa(".auth__tab");
     tabs.forEach(t => {
@@ -188,16 +232,23 @@ document.addEventListener("DOMContentLoaded", () => {
       if (authForm.name) authForm.name.value = "";
     }
     
+    const reqBox = document.getElementById("signupPasswordRequirements");
+
     if (currentMode === "signup") {
       if (nameField) nameField.style.display = "grid";
       if (loginExtras) loginExtras.style.display = "none";
       if (submitBtnText) submitBtnText.textContent = "Create Account";
       if (authForm && authForm.name) authForm.name.required = true;
+      if (reqBox) {
+        reqBox.style.display = "block";
+        updatePasswordRequirements("");
+      }
     } else {
       if (nameField) nameField.style.display = "none";
       if (loginExtras) loginExtras.style.display = "flex";
       if (submitBtnText) submitBtnText.textContent = "Sign in";
       if (authForm && authForm.name) authForm.name.required = false;
+      if (reqBox) reqBox.style.display = "none";
     }
   }
 
@@ -222,6 +273,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.lucide?.createIcons) window.lucide.createIcons({ root: toggle });
     });
   });
+
+  // Live password requirements check for signup
+  if (authForm && authForm.password) {
+    authForm.password.addEventListener("input", (e) => {
+      if (currentMode === "signup") {
+        updatePasswordRequirements(e.target.value);
+      }
+    });
+  }
 
   const redirectUser = (role) => {
     if (role === "admin") {
@@ -331,14 +391,19 @@ document.addEventListener("DOMContentLoaded", () => {
           throw new Error(data.message || "Failed to process request");
         }
 
-        if (otpEmailHidden) otpEmailHidden.value = email;
-        if (recoveryEmailDisplay) recoveryEmailDisplay.textContent = email;
+        // In the admin-mediated flow, we directly transition to success confirmation state
+        const forgotSuccessTitle = qs("#forgotSuccessTitle");
+        const forgotSuccessText = qs("#forgotSuccessText");
+        if (forgotSuccessTitle) forgotSuccessTitle.textContent = "Request Submitted!";
+        if (forgotSuccessText) forgotSuccessText.textContent = data.message || "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.";
+
         if (forgotInputState) forgotInputState.style.display = "none";
-        if (forgotOtpState) {
-          forgotOtpState.style.display = "block";
-          if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotOtpState });
+        if (forgotOtpState) forgotOtpState.style.display = "none";
+        if (forgotSuccessState) {
+          forgotSuccessState.style.display = "block";
+          if (window.lucide?.createIcons) window.lucide.createIcons({ root: forgotSuccessState });
         }
-        toast("Verification OTP code sent to your email.", "success");
+        toast(data.message || "Request submitted to administrator.", "success");
       } catch (err) {
         toast(err.message, "error");
       }
@@ -506,6 +571,9 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         const name = authForm.name.value.trim();
         if (!name || !email || !password) return toast("Fill all fields", "error");
+        if (!isValidPassword(password)) {
+          return toast("Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.", "error");
+        }
         handleSignup(`${API_BASE}/signup`, { name, email, password });
       }
     });

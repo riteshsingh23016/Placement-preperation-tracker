@@ -1212,6 +1212,137 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const renderResets = async () => {
+        const tbody = qs("#resetsTableBody");
+        if (!tbody) return;
+
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; opacity: 0.6;">Loading password reset requests...</td></tr>`;
+
+        const res = await adminApi.get("/resets");
+        const resets = res || [];
+
+        if (resets.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; opacity: 0.6;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                            <i data-lucide="shield-check" style="width: 48px; height: 48px; color: var(--color-success);"></i>
+                            <p>No pending password reset requests found.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            if (window.lucide) window.lucide.createIcons({ root: tbody });
+            return;
+        }
+
+        tbody.innerHTML = resets.map(req => {
+            const userName = req.user ? req.user.name : "Unknown User";
+            const userEmail = req.email || (req.user ? req.user.email : "N/A");
+            const requestedAt = req.requestTime ? new Date(req.requestTime).toLocaleString() : new Date(req.createdAt).toLocaleString();
+            
+            let statusBadge = "";
+            if (req.status === "pending") {
+                statusBadge = '<span class="badge badge--warning">Pending</span>';
+            } else if (req.status === "approved") {
+                statusBadge = '<span class="badge badge--active">Approved</span>';
+            } else if (req.status === "rejected") {
+                statusBadge = '<span class="badge badge--blocked">Rejected</span>';
+            } else {
+                statusBadge = `<span class="badge">${req.status}</span>`;
+            }
+
+            let actionButtons = "";
+            if (req.status === "pending") {
+                actionButtons = `
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn--ghost btn--sm reset-approve" data-id="${req._id}" style="color: var(--color-success); border-color: rgba(var(--color-success-rgb), 0.2);">
+                            Approve
+                        </button>
+                        <button class="btn btn--ghost btn--sm reset-reject btn--danger" data-id="${req._id}" style="color: var(--bad); border-color: rgba(var(--color-danger-rgb), 0.2);">
+                            Reject
+                        </button>
+                    </div>
+                `;
+            } else {
+                actionButtons = `<span style="font-size: 12px; color: var(--muted);">No actions available</span>`;
+            }
+
+            return `
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-cell__avatar">${userName.charAt(0)}</div>
+                            <div class="user-cell__name">${userName}</div>
+                        </div>
+                    </td>
+                    <td>${userEmail}</td>
+                    <td>${requestedAt}</td>
+                    <td>${statusBadge}</td>
+                    <td>${actionButtons}</td>
+                </tr>
+            `;
+        }).join("");
+
+        if (window.lucide) window.lucide.createIcons({ root: tbody });
+
+        // Bind Approve Action
+        qsa(".reset-approve").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id = btn.dataset.id;
+                const token = localStorage.getItem("token");
+                try {
+                    const response = await fetch(`${window.APP_API_BASE}/admin/resets/${id}/approve`, {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        if (window.Toast) window.Toast.success("Success", "Password reset approved!");
+                        
+                        // Show temporary password modal
+                        const tempModal = qs("#tempPasswordModal");
+                        const tempVal = qs("#tempPasswordValue");
+                        if (tempModal && tempVal) {
+                            tempVal.value = data.tempPassword;
+                            tempModal.style.display = "flex";
+                            if (window.lucide) window.lucide.createIcons({ root: tempModal });
+                        }
+
+                        renderResets();
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (err) {
+                    if (window.Toast) window.Toast.error("Error", err.message || "Failed to approve request");
+                }
+            });
+        });
+
+        // Bind Reject Action
+        qsa(".reset-reject").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const id = btn.dataset.id;
+                const token = localStorage.getItem("token");
+                try {
+                    const response = await fetch(`${window.APP_API_BASE}/admin/resets/${id}/reject`, {
+                        method: "POST",
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        if (window.Toast) window.Toast.success("Success", "Request rejected successfully!");
+                        renderResets();
+                    } else {
+                        throw new Error(data.message);
+                    }
+                } catch (err) {
+                    if (window.Toast) window.Toast.error("Error", err.message || "Failed to reject request");
+                }
+            });
+        });
+    };
+
     const renderReports = async () => {
         const data = await adminApi.get("/stats") || fallbackStats;
         const container = qs("#reportsStats");
@@ -1279,7 +1410,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             drives: "Placement Drives",
                             reports: "Reports & Analytics",
                             announcements: "Announcements",
-                            repairs: "Verification Repairs"
+                            repairs: "Verification Repairs",
+                            resets: "Password Reset Requests"
                         };
                         const titleEl = qs("#activeSectionTitle");
                         if (titleEl) titleEl.textContent = titles[target] || "Admin Portal";
@@ -1296,6 +1428,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (target === "reports") renderReports();
                 if (target === "announcements") renderAnnouncements();
                 if (target === "repairs") renderRepairs();
+                if (target === "resets") renderResets();
             });
         });
 
@@ -1340,6 +1473,38 @@ document.addEventListener("DOMContentLoaded", () => {
                     driveModal.style.display = "none";
                     editingDriveId = null;
                     if (driveForm) driveForm.reset();
+                }
+            });
+        }
+
+        // --- TEMPORARY PASSWORD MODAL WIRING ---
+        const closeTempModal = qs("#closeTempPasswordModal");
+        const doneTempBtn = qs("#doneTempPasswordBtn");
+        const copyTempBtn = qs("#copyTempPasswordBtn");
+        const tempPasswordModal = qs("#tempPasswordModal");
+        const tempPasswordValue = qs("#tempPasswordValue");
+
+        if (closeTempModal && tempPasswordModal) {
+            closeTempModal.addEventListener("click", () => {
+                tempPasswordModal.style.display = "none";
+            });
+        }
+        if (doneTempBtn && tempPasswordModal) {
+            doneTempBtn.addEventListener("click", () => {
+                tempPasswordModal.style.display = "none";
+            });
+        }
+        if (copyTempBtn && tempPasswordValue) {
+            copyTempBtn.addEventListener("click", () => {
+                tempPasswordValue.select();
+                navigator.clipboard.writeText(tempPasswordValue.value);
+                if (window.Toast) window.Toast.success("Copied", "Temporary password copied to clipboard!");
+            });
+        }
+        if (tempPasswordModal) {
+            tempPasswordModal.addEventListener("click", (e) => {
+                if (e.target === tempPasswordModal) {
+                    tempPasswordModal.style.display = "none";
                 }
             });
         }

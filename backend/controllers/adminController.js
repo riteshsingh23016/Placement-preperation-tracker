@@ -366,4 +366,82 @@ exports.resendVerificationForUser = async (req, res) => {
   }
 };
 
+// Get all password reset requests (Admin only)
+exports.getResets = async (req, res) => {
+  try {
+    const PasswordResetRequest = require("../models/PasswordResetRequest");
+    const resets = await PasswordResetRequest.find()
+      .populate("user", "name email")
+      .sort({ requestTime: -1 });
+
+    res.status(200).json({ success: true, data: resets });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to fetch password reset requests" });
+  }
+};
+
+// Approve password reset request (Admin only)
+exports.approveReset = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const PasswordResetRequest = require("../models/PasswordResetRequest");
+    const User = require("../models/user");
+
+    const request = await PasswordResetRequest.findById(id);
+    if (!request) {
+      return res.status(404).json({ success: false, message: "Request not found" });
+    }
+
+    const user = await User.findById(request.user);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Generate secure temporary password satisfying strong criteria
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let randomStr = "";
+    for (let i = 0; i < 8; i++) {
+      randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    const tempPassword = `Temp@1${randomStr}`;
+
+    // Update user's password (which gets hashed on save)
+    user.password = tempPassword;
+    await user.save();
+
+    // Mark request as approved
+    request.status = "approved";
+    await request.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset request approved. Please provide the student with the temporary password.",
+      tempPassword
+    });
+  } catch (err) {
+    console.error("[Admin Reset] Error approving request:", err);
+    res.status(500).json({ success: false, message: "Failed to approve password reset request" });
+  }
+};
+
+// Reject password reset request (Admin only)
+exports.rejectReset = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const PasswordResetRequest = require("../models/PasswordResetRequest");
+
+    const request = await PasswordResetRequest.findById(id);
+    if (!request) {
+      return res.status(404).json({ success: false, message: "Request not found" });
+    }
+
+    request.status = "rejected";
+    await request.save();
+
+    res.status(200).json({ success: true, message: "Password reset request rejected." });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to reject request" });
+  }
+};
+
 

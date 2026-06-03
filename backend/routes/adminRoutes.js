@@ -15,7 +15,10 @@ const {
   deleteUser,
   verifyUser,
   getUnverifiedUsers,
-  resendVerificationForUser
+  resendVerificationForUser,
+  getResets,
+  approveReset,
+  rejectReset
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -33,6 +36,10 @@ router.patch("/users/:id/verify", verifyUser);
 router.post("/users/:id/resend", resendVerificationForUser);
 router.delete("/users/:id", deleteUser);
 router.get("/applications", getApplications);
+
+router.get("/resets", getResets);
+router.post("/resets/:id/approve", approveReset);
+router.post("/resets/:id/reject", rejectReset);
 
 router.get("/students/:id", getStudentDetail);
 router.get("/students/:id/applications", getStudentApplications);

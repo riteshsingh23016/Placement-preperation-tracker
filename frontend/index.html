@@ -581,6 +581,32 @@
               </span>
             </label>
 
+            <div id="signupPasswordRequirements" style="display: none; margin-top: -8px; margin-bottom: 16px; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; font-size: 12px; text-align: left; box-sizing: border-box;">
+              <div style="font-weight: 600; margin-bottom: 6px; color: var(--text);">Password Requirements:</div>
+              <ul style="margin: 0; padding-left: 18px; list-style-type: none; display: flex; flex-direction: column; gap: 4px;">
+                <li id="reqLength" style="color: var(--muted); display: flex; align-items: center; gap: 6px;">
+                  <span class="req-icon" style="font-weight: bold; width: 12px; display: inline-block; text-align: center;">○</span>
+                  <span>At least 8 characters</span>
+                </li>
+                <li id="reqUpper" style="color: var(--muted); display: flex; align-items: center; gap: 6px;">
+                  <span class="req-icon" style="font-weight: bold; width: 12px; display: inline-block; text-align: center;">○</span>
+                  <span>At least 1 uppercase letter</span>
+                </li>
+                <li id="reqLower" style="color: var(--muted); display: flex; align-items: center; gap: 6px;">
+                  <span class="req-icon" style="font-weight: bold; width: 12px; display: inline-block; text-align: center;">○</span>
+                  <span>At least 1 lowercase letter</span>
+                </li>
+                <li id="reqNumber" style="color: var(--muted); display: flex; align-items: center; gap: 6px;">
+                  <span class="req-icon" style="font-weight: bold; width: 12px; display: inline-block; text-align: center;">○</span>
+                  <span>At least 1 number</span>
+                </li>
+                <li id="reqSpecial" style="color: var(--muted); display: flex; align-items: center; gap: 6px;">
+                  <span class="req-icon" style="font-weight: bold; width: 12px; display: inline-block; text-align: center;">○</span>
+                  <span>At least 1 special character</span>
+                </li>
+              </ul>
+            </div>
+
             <div id="adminNote" style="display: none; margin: 12px 0; font-size: 13px; color: var(--muted); text-align: center;">
               <i data-lucide="info" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>
               Admin accounts are managed by the system.
@@ -720,7 +746,7 @@
         <!-- Step 1: Input Email Form -->
         <div id="forgotInputState">
           <h2 class="panel__title" style="margin-bottom: 8px;">Reset Password</h2>
-          <p class="panel__subtitle" style="margin-bottom: 24px;">Enter your registered email address and we'll send you a link to reset your password.</p>
+          <p class="panel__subtitle" style="margin-bottom: 24px;">Enter your registered email address to request a password reset. Your request will be sent to the administrator for approval.</p>
           
           <div id="forgotWarningBox" style="display: none; padding: 12px 16px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: var(--color-danger, #ef4444); text-align: left; box-sizing: border-box;">
             <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
@@ -751,7 +777,7 @@
             </label>
 
             <button class="btn btn--primary btn--lg" type="submit" style="margin-top: 8px;">
-              <span>Send Reset Link</span>
+              <span>Submit Request</span>
               <i data-lucide="send"></i>
             </button>
           </form>
@@ -829,8 +855,8 @@
           <div class="success-icon-wrap" style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); display: grid; place-items: center; margin: 0 auto 20px; color: var(--good); box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);">
             <i data-lucide="check" style="width: 28px; height: 28px;"></i>
           </div>
-          <h2 class="panel__title" style="margin-bottom: 8px;">Password Reset!</h2>
-          <p class="panel__subtitle" style="margin-bottom: 24px; line-height: 1.5;">Your password has been successfully reset. You can now log in using your new credentials.</p>
+          <h2 class="panel__title" id="forgotSuccessTitle" style="margin-bottom: 8px;">Password Reset!</h2>
+          <p class="panel__subtitle" id="forgotSuccessText" style="margin-bottom: 24px; line-height: 1.5;">Your password has been successfully reset. You can now log in using your new credentials.</p>
           <button class="btn btn--secondary btn--lg" id="forgotSuccessDoneBtn" type="button" style="width: 100%;">
             <span>Done</span>
           </button>
