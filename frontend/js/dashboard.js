@@ -654,14 +654,17 @@ function initATSChecker() {
       if (overallScore >= 85) {
         scoreLevel.textContent = "Excellent";
         scoreLevel.style.color = "var(--good)";
+        if (scoreStroke) scoreStroke.style.stroke = "var(--good)";
         feedbackSummary.textContent = "Your resume has exceptional layout alignment and strong technical keyword density for software engineering.";
       } else if (overallScore >= 75) {
         scoreLevel.textContent = "Good";
         scoreLevel.style.color = "var(--blue)";
+        if (scoreStroke) scoreStroke.style.stroke = "var(--blue)";
         feedbackSummary.textContent = "Solid match! Adding a few missing specialized frameworks and metrics-focused bullet points will elevate your score further.";
       } else {
         scoreLevel.textContent = "Needs Improvement";
         scoreLevel.style.color = "var(--warn)";
+        if (scoreStroke) scoreStroke.style.stroke = "var(--warn)";
         feedbackSummary.textContent = "Your resume formatting is parseable, but keyword match for standard software engineering roles is relatively low.";
       }
     }

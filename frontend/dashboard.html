@@ -315,113 +315,122 @@
     </div>
 
     <!-- ATS Resume Checker Modal -->
-    <div class="modalOverlay" id="atsModal" hidden>
-      <div class="modalForm glass" role="dialog" aria-modal="true" aria-labelledby="atsModalTitle" style="max-width: 580px; width: 100%;">
-        <div class="modalForm__header">
+    <div class="modalOverlay" id="atsModal" role="dialog" aria-modal="true" aria-labelledby="atsModalTitle" hidden>
+      <div class="modal glass" id="atsModalPanel" style="max-width: 580px; width: 100%;">
+        <div class="modal__glow" aria-hidden="true"></div>
+        <header class="modal__header">
           <div>
-            <h2 class="modalForm__title" id="atsModalTitle">Resume / ATS Optimization Checker</h2>
-            <p class="modalForm__subtitle">Upload your resume to analyze keyword density and layout alignment for tech roles.</p>
+            <h2 class="modal__title" id="atsModalTitle">Resume / ATS Optimization Checker</h2>
+            <p class="modal__subtitle">Upload your resume to analyze keyword density and layout alignment for tech roles.</p>
           </div>
           <button class="iconBtn" type="button" id="atsModalClose" aria-label="Close modal">
             <i data-lucide="x"></i>
           </button>
-        </div>
-        
-        <!-- Upload State -->
-        <div id="atsUploadState">
-          <div class="ats-upload-zone" id="atsUploadZone">
-            <i data-lucide="file-text" class="ats-upload-zone__icon"></i>
-            <div class="ats-upload-zone__title">Drag & drop your resume here</div>
-            <div class="ats-upload-zone__subtitle">Supports PDF, DOCX, or TXT (Max 5MB)</div>
-            <button class="btn btn--secondary btn--sm" type="button" id="atsFileSelectBtn" style="margin-top: 12px;">
-              <i data-lucide="upload-cloud"></i>
-              <span>Browse Files</span>
-            </button>
-            <input type="file" id="atsFileInput" accept=".pdf,.docx,.txt" style="display: none;" />
-          </div>
-        </div>
+        </header>
 
-        <!-- Scanning/Processing State -->
-        <div id="atsScanningState" style="display: none; padding: 24px 0; text-align: center;">
-          <div class="ats-scanner">
-            <div class="ats-scanner__ring"></div>
-            <i data-lucide="cpu" class="ats-scanner__icon"></i>
-          </div>
-          <div class="ats-scanner__status" id="atsScannerStatus">Initializing parser...</div>
-          <div class="ats-scanner__progress-container">
-            <div class="ats-scanner__progress-bar" id="atsScannerBar"></div>
-          </div>
-        </div>
-
-        <!-- Results State -->
-        <div id="atsResultsState" style="display: none;">
-          <div class="ats-results">
-            <div class="ats-score-circle">
-              <svg viewBox="0 0 36 36" class="circular-chart">
-                <path class="circle-bg"
-                  d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <path class="circle"
-                  stroke-dasharray="82, 100"
-                  d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                  id="atsScoreStroke"
-                />
-                <text x="18" y="20.35" class="percentage" id="atsScoreValue">82%</text>
-              </svg>
-            </div>
-            
-            <div class="ats-feedback">
-              <h3 class="ats-feedback__title">Optimization Score: <span id="atsScoreLevel" style="color: var(--good);">Excellent</span></h3>
-              <p class="ats-feedback__summary" id="atsFeedbackSummary">Your resume has excellent formatting and strong keyword density for software engineering applications.</p>
-            </div>
-
-            <div class="ats-metrics">
-              <div class="ats-metric-item">
-                <div class="ats-metric-item__header">
-                  <span>Keyword Matching</span>
-                  <span id="atsKeywordScore">76%</span>
-                </div>
-                <div class="ats-metric-item__bar-wrap">
-                  <div class="ats-metric-item__bar" style="width: 76%; background: var(--accent-primary);" id="atsKeywordBar"></div>
-                </div>
-              </div>
-              <div class="ats-metric-item">
-                <div class="ats-metric-item__header">
-                  <span>Formatting & Layout</span>
-                  <span id="atsFormatScore">90%</span>
-                </div>
-                <div class="ats-metric-item__bar-wrap">
-                  <div class="ats-metric-item__bar" style="width: 90%; background: var(--color-success);" id="atsFormatBar"></div>
-                </div>
-              </div>
-              <div class="ats-metric-item">
-                <div class="ats-metric-item__header">
-                  <span>Section Completeness</span>
-                  <span id="atsSectionScore">85%</span>
-                </div>
-                <div class="ats-metric-item__bar-wrap">
-                  <div class="ats-metric-item__bar" style="width: 85%; background: var(--accent-secondary);" id="atsSectionBar"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="ats-insights">
-              <div class="ats-insights__title">Key Recommendations:</div>
-              <ul class="ats-insights__list" id="atsInsightsList">
-                <li>Add more cloud computing keywords (e.g. AWS, Docker) if applying to backend roles.</li>
-                <li>Ensure all dates are formatted consistently using standard Month Year style.</li>
-              </ul>
-            </div>
-
-            <div class="modalForm__actions" style="margin-top: 24px; padding-bottom: 0;">
-              <button class="btn btn--secondary" type="button" id="atsResetBtn">
-                <i data-lucide="refresh-cw"></i>
-                <span>Scan Another Resume</span>
+        <div class="modalForm__body" style="padding-right: 8px;">
+          <!-- Upload State -->
+          <div id="atsUploadState">
+            <div class="ats-upload-zone" id="atsUploadZone">
+              <i data-lucide="file-text" class="ats-upload-zone__icon"></i>
+              <div class="ats-upload-zone__title">Drag & drop your resume here</div>
+              <div class="ats-upload-zone__subtitle">Supports PDF, DOCX, or TXT (Max 5MB)</div>
+              <button class="btn btn--secondary btn--sm" type="button" id="atsFileSelectBtn" style="margin-top: 12px;">
+                <i data-lucide="upload-cloud"></i>
+                <span>Browse Files</span>
               </button>
+              <input type="file" id="atsFileInput" accept=".pdf,.docx,.txt" style="display: none;" />
+            </div>
+          </div>
+
+          <!-- Scanning/Processing State -->
+          <div id="atsScanningState" style="display: none; padding: 24px 0; text-align: center;">
+            <div class="ats-scanner">
+              <div class="ats-scanner__ring"></div>
+              <i data-lucide="cpu" class="ats-scanner__icon"></i>
+            </div>
+            <div class="ats-scanner__status" id="atsScannerStatus">Initializing parser...</div>
+            <div class="ats-scanner__progress-container">
+              <div class="ats-scanner__progress-bar" id="atsScannerBar"></div>
+            </div>
+          </div>
+
+          <!-- Results State -->
+          <div id="atsResultsState" style="display: none;">
+            <div class="ats-results">
+              <div class="ats-results__header">
+                <div class="ats-score-circle">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg"
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path class="circle"
+                      stroke-dasharray="82, 100"
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      id="atsScoreStroke"
+                    />
+                    <text x="18" y="20.35" class="percentage" id="atsScoreValue">82%</text>
+                  </svg>
+                </div>
+                
+                <div class="ats-feedback">
+                  <h3 class="ats-feedback__title">Optimization Score: <span id="atsScoreLevel" style="color: var(--good);">Excellent</span></h3>
+                  <p class="ats-feedback__summary" id="atsFeedbackSummary">Your resume has excellent formatting and strong keyword density for software engineering applications.</p>
+                </div>
+              </div>
+
+              <div class="ats-metrics">
+                <div class="ats-metric-item">
+                  <div class="ats-metric-item__header">
+                    <span>Keyword Matching</span>
+                    <span id="atsKeywordScore">76%</span>
+                  </div>
+                  <div class="ats-metric-item__bar-wrap">
+                    <div class="ats-metric-item__bar" style="width: 76%; background: var(--accent-primary);" id="atsKeywordBar"></div>
+                  </div>
+                </div>
+                <div class="ats-metric-item">
+                  <div class="ats-metric-item__header">
+                    <span>Formatting & Layout</span>
+                    <span id="atsFormatScore">90%</span>
+                  </div>
+                  <div class="ats-metric-item__bar-wrap">
+                    <div class="ats-metric-item__bar" style="width: 90%; background: var(--color-success);" id="atsFormatBar"></div>
+                  </div>
+                </div>
+                <div class="ats-metric-item">
+                  <div class="ats-metric-item__header">
+                    <span>Section Completeness</span>
+                    <span id="atsSectionScore">85%</span>
+                  </div>
+                  <div class="ats-metric-item__bar-wrap">
+                    <div class="ats-metric-item__bar" style="width: 85%; background: var(--accent-secondary);" id="atsSectionBar"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ats-insights">
+                <div class="ats-insights__header">
+                  <i data-lucide="sparkles" class="ats-insights__icon"></i>
+                  <div class="ats-insights__title">Optimization Insights</div>
+                </div>
+                <ul class="ats-insights__list" id="atsInsightsList">
+                  <li>Add more cloud computing keywords (e.g. AWS, Docker) if applying to backend roles.</li>
+                  <li>Ensure all dates are formatted consistently using standard Month Year style.</li>
+                </ul>
+              </div>
+
+              <div class="modalForm__actions" style="margin-top: 12px; display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn btn--ghost" type="button" onclick="document.getElementById('atsModalClose').click()">Close</button>
+                <button class="btn btn--secondary" type="button" id="atsResetBtn">
+                  <i data-lucide="refresh-cw"></i>
+                  <span>Scan Another Resume</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
