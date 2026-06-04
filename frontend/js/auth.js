@@ -419,7 +419,8 @@ document.addEventListener("DOMContentLoaded", () => {
           throw new Error(data.message || "Failed to process request");
         }
 
-        if (selectedRole === "admin") {
+        const targetFlowRole = data.role || selectedRole;
+        if (targetFlowRole === "admin") {
           // Normal OTP flow: transition to Step 2 OTP Verification Form
           if (otpEmailHidden) otpEmailHidden.value = email;
           if (recoveryEmailDisplay) recoveryEmailDisplay.textContent = email;

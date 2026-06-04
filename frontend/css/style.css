@@ -2152,12 +2152,30 @@ select option:checked {
 }
 
 /* Modals Readonly and Password Toggle */
-.modalField__input[readonly] {
-  background: rgba(255, 255, 255, 0.03) !important;
-  color: rgba(255, 255, 255, 0.45) !important;
+input[readonly],
+textarea[readonly],
+.input[readonly],
+.modalField__input[readonly],
+.glass-input[readonly] {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
   cursor: not-allowed;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  opacity: 1 !important;
 }
+
+.theme-light input[readonly],
+.theme-light textarea[readonly],
+.theme-light .input[readonly],
+.theme-light .modalField__input[readonly],
+.theme-light .glass-input[readonly] {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  cursor: not-allowed;
+  opacity: 1 !important;
+}
+
 
 .password-input-wrapper {
   position: relative;

@@ -581,14 +581,21 @@ exports.forgotPassword = async (req, res) => {
         console.log(`[Forgot Password] Success! Admin recovery email sent to: ${user.email}, Matched User Role: ${user.role}, Email sent: true`);
         return res.status(200).json({
           success: true,
-          message: "Verification OTP code sent to your email."
+          message: "Verification OTP code sent to your email.",
+          role: "admin"
         });
       } catch (emailErr) {
         console.error("[Forgot Password] Admin reset email failed:", emailErr);
-        const isSandbox = emailErr.message && emailErr.message.includes("restricted by the email provider");
+        const isSandbox = emailErr.message && (
+          emailErr.message.includes("restricted by the email provider") ||
+          emailErr.message.includes("Sandbox")
+        );
+        const adminFriendlyMessage = isSandbox
+          ? "Email delivery is restricted by the Resend Sandbox. Please verify the admin email (riteshthelegend10f@gmail.com) in your Resend dashboard or use a verified sending domain."
+          : (emailErr.message || "Failed to send verification email.");
         return res.status(isSandbox ? 403 : 500).json({
           success: false,
-          message: emailErr.message || "Failed to send verification email.",
+          message: adminFriendlyMessage,
           isSandboxError: isSandbox
         });
       }
@@ -634,6 +641,7 @@ exports.forgotPassword = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Your password reset request has been submitted to the administrator. Please contact your admin for a temporary password.",
+        role: "student"
       });
     }
   } catch (err) {
