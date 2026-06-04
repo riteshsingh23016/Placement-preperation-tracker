@@ -264,7 +264,27 @@
 }
 
 .companySelect {
-  /* Inherits appearance and arrow image from style.css */
+  height: 40px !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.08)) !important;
+  background-color: var(--bg-surface, #0f172a) !important;
+  color: var(--text-primary, rgba(255, 255, 255, 0.95)) !important;
+  padding: 0 38px 0 16px !important;
+  font-size: 13.5px !important;
+  font-weight: 550 !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.companySelect:hover {
+  border-color: var(--border-strong, rgba(255, 255, 255, 0.16)) !important;
+  background-color: var(--bg-elevated, #1e293b) !important;
+}
+
+.companySelect:focus-visible {
+  outline: none !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.4) !important;
+  box-shadow: var(--ring) !important;
 }
 
 .glowBtn {
@@ -377,38 +397,46 @@
 .companyTable tbody td {
   padding: 16px 12px;
   border-bottom: 0;
-  background: rgba(255, 255, 255, 0.03);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.015);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   vertical-align: middle;
+  color: var(--text-secondary);
 }
 
 .companyTable tbody tr td:first-child {
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  border-top-left-radius: 16px;
-  border-bottom-left-radius: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 }
 
 .companyTable tbody tr td:last-child {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .companyTable tbody tr {
-  transition: transform 160ms ease, filter 160ms ease;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
 }
 
 .companyTable tbody tr:hover {
-  transform: translateY(-2px);
-  filter: saturate(1.08);
+  transform: translateY(-1.5px);
+  filter: saturate(1.04);
 }
 
 .companyTable tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.045);
-  border-top-color: rgba(var(--accent-primary-rgb), 0.16);
-  border-left-color: rgba(var(--accent-primary-rgb), 0.16);
-  border-right-color: rgba(var(--accent-primary-rgb), 0.16);
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-top-color: rgba(var(--accent-primary-rgb), 0.25) !important;
+  border-bottom-color: rgba(var(--accent-primary-rgb), 0.15) !important;
+}
+
+.companyTable tbody tr:hover td:first-child {
+  border-left-color: rgba(var(--accent-primary-rgb), 0.25) !important;
+}
+
+.companyTable tbody tr:hover td:last-child {
+  border-right-color: rgba(var(--accent-primary-rgb), 0.25) !important;
 }
 
 .companyCell {
@@ -484,51 +512,79 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
   min-width: 0;
 }
 
-.statusSelectWrap {
-  width: 100%;
-  min-width: 160px;
-  padding: 2px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  transition: box-shadow 0.18s ease, background 0.18s ease;
+.statusCell .statusBadge {
+  display: none !important;
 }
 
-.statusSelectWrap[data-status="Applied"] {
-  box-shadow: 0 0 0 1px rgba(var(--accent-primary-rgb), 0.35);
-}
-.statusSelectWrap[data-status="Interview Scheduled"] {
-  box-shadow: 0 0 0 1px rgba(var(--color-warning-rgb), 0.45);
-}
-.statusSelectWrap[data-status="Selected"] {
-  box-shadow: 0 0 0 1px rgba(var(--color-success-rgb), 0.38);
-}
-.statusSelectWrap[data-status="Rejected"] {
-  box-shadow: 0 0 0 1px rgba(var(--color-danger-rgb), 0.38);
-}
-.statusSelectWrap[data-status="Pending"] {
-  box-shadow: 0 0 0 1px rgba(var(--accent-secondary-rgb), 0.4);
+.statusSelectWrap {
+  width: auto;
+  min-width: 155px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none !important;
+  transition: all 0.18s ease;
 }
 
 .statusSelect {
   width: 100%;
-  font-size: 12px;
-  font-weight: 650;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background-color: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.88);
+  height: 26px !important;
+  padding: 0 28px 0 12px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-radius: 999px !important;
   cursor: pointer;
-  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  box-sizing: border-box;
+  transition: all var(--transition-fast) !important;
+  background-position: right 10px center !important;
+  background-size: 12px !important;
 }
 
-.statusSelect:focus-visible {
+/* Colors for status select based on status */
+.statusSelectWrap[data-status="Applied"] .statusSelect {
+  color: var(--accent-primary) !important;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.25) !important;
+  background-color: rgba(var(--accent-primary-rgb), 0.08) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(20,184,166)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.statusSelectWrap[data-status="Interview Scheduled"] .statusSelect {
+  color: var(--color-warning) !important;
+  border: 1px solid rgba(var(--color-warning-rgb), 0.25) !important;
+  background-color: rgba(var(--color-warning-rgb), 0.08) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(245,158,11)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.statusSelectWrap[data-status="Selected"] .statusSelect {
+  color: var(--color-success) !important;
+  border: 1px solid rgba(var(--color-success-rgb), 0.25) !important;
+  background-color: rgba(var(--color-success-rgb), 0.08) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(16,185,129)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.statusSelectWrap[data-status="Rejected"] .statusSelect {
+  color: var(--color-danger) !important;
+  border: 1px solid rgba(var(--color-danger-rgb), 0.25) !important;
+  background-color: rgba(var(--color-danger-rgb), 0.08) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(239,68,68)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+.statusSelectWrap[data-status="Pending"] .statusSelect {
+  color: var(--accent-secondary) !important;
+  border: 1px solid rgba(var(--accent-secondary-rgb), 0.25) !important;
+  background-color: rgba(var(--accent-secondary-rgb), 0.08) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(167,139,250)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+.statusSelectWrap .statusSelect:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.statusSelectWrap .statusSelect:focus-visible {
   outline: none;
-  border-color: rgba(var(--accent-primary-rgb), 0.45);
-  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.2);
+  box-shadow: var(--ring) !important;
 }
 
 
@@ -723,8 +779,9 @@
 /* Recent interviews panel */
 .recentPanel {
   overflow: hidden;
-  box-shadow: var(--shadow-md), 0 0 0 1px rgba(var(--accent-primary-rgb), 0.14);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.055));
+  box-shadow: var(--shadow-sm) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)) !important;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.08)) !important;
 }
 
 .recentPanel__head {
@@ -733,18 +790,20 @@
 
 .recentPanel__badge {
   font-size: 11px;
-  font-weight: 750;
-  padding: 6px 10px;
+  font-weight: 700;
+  padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(var(--accent-primary-rgb), 0.22);
-  background: rgba(var(--accent-primary-rgb), 0.12);
-  color: rgba(219, 214, 255, 0.95);
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.25);
+  background: rgba(var(--accent-primary-rgb), 0.08);
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .recentPanel__list {
-  padding: 12px 14px 16px;
+  padding: 14px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .recentItem {
@@ -752,27 +811,28 @@
   gap: 12px;
   align-items: flex-start;
   padding: 14px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.035);
-  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.015);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .recentItem:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-primary-rgb), 0.25) !important;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-sm);
 }
 
 .recentItem__logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
-  font-weight: 900;
+  font-weight: 800;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .recentItem__meta {
@@ -789,7 +849,7 @@
 .recentItem__role {
   margin-top: 2px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.56);
+  color: rgba(255, 255, 255, 0.52);
 }
 
 .recentItem__time {
@@ -799,7 +859,7 @@
   gap: 8px;
   flex-wrap: wrap;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(255, 255, 255, 0.52);
   font-variant-numeric: tabular-nums;
 }
 
@@ -807,24 +867,28 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(var(--color-warning-rgb), 0.22);
-  background: rgba(var(--color-warning-rgb), 0.08);
-  color: rgba(255, 224, 170, 0.95);
+  border: 1px solid rgba(var(--color-warning-rgb), 0.25) !important;
+  background: rgba(var(--color-warning-rgb), 0.08) !important;
+  color: var(--color-warning) !important;
   font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .recentItem__reminder {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.58);
   margin-top: 4px;
+  line-height: 1.4;
 }
 
 .recentEmpty {
-  padding: 18px 12px 22px;
+  padding: 20px 12px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 13px;
 }
 
@@ -1142,24 +1206,31 @@ body.theme-light .companyTable thead th {
 
 body.theme-light .companyTable tbody td {
   background: #ffffff !important;
-  border-top-color: var(--stroke) !important;
-  border-bottom-color: var(--stroke) !important;
+  border-top-color: rgba(15, 23, 42, 0.06) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.06) !important;
   color: var(--text-primary) !important;
 }
 
 body.theme-light .companyTable tbody tr td:first-child {
-  border-left-color: var(--stroke) !important;
+  border-left-color: rgba(15, 23, 42, 0.06) !important;
 }
 
 body.theme-light .companyTable tbody tr td:last-child {
-  border-right-color: var(--stroke) !important;
+  border-right-color: rgba(15, 23, 42, 0.06) !important;
 }
 
 body.theme-light .companyTable tbody tr:hover td {
-  background: rgba(var(--accent-primary-rgb), 0.04) !important;
-  border-top-color: var(--accent-primary) !important;
-  border-left-color: var(--accent-primary) !important;
-  border-right-color: var(--accent-primary) !important;
+  background: rgba(var(--accent-primary-rgb), 0.03) !important;
+  border-top-color: rgba(var(--accent-primary-rgb), 0.3) !important;
+  border-bottom-color: rgba(var(--accent-primary-rgb), 0.15) !important;
+}
+
+body.theme-light .companyTable tbody tr:hover td:first-child {
+  border-left-color: rgba(var(--accent-primary-rgb), 0.3) !important;
+}
+
+body.theme-light .companyTable tbody tr:hover td:last-child {
+  border-right-color: rgba(var(--accent-primary-rgb), 0.3) !important;
 }
 
 body.theme-light .companyLogo {
@@ -1169,13 +1240,43 @@ body.theme-light .companyLogo {
 }
 
 body.theme-light .statusSelectWrap {
-  background: var(--bg-base) !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-body.theme-light .statusSelect {
-  border-color: var(--stroke) !important;
-  background-color: var(--bg-surface) !important;
-  color: var(--text-primary) !important;
+body.theme-light .statusSelectWrap[data-status="Applied"] .statusSelect {
+  color: var(--accent-primary) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.3) !important;
+  background-color: rgba(var(--accent-primary-rgb), 0.05) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(13,148,136)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+body.theme-light .statusSelectWrap[data-status="Interview Scheduled"] .statusSelect {
+  color: var(--color-warning) !important;
+  border-color: rgba(var(--color-warning-rgb), 0.3) !important;
+  background-color: rgba(var(--color-warning-rgb), 0.05) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(217,119,6)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+body.theme-light .statusSelectWrap[data-status="Selected"] .statusSelect {
+  color: var(--color-success) !important;
+  border-color: rgba(var(--color-success-rgb), 0.3) !important;
+  background-color: rgba(var(--color-success-rgb), 0.05) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(5,150,105)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+body.theme-light .statusSelectWrap[data-status="Rejected"] .statusSelect {
+  color: var(--color-danger) !important;
+  border-color: rgba(var(--color-danger-rgb), 0.3) !important;
+  background-color: rgba(var(--color-danger-rgb), 0.05) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(220,38,38)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+body.theme-light .statusSelectWrap[data-status="Pending"] .statusSelect {
+  color: var(--accent-secondary) !important;
+  border-color: rgba(var(--accent-secondary-rgb), 0.3) !important;
+  background-color: rgba(var(--accent-secondary-rgb), 0.05) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(124,58,237)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
 
 body.theme-light .miniMenu__panel {
@@ -1250,18 +1351,19 @@ body.theme-light .companyEmpty__text {
 }
 
 body.theme-light .recentPanel {
-  box-shadow: var(--shadow-md) !important;
-  background: var(--surface) !important;
+  box-shadow: var(--shadow-sm) !important;
+  background: #ffffff !important;
+  border-color: var(--border-default, rgba(15, 23, 42, 0.08)) !important;
 }
 
 body.theme-light .recentItem {
-  border-color: var(--stroke) !important;
-  background: var(--bg-surface) !important;
+  border-color: rgba(15, 23, 42, 0.06) !important;
+  background: var(--bg-base) !important;
 }
 
 body.theme-light .recentItem:hover {
-  border-color: var(--stroke2) !important;
-  background: var(--bg-base) !important;
+  border-color: rgba(var(--accent-primary-rgb), 0.25) !important;
+  background: #ffffff !important;
 }
 
 body.theme-light .recentItem__role {
@@ -1331,7 +1433,14 @@ body.theme-light .toolbarField__label {
   color: var(--text-muted) !important;
 }
 body.theme-light .companySelect {
-  /* Inherits light-mode arrow image from style.css */
+  background-color: var(--bg-surface, #ffffff) !important;
+  color: var(--text-primary, #0f172a) !important;
+  border-color: var(--border-default, rgba(15, 23, 42, 0.1)) !important;
+}
+
+body.theme-light .companySelect:hover {
+  background-color: var(--bg-base, #f8fafc) !important;
+  border-color: var(--border-strong, rgba(15, 23, 42, 0.18)) !important;
 }
 body.theme-light .tableTab {
   color: var(--text-secondary) !important;
