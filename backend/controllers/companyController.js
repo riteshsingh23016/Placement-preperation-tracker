@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Company = require("../models/company");
 const { createInternalNotification } = require("./notificationController");
+const Validators = require("../utils/validators");
 
 function parseOptionalDate(value) {
   if (value === undefined || value === null || value === "") return null;
@@ -23,81 +24,27 @@ function parseRequiredAppliedDate(value) {
 function validateCreatePayload(body) {
   const errors = {};
 
-  // Company Name
-  const companyName = (body.companyName || "").trim();
-  if (!companyName) {
-    errors.companyName = "Company name is required.";
-  } else if (companyName.length < 2 || companyName.length > 100) {
-    errors.companyName = "Company name must be between 2 and 100 characters.";
-  } else if (/^[+-]?\d+(\.\d+)?$/.test(companyName)) {
-    errors.companyName = "Company name cannot contain only numbers.";
-  } else if (!/^[a-zA-Z0-9\s&.\-']+$/.test(companyName)) {
-    errors.companyName = "Company name contains invalid characters.";
-  } else if (!/[a-zA-Z0-9]/.test(companyName)) {
-    errors.companyName = "Company name cannot consist only of special characters.";
-  }
+  const nameErr = Validators.validateCompanyName(body.companyName);
+  if (nameErr) errors.companyName = nameErr;
 
-  // Job Role
-  const role = (body.role || "").trim();
-  if (!role) {
-    errors.role = "Job role is required.";
-  } else if (role.length < 2 || role.length > 80) {
-    errors.role = "Job role must be between 2 and 80 characters.";
-  } else if (/^[+-]?\d+(\.\d+)?$/.test(role)) {
-    errors.role = "Job role cannot contain only numbers.";
-  } else if (!/[a-zA-Z0-9]/.test(role)) {
-    errors.role = "Job role cannot consist only of special characters.";
-  }
+  const roleErr = Validators.validateJobRole(body.role);
+  if (roleErr) errors.role = roleErr;
 
-  // Package
-  const pkg = (body.package || "").trim();
-  if (pkg) {
-    const num = Number(pkg);
-    if (isNaN(num) || !/^\d+(\.\d+)?$/.test(pkg)) {
-      errors.package = "Package must be a valid positive number.";
-    } else if (num <= 0) {
-      errors.package = "Package must be greater than 0.";
-    } else if (num > 100) {
-      errors.package = "Package must not exceed 100 LPA.";
-    }
-  }
+  const pkgErr = Validators.validatePackage(body.package, false);
+  if (pkgErr) errors.package = pkgErr;
 
-  // Interview Date
-  if (body.interviewDate) {
-    const selectedDate = new Date(body.interviewDate);
-    if (isNaN(selectedDate.getTime())) {
-      errors.interviewDate = "Invalid interview date.";
-    } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const selectedSOD = new Date(selectedDate);
-      selectedSOD.setHours(0, 0, 0, 0);
-      if (selectedSOD < today) {
-        errors.interviewDate = "Interview date cannot be in the past.";
-      }
-    }
-  }
+  const isFutureRequired = (body.status === "Interview Scheduled");
+  const dateErr = Validators.validateDate(body.interviewDate, isFutureRequired, "Interview date");
+  if (dateErr) errors.interviewDate = dateErr;
 
-  // Status
-  const allowedStatuses = ["Applied", "Interview Scheduled", "Selected", "Rejected"];
-  if (body.status && !allowedStatuses.includes(body.status)) {
-    errors.status = "Invalid status.";
-  }
+  const statusErr = Validators.validateDropdown(body.status || "Applied", ["Applied", "Interview Scheduled", "Selected", "Rejected", "Pending"], "Status");
+  if (statusErr) errors.status = statusErr;
 
-  // Priority
-  const allowedPriorities = ["High", "Medium", "Low"];
-  if (body.priority && !allowedPriorities.includes(body.priority)) {
-    errors.priority = "Invalid priority.";
-  }
+  const priorityErr = Validators.validateDropdown(body.priority || "Medium", ["High", "Medium", "Low"], "Priority");
+  if (priorityErr) errors.priority = priorityErr;
 
-  // Notes
-  const notes = (body.notes || "").trim();
-  const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(notes);
-  if (hasScript) {
-    errors.notes = "Notes contain forbidden script content.";
-  } else if (notes.length > 1000) {
-    errors.notes = "Notes must not exceed 1000 characters.";
-  }
+  const notesErr = Validators.validateLongText(body.notes, 1000, "Notes");
+  if (notesErr) errors.notes = notesErr;
 
   return errors;
 }

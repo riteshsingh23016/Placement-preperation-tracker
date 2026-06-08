@@ -232,12 +232,14 @@
     var pack = fieldPackage ? fieldPackage.value.trim() : "";
     var intvRaw = fieldInterview && fieldInterview.value ? fieldInterview.value.trim() : "";
     var notes = fieldNotes ? fieldNotes.value.trim() : "";
+    var status = fieldStatus ? fieldStatus.value : "Applied";
 
-    var nameErr = window.validateCompanyName(n);
-    var roleErr = window.validateJobRole(r);
-    var pkgErr = window.validatePackage(pack);
-    var dateErr = window.validateInterviewDate(intvRaw);
-    var notesErr = window.validateNotes(notes, 1000);
+    var nameErr = window.Validators.validateCompanyName(n);
+    var roleErr = window.Validators.validateJobRole(r);
+    var pkgErr = window.Validators.validatePackage(pack);
+    var isFutureRequired = (status === "Interview Scheduled");
+    var dateErr = window.Validators.validateDate(intvRaw, isFutureRequired, "Interview date");
+    var notesErr = window.Validators.validateLongText(notes, 1000, "Notes");
 
     if (showErrors) {
       if (fieldName) {

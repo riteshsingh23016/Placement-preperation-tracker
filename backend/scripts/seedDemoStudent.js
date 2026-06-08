@@ -47,14 +47,11 @@ async function main() {
       });
       console.log("Admin account created.");
     } else {
-      console.log("Admin account found. Ensuring verified status...");
-      if (!admin.isVerified) {
-        console.log(`[seedDemoStudent.js] Admin is not verified. Setting verified and saving. Startup code modified the admin record.`);
-        admin.isVerified = true;
-        await admin.save();
-      } else {
-        console.log(`[seedDemoStudent.js] Admin is already verified. Preserving existing Admin user. Startup code did NOT touch the admin record.`);
-      }
+      console.log("Admin account found. Ensuring verified status and resetting password...");
+      admin.isVerified = true;
+      admin.password = process.env.ADMIN_PASSWORD || "admin123";
+      await admin.save();
+      console.log("[seedDemoStudent.js] Admin verified status and password updated.");
     }
 
     // 2. SEED/RESET STUDENT ACCOUNT

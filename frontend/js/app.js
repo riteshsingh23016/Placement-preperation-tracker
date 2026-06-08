@@ -2,121 +2,35 @@
 
 // Global validation helpers
 window.validateCompanyName = function(name) {
-  name = (name || "").trim();
-  if (!name) {
-    return "Company name is required.";
-  }
-  if (name.length < 2 || name.length > 100) {
-    return "Company name must be between 2 and 100 characters.";
-  }
-  if (/^[+-]?\d+(\.\d+)?$/.test(name)) {
-    return "Company name cannot contain only numbers.";
-  }
-  if (!/^[a-zA-Z0-9\s&.\-']+$/.test(name)) {
-    return "Company name contains invalid characters.";
-  }
-  if (!/[a-zA-Z0-9]/.test(name)) {
-    return "Company name cannot consist only of special characters.";
-  }
-  return null;
+  return window.Validators.validateCompanyName(name);
 };
 
 window.validateJobRole = function(role) {
-  role = (role || "").trim();
-  if (!role) {
-    return "Job role is required.";
-  }
-  if (role.length < 2 || role.length > 80) {
-    return "Job role must be between 2 and 80 characters.";
-  }
-  if (/^[+-]?\d+(\.\d+)?$/.test(role)) {
-    return "Job role cannot contain only numbers.";
-  }
-  if (!/[a-zA-Z0-9]/.test(role)) {
-    return "Job role cannot consist only of special characters.";
-  }
-  return null;
+  return window.Validators.validateJobRole(role);
 };
 
 window.validatePackage = function(pkg) {
-  pkg = (pkg || "").trim();
-  if (!pkg) return null; // optional
-  const num = Number(pkg);
-  if (isNaN(num) || !/^\d+(\.\d+)?$/.test(pkg)) {
-    return "Package must be a valid positive number.";
-  }
-  if (num <= 0) {
-    return "Package must be greater than 0.";
-  }
-  if (num > 100) {
-    return "Package must not exceed 100 LPA.";
-  }
-  return null;
+  return window.Validators.validatePackage(pkg);
 };
 
 window.validateInterviewDate = function(dateStr) {
-  dateStr = (dateStr || "").trim();
-  if (!dateStr) return null; // optional
-  const selectedDate = new Date(dateStr + "T00:00:00");
-  if (isNaN(selectedDate.getTime())) {
-    return "Invalid interview date.";
-  }
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (selectedDate < today) {
-    return "Interview date cannot be in the past.";
-  }
-  return null;
+  return window.Validators.validateDate(dateStr, true, "Interview date");
 };
 
 window.validateNotes = function(notes, maxLen = 1000) {
-  notes = notes || "";
-  const trimmed = notes.trim();
-  const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmed);
-  if (hasScript) {
-    return "Notes contain forbidden script content.";
-  }
-  if (trimmed.length > maxLen) {
-    return `Notes must not exceed ${maxLen} characters. Currently ${trimmed.length} characters.`;
-  }
-  return null;
+  return window.Validators.validateLongText(notes, maxLen, "Notes");
 };
 
 window.validatePhoneNumber = function(phone) {
-  phone = (phone || "").trim();
-  if (!phone) return null;
-  if (phone.length < 7 || phone.length > 15) {
-    return "Phone number must be between 7 and 15 digits.";
-  }
-  if (!/^\+?[0-9\s]+$/.test(phone)) {
-    return "Phone number can only contain digits, spaces, and an optional leading '+'.";
-  }
-  return null;
+  return window.Validators.validatePhoneNumber(phone);
 };
 
 window.validateGraduationYear = function(year) {
-  year = (year || "").trim();
-  if (!year) return null;
-  if (!/^\d{4}$/.test(year)) {
-    return "Graduation year must be a 4-digit number.";
-  }
-  const num = Number(year);
-  if (num < 1900 || num > 2100) {
-    return "Graduation year must be between 1900 and 2100.";
-  }
-  return null;
+  return window.Validators.validateGraduationYear(year);
 };
 
 window.validateUrl = function(url, label) {
-  url = (url || "").trim();
-  if (!url) return null;
-  if (url.length > 500) {
-    return `${label} must not exceed 500 characters.`;
-  }
-  if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url)) {
-    return `${label} must be a valid URL starting with http:// or https://.`;
-  }
-  return null;
+  return window.Validators.validateUrl(url, label);
 };
 
 window.openModalOverlay = function(overlay) {
@@ -787,9 +701,9 @@ function initUserMenu() {
 
     profileForm.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
 
-    const nameErr = window.validateCompanyName(nameInput.value);
+    const nameErr = window.Validators.validateName(nameInput.value, "Full Name", true);
     if (nameErr) {
-      if (errName) errName.textContent = nameErr.replace("Company name", "Full Name");
+      if (errName) errName.textContent = nameErr;
       nameInput.classList.add("is-invalid");
       hasErrors = true;
       if (!firstInvalid) firstInvalid = nameInput;
@@ -797,7 +711,7 @@ function initUserMenu() {
 
     const phoneInput = profileForm.querySelector("input[name='phoneNumber']");
     if (phoneInput) {
-      const phoneErr = window.validatePhoneNumber(phoneInput.value);
+      const phoneErr = window.Validators.validatePhoneNumber(phoneInput.value, false);
       if (phoneErr) {
         window.Toast.error("Validation Error", phoneErr);
         phoneInput.classList.add("is-invalid");
@@ -808,7 +722,7 @@ function initUserMenu() {
 
     const gradInput = profileForm.querySelector("input[name='graduationYear']");
     if (gradInput) {
-      const gradErr = window.validateGraduationYear(gradInput.value);
+      const gradErr = window.Validators.validateGraduationYear(gradInput.value);
       if (gradErr) {
         window.Toast.error("Validation Error", gradErr);
         gradInput.classList.add("is-invalid");
@@ -819,7 +733,7 @@ function initUserMenu() {
 
     const linkedinInput = profileForm.querySelector("input[name='linkedinUrl']");
     if (linkedinInput) {
-      const linkErr = window.validateUrl(linkedinInput.value, "LinkedIn URL");
+      const linkErr = window.Validators.validateUrl(linkedinInput.value, "LinkedIn URL");
       if (linkErr) {
         window.Toast.error("Validation Error", linkErr);
         linkedinInput.classList.add("is-invalid");
@@ -830,7 +744,7 @@ function initUserMenu() {
 
     const githubInput = profileForm.querySelector("input[name='githubUrl']");
     if (githubInput) {
-      const gitErr = window.validateUrl(githubInput.value, "GitHub URL");
+      const gitErr = window.Validators.validateUrl(githubInput.value, "GitHub URL");
       if (gitErr) {
         window.Toast.error("Validation Error", gitErr);
         githubInput.classList.add("is-invalid");
@@ -841,7 +755,7 @@ function initUserMenu() {
 
     const resumeInput = profileForm.querySelector("input[name='resumeUrl']");
     if (resumeInput) {
-      const resErr = window.validateUrl(resumeInput.value, "Resume URL");
+      const resErr = window.Validators.validateUrl(resumeInput.value, "Resume URL");
       if (resErr) {
         window.Toast.error("Validation Error", resErr);
         resumeInput.classList.add("is-invalid");
@@ -864,8 +778,9 @@ function initUserMenu() {
       const input = profileForm.querySelector(`input[name='${item.name}']`);
       if (input) {
         const val = input.value.trim();
-        if (val.length > item.max) {
-          window.Toast.error("Validation Error", `${item.label} must not exceed ${item.max} characters.`);
+        const txtErr = window.Validators.validateProfileText(val, item.label, false, 2, item.max);
+        if (txtErr) {
+          window.Toast.error("Validation Error", txtErr);
           input.classList.add("is-invalid");
           hasErrors = true;
           if (!firstInvalid) firstInvalid = input;
@@ -875,9 +790,9 @@ function initUserMenu() {
 
     const bioInput = profileForm.querySelector("textarea[name='bio']");
     if (bioInput) {
-      const bioErr = window.validateNotes(bioInput.value, 5000);
+      const bioErr = window.Validators.validateLongText(bioInput.value, 5000, "Short Bio", false);
       if (bioErr) {
-        window.Toast.error("Validation Error", bioErr.replace("Notes", "Short Bio"));
+        window.Toast.error("Validation Error", bioErr);
         bioInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = bioInput;
@@ -943,50 +858,41 @@ function initUserMenu() {
     errCurrent.textContent = "";
     errNew.textContent = "";
     errConfirm.textContent = "";
+    passwordForm.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
 
     let hasErrors = false;
     let firstInvalid = null;
 
     if (!currentPass) {
       errCurrent.textContent = "Current password is required";
+      document.getElementById("currentPassword").classList.add("is-invalid");
       hasErrors = true;
       if (!firstInvalid) firstInvalid = document.getElementById("currentPassword");
     }
 
-    if (!newPass) {
-      errNew.textContent = "New password is required";
+    const newPassErr = window.Validators.validatePasswordComplexity(newPass, "New password");
+    if (newPassErr) {
+      errNew.textContent = newPassErr;
+      document.getElementById("newPassword").classList.add("is-invalid");
       hasErrors = true;
       if (!firstInvalid) firstInvalid = document.getElementById("newPassword");
-    } else {
-      if (newPass.length < 8) {
-        errNew.textContent = "New password must be at least 8 characters";
-        hasErrors = true;
-        if (!firstInvalid) firstInvalid = document.getElementById("newPassword");
-      } else {
-        const hasUppercase = /[A-Z]/.test(newPass);
-        const hasLowercase = /[a-z]/.test(newPass);
-        const hasNumber = /[0-9]/.test(newPass);
-        const hasSpecial = /[^A-Za-z0-9]/.test(newPass);
-        if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
-          errNew.textContent = "Must contain uppercase, lowercase, a number, and a special character.";
-          hasErrors = true;
-          if (!firstInvalid) firstInvalid = document.getElementById("newPassword");
-        }
-      }
     }
 
     if (!confirmPass) {
       errConfirm.textContent = "Confirm password is required";
+      document.getElementById("confirmPassword").classList.add("is-invalid");
       hasErrors = true;
       if (!firstInvalid) firstInvalid = document.getElementById("confirmPassword");
     } else if (newPass !== confirmPass) {
       errConfirm.textContent = "Passwords do not match";
+      document.getElementById("confirmPassword").classList.add("is-invalid");
       hasErrors = true;
       if (!firstInvalid) firstInvalid = document.getElementById("confirmPassword");
     }
 
     if (newPass && currentPass && newPass === currentPass) {
       errNew.textContent = "New password cannot be same as current password";
+      document.getElementById("newPassword").classList.add("is-invalid");
       hasErrors = true;
       if (!firstInvalid) firstInvalid = document.getElementById("newPassword");
     }

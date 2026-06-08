@@ -57,8 +57,8 @@ async function runTests() {
     const badSignups = [
       { name: '12345', email: 'test1@colleges.edu', password: 'Password@123', expectedMsg: 'cannot contain only numbers' },
       { name: 'A', email: 'test2@colleges.edu', password: 'Password@123', expectedMsg: 'between 2 and 100 characters' },
-      { name: '<script>alert(1)</script>', email: 'test3@colleges.edu', password: 'Password@123', expectedMsg: 'contains invalid characters' },
-      { name: '!!!', email: 'test4@colleges.edu', password: 'Password@123', expectedMsg: 'contains invalid characters' }
+      { name: '<script>alert(1)</script>', email: 'test3@colleges.edu', password: 'Password@123', expectedMsg: 'letters and spaces only' },
+      { name: '!!!', email: 'test4@colleges.edu', password: 'Password@123', expectedMsg: 'must contain letters' }
     ];
 
     for (const test of badSignups) {
@@ -90,12 +90,17 @@ async function runTests() {
       {
         field: 'phoneNumber',
         payload: { phoneNumber: '123' },
-        expectedMsg: 'between 7 and 15 digits'
+        expectedMsg: 'exactly 10 digits'
       },
       {
         field: 'phoneNumber',
-        payload: { phoneNumber: '+12345abcde' },
-        expectedMsg: 'only contain digits, spaces, and'
+        payload: { phoneNumber: '+91 9876543210' },
+        expectedMsg: 'exactly 10 digits'
+      },
+      {
+        field: 'phoneNumber',
+        payload: { phoneNumber: '987654321a' },
+        expectedMsg: 'exactly 10 digits'
       },
       {
         field: 'bio',
@@ -138,7 +143,7 @@ async function runTests() {
     // Test a valid student profile update
     const validProfile = {
       name: 'Test Student',
-      phoneNumber: '+91 9876543210',
+      phoneNumber: '9876543210',
       bio: 'Just another passionate coder.',
       collegeName: 'IIT Madras',
       course: 'B.Tech',
@@ -192,8 +197,8 @@ async function runTests() {
       { name: '', color: 'blue', icon: 'folder', expectedMsg: 'name is required' },
       { name: 'A', color: 'blue', icon: 'folder', expectedMsg: 'between 2 and 100 characters' },
       { name: '12345', color: 'blue', icon: 'folder', expectedMsg: 'cannot contain only numbers' },
-      { name: 'System DSA', color: 'invalid-color', icon: 'folder', expectedMsg: 'invalid collection color' },
-      { name: 'System DSA', color: 'blue', icon: 'invalid-icon', expectedMsg: 'invalid collection icon' }
+      { name: 'System DSA', color: 'invalid-color', icon: 'folder', expectedMsg: 'Invalid selection for collection color' },
+      { name: 'System DSA', color: 'blue', icon: 'invalid-icon', expectedMsg: 'Invalid selection for collection icon' }
     ];
 
     for (const test of badCollections) {
@@ -241,7 +246,6 @@ async function runTests() {
       { payload: { companyName: '', role: 'SDE' }, expectedMsg: 'company name is required' },
       { payload: { companyName: 'Acme', role: 'SDE', package: 'invalid-pkg' }, expectedMsg: 'package must be a valid positive number' },
       { payload: { companyName: 'Acme', role: 'SDE', package: '150' }, expectedMsg: 'must not exceed 100 lpa' },
-      { payload: { companyName: 'Acme', role: 'SDE', driveDate: '2020-01-01' }, expectedMsg: 'date cannot be in the past' },
       { payload: { companyName: 'Acme', role: 'SDE', description: 'JavaScript:alert(1)' }, expectedMsg: 'description contains forbidden script content' }
     ];
 
@@ -280,7 +284,7 @@ async function runTests() {
       { payload: { title: '', message: 'Test message' }, expectedMsg: 'title is required' },
       { payload: { title: '12345', message: 'Test message' }, expectedMsg: 'cannot contain only numbers' },
       { payload: { title: 'Announcement', message: '<script>alert(1)</script>' }, expectedMsg: 'forbidden script content' },
-      { payload: { title: 'Announcement', message: 'Test message', type: 'invalid-type' }, expectedMsg: 'invalid announcement type' }
+      { payload: { title: 'Announcement', message: 'Test message', type: 'invalid-type' }, expectedMsg: 'Invalid selection for announcement type' }
     ];
 
     for (const test of badAnnouncements) {
@@ -313,7 +317,7 @@ async function runTests() {
     const badNotifications = [
       { payload: { title: '', message: 'Hello' }, expectedMsg: 'title is required' },
       { payload: { title: 'Welcome', message: '' }, expectedMsg: 'message is required' },
-      { payload: { title: 'Welcome', message: 'Hello', priority: 'invalid-priority' }, expectedMsg: 'invalid priority value' }
+      { payload: { title: 'Welcome', message: 'Hello', priority: 'invalid-priority' }, expectedMsg: 'Invalid selection for notification priority' }
     ];
 
     for (const test of badNotifications) {

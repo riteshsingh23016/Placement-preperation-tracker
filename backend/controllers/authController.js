@@ -5,17 +5,10 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const PasswordResetRequest = require("../models/PasswordResetRequest");
 const Notification = require("../models/notification");
+const Validators = require("../utils/validators");
 
 const isValidPassword = (password) => {
-  if (!password || typeof password !== 'string') return false;
-  if (password.length < 8) return false;
-  
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasLowercase = /[a-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-  const hasSpecial = /[^A-Za-z0-9]/.test(password);
-
-  return hasUppercase && hasLowercase && hasNumber && hasSpecial;
+  return !Validators.validatePasswordComplexity(password);
 };
 
 const otpRateLimiter = new Map();
@@ -60,27 +53,7 @@ const generateToken = (id) => {
  * Validates email format according to strict production requirements
  */
 const isValidEmail = (email) => {
-  if (!email || typeof email !== 'string') return false;
-  
-  const trimmed = email.trim();
-  
-  if (/\s/.test(trimmed)) return false;
-  
-  const parts = trimmed.split('@');
-  if (parts.length !== 2) return false;
-  
-  const [local, domain] = parts;
-  if (!local) return false;
-  
-  if (!domain || !domain.includes('.')) return false;
-  
-  const domainParts = domain.split('.');
-  const tld = domainParts[domainParts.length - 1];
-  if (tld.length < 2) return false;
-  
-  if (domainParts.some(p => p === "")) return false;
-
-  return true;
+  return !Validators.validateEmail(email);
 };
 
 exports.signup = async (req, res) => {
@@ -92,30 +65,19 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please provide all required fields" });
     }
 
-    const trimmedName = (name || "").trim();
-    if (trimmedName.length < 2 || trimmedName.length > 100) {
-      return res.status(400).json({ success: false, message: "Full Name must be between 2 and 100 characters." });
-    }
-    if (/^[+-]?\d+(\.\d+)?$/.test(trimmedName)) {
-      return res.status(400).json({ success: false, message: "Full Name cannot contain only numbers." });
-    }
-    if (!/^[a-zA-Z0-9\s&.\-']+$/.test(trimmedName)) {
-      return res.status(400).json({ success: false, message: "Full Name contains invalid characters." });
-    }
-    if (!/[a-zA-Z0-9]/.test(trimmedName)) {
-      return res.status(400).json({ success: false, message: "Full Name cannot consist only of special characters." });
+    const nameErr = Validators.validateName(name, "Full Name", true);
+    if (nameErr) {
+      return res.status(400).json({ success: false, message: nameErr });
     }
 
-    // Validation
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+    const emailErr = Validators.validateEmail(email);
+    if (emailErr) {
+      return res.status(400).json({ success: false, message: emailErr });
     }
 
-    if (!isValidPassword(password)) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
-      });
+    const passErr = Validators.validatePasswordComplexity(password);
+    if (passErr) {
+      return res.status(400).json({ success: false, message: passErr });
     }
 
     // Normalization
@@ -296,76 +258,53 @@ exports.updateProfile = async (req, res) => {
     }
 
     if (req.body.name !== undefined) {
-      const trimmedName = req.body.name.trim();
-      if (!trimmedName) {
-        return res.status(400).json({ success: false, message: "Name cannot be empty" });
+      const nameErr = Validators.validateName(req.body.name, "Full Name", true);
+      if (nameErr) {
+        return res.status(400).json({ success: false, message: nameErr });
       }
-      if (trimmedName.length < 2 || trimmedName.length > 100) {
-        return res.status(400).json({ success: false, message: "Full Name must be between 2 and 100 characters." });
-      }
-      if (/^[+-]?\d+(\.\d+)?$/.test(trimmedName)) {
-        return res.status(400).json({ success: false, message: "Full Name cannot contain only numbers." });
-      }
-      if (!/^[a-zA-Z0-9\s&.\-']+$/.test(trimmedName)) {
-        return res.status(400).json({ success: false, message: "Full Name contains invalid characters." });
-      }
-      if (!/[a-zA-Z0-9]/.test(trimmedName)) {
-        return res.status(400).json({ success: false, message: "Full Name cannot consist only of special characters." });
-      }
-      user.name = trimmedName;
+      user.name = req.body.name.trim();
     }
     
     if (req.body.phoneNumber !== undefined) {
-      const ph = req.body.phoneNumber.trim();
-      if (ph) {
-        if (ph.length < 7 || ph.length > 15) {
-          return res.status(400).json({ success: false, message: "Phone number must be between 7 and 15 digits." });
-        }
-        if (!/^\+?[0-9\s]+$/.test(ph)) {
-          return res.status(400).json({ success: false, message: "Phone number can only contain digits, spaces, and an optional leading '+'." });
-        }
+      const phoneErr = Validators.validatePhoneNumber(req.body.phoneNumber, false);
+      if (phoneErr) {
+        return res.status(400).json({ success: false, message: phoneErr });
       }
-      user.phoneNumber = ph;
+      user.phoneNumber = req.body.phoneNumber.trim();
     }
 
     if (req.body.bio !== undefined) {
-      const bio = req.body.bio.trim();
-      if (bio) {
-        const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(bio);
-        if (hasScript) {
-          return res.status(400).json({ success: false, message: "Short Bio contains forbidden script content." });
-        }
-        if (bio.length > 5000) {
-          return res.status(400).json({ success: false, message: "Short Bio must not exceed 5000 characters." });
-        }
+      const bioErr = Validators.validateLongText(req.body.bio, 5000, "Short Bio", false);
+      if (bioErr) {
+        return res.status(400).json({ success: false, message: bioErr });
       }
-      user.bio = bio;
+      user.bio = req.body.bio.trim();
     }
 
     if (user.role === "student") {
-      const textFields = ["collegeName", "course", "branch", "skills"];
+      const textFields = [
+        { name: "collegeName", label: "College Name" },
+        { name: "course", label: "Course / Degree" },
+        { name: "branch", label: "Branch / Department" },
+        { name: "skills", label: "Skills" }
+      ];
       for (const field of textFields) {
-        if (req.body[field] !== undefined) {
-          const val = req.body[field].trim();
-          if (val.length > 150) {
-            return res.status(400).json({ success: false, message: `${field} must not exceed 150 characters.` });
+        if (req.body[field.name] !== undefined) {
+          const val = req.body[field.name].trim();
+          const txtErr = Validators.validateProfileText(val, field.label, false, 2, 150);
+          if (txtErr) {
+            return res.status(400).json({ success: false, message: txtErr });
           }
-          user[field] = val;
+          user[field.name] = val;
         }
       }
 
       if (req.body.graduationYear !== undefined) {
-        const year = req.body.graduationYear.trim();
-        if (year) {
-          if (!/^\d{4}$/.test(year)) {
-            return res.status(400).json({ success: false, message: "Graduation year must be a 4-digit number." });
-          }
-          const num = Number(year);
-          if (num < 1900 || num > 2100) {
-            return res.status(400).json({ success: false, message: "Graduation year must be between 1900 and 2100." });
-          }
+        const yearErr = Validators.validateGraduationYear(req.body.graduationYear);
+        if (yearErr) {
+          return res.status(400).json({ success: false, message: yearErr });
         }
-        user.graduationYear = year;
+        user.graduationYear = req.body.graduationYear.trim();
       }
 
       const urlFields = [
@@ -375,27 +314,27 @@ exports.updateProfile = async (req, res) => {
       ];
       for (const field of urlFields) {
         if (req.body[field.key] !== undefined) {
-          const url = req.body[field.key].trim();
-          if (url) {
-            if (url.length > 500) {
-              return res.status(400).json({ success: false, message: `${field.label} must not exceed 500 characters.` });
-            }
-            if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url)) {
-              return res.status(400).json({ success: false, message: `${field.label} must be a valid URL starting with http:// or https://.` });
-            }
+          const urlErr = Validators.validateUrl(req.body[field.key], field.label);
+          if (urlErr) {
+            return res.status(400).json({ success: false, message: urlErr });
           }
-          user[field.key] = url;
+          user[field.key] = req.body[field.key].trim();
         }
       }
     } else if (user.role === "admin") {
-      const adminTextFields = ["department", "designation", "officeLocation"];
+      const adminTextFields = [
+        { name: "department", label: "Department" },
+        { name: "designation", label: "Designation" },
+        { name: "officeLocation", label: "Office Location" }
+      ];
       for (const field of adminTextFields) {
-        if (req.body[field] !== undefined) {
-          const val = req.body[field].trim();
-          if (val.length > 150) {
-            return res.status(400).json({ success: false, message: `${field} must not exceed 150 characters.` });
+        if (req.body[field.name] !== undefined) {
+          const val = req.body[field.name].trim();
+          const txtErr = Validators.validateProfileText(val, field.label, false, 2, 150);
+          if (txtErr) {
+            return res.status(400).json({ success: false, message: txtErr });
           }
-          user[field] = val;
+          user[field.name] = val;
         }
       }
     }
@@ -434,10 +373,11 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    if (!isValidPassword(newPassword)) {
+    const passErr = Validators.validatePasswordComplexity(newPassword, "New password");
+    if (passErr) {
       return res.status(400).json({
         success: false,
-        message: "New password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+        message: passErr,
       });
     }
 
@@ -783,10 +723,11 @@ exports.resetPassword = async (req, res) => {
     email = email.trim().toLowerCase();
     otp = otp.trim();
 
-    if (!isValidPassword(newPassword)) {
+    const passErr = Validators.validatePasswordComplexity(newPassword, "Password");
+    if (passErr) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+        message: passErr,
       });
     }
 

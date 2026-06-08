@@ -552,12 +552,13 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Package (LPA)</label>
-                        <input type="text" name="package" class="glass-input">
+                        <input type="text" name="package" class="glass-input" inputmode="decimal">
                         <span class="field-error" id="errDrivePackage" style="color: var(--color-danger); font-size: 11.5px; margin-top: 4px; display: block;"></span>
                     </div>
                     <div class="form-group">
                         <label>Location</label>
                         <input type="text" name="location" class="glass-input">
+                        <span class="field-error" id="errDriveLocation" style="color: var(--color-danger); font-size: 11.5px; margin-top: 4px; display: block;"></span>
                     </div>
                 </div>
                 <div class="form-grid">
@@ -578,6 +579,7 @@
                     <div class="form-group">
                         <label>Eligibility Criteria</label>
                         <input type="text" name="eligibility" placeholder="e.g. B.Tech CSE, 7+ CGPA" class="glass-input">
+                        <span class="field-error" id="errDriveEligibility" style="color: var(--color-danger); font-size: 11.5px; margin-top: 4px; display: block;"></span>
                     </div>
                     <div class="form-group">
                         <label>Mode</label>
@@ -839,6 +841,7 @@
     <script src="js/config.js"></script>
     <script src="js/pdfGenerator.js" defer></script>
     <script src="js/toast.js"></script>
+    <script src="js/validators.js" defer></script>
     <script src="js/app.js" defer></script>
     <script src="js/admin.js" defer></script>
 </body>

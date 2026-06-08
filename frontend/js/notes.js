@@ -242,7 +242,8 @@ function renderNotes() {
   const container = qs("#notesContainer");
   if (!container) return;
 
-  const query = qs("#noteSearch") ? qs("#noteSearch").value.trim().toLowerCase() : "";
+  const rawQuery = qs("#noteSearch") ? qs("#noteSearch").value : "";
+  const query = window.Validators.sanitizeSearch(rawQuery).toLowerCase();
   let filtered = activeCollectionId === "all" 
     ? notesList 
     : notesList.filter(n => {
@@ -510,54 +511,26 @@ document.addEventListener("DOMContentLoaded", () => {
       let hasError = false;
       let firstInvalid = null;
 
-      if (!title) {
-        if (errTitle) errTitle.textContent = "Title is required.";
+      const titleErr = window.Validators.validateLongText(title, 100, "Title", true);
+      if (titleErr) {
+        if (errTitle) errTitle.textContent = titleErr;
         if (titleInput) {
           titleInput.style.borderColor = "var(--bad)";
           titleInput.classList.add("is-invalid");
         }
         hasError = true;
         if (!firstInvalid) firstInvalid = titleInput;
-      } else if (title.length > 100) {
-        if (errTitle) errTitle.textContent = "Title must not exceed 100 characters.";
-        if (titleInput) {
-          titleInput.style.borderColor = "var(--bad)";
-          titleInput.classList.add("is-invalid");
-        }
-        hasError = true;
-        if (!firstInvalid) firstInvalid = titleInput;
-      } else {
-        const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(title);
-        if (hasScript) {
-          if (errTitle) errTitle.textContent = "Title contains forbidden script content.";
-          if (titleInput) {
-            titleInput.style.borderColor = "var(--bad)";
-            titleInput.classList.add("is-invalid");
-          }
-          hasError = true;
-          if (!firstInvalid) firstInvalid = titleInput;
-        }
       }
 
-      if (!content) {
-        if (errContent) errContent.textContent = "Content is required.";
+      const contentErr = window.Validators.validateLongText(content, 5000, "Content", true);
+      if (contentErr) {
+        if (errContent) errContent.textContent = contentErr;
         if (contentInput) {
           contentInput.style.borderColor = "var(--bad)";
           contentInput.classList.add("is-invalid");
         }
         hasError = true;
         if (!firstInvalid) firstInvalid = contentInput;
-      } else {
-        const contentErr = window.validateNotes(content, 5000);
-        if (contentErr) {
-          if (errContent) errContent.textContent = contentErr.replace("Notes", "Content");
-          if (contentInput) {
-            contentInput.style.borderColor = "var(--bad)";
-            contentInput.classList.add("is-invalid");
-          }
-          hasError = true;
-          if (!firstInvalid) firstInvalid = contentInput;
-        }
       }
 
       if (hasError) {
@@ -637,27 +610,9 @@ document.addEventListener("DOMContentLoaded", () => {
         nameInput.classList.remove("is-invalid");
       }
 
-      if (!name) {
-        if (errName) errName.textContent = "Collection name is required.";
-        if (nameInput) {
-          nameInput.style.borderColor = "var(--bad)";
-          nameInput.classList.add("is-invalid");
-          nameInput.focus();
-        }
-        return;
-      }
-      if (name.length < 2 || name.length > 100) {
-        if (errName) errName.textContent = "Collection name must be between 2 and 100 characters.";
-        if (nameInput) {
-          nameInput.style.borderColor = "var(--bad)";
-          nameInput.classList.add("is-invalid");
-          nameInput.focus();
-        }
-        return;
-      }
-      const nameErr = window.validateCompanyName(name);
+      const nameErr = window.Validators.validateName(name, "Collection name", true);
       if (nameErr) {
-        if (errName) errName.textContent = nameErr.replace("Company name", "Collection name");
+        if (errName) errName.textContent = nameErr;
         if (nameInput) {
           nameInput.style.borderColor = "var(--bad)";
           nameInput.classList.add("is-invalid");

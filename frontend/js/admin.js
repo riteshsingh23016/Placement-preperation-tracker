@@ -194,7 +194,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const tbody = qs("#studentsTableBody");
         if (!tbody) return;
 
-        const query = ((qs("#studentSearch") && qs("#studentSearch").value) || (qs("#globalSearch") && qs("#globalSearch").value) || "").trim().toLowerCase();
+        const rawQuery = ((qs("#studentSearch") && qs("#studentSearch").value) || (qs("#globalSearch") && qs("#globalSearch").value) || "").trim();
+        const query = window.Validators.sanitizeSearch(rawQuery).toLowerCase();
         const filteredStudents = students.filter(student => 
             (student.name || "").toLowerCase().includes(query) || 
             (student.email || "").toLowerCase().includes(query)
@@ -535,33 +536,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 let ok = true;
                 let firstInvalid = null;
 
-                const titleErr = window.validateCompanyName(title);
+                const titleErr = window.Validators.validateName(title, "Notification Title", true);
                 if (titleErr) {
                     ok = false;
-                    if (errTitle) errTitle.textContent = titleErr.replace("Company name", "Notification Title");
+                    if (errTitle) errTitle.textContent = titleErr;
                     if (titleInput) {
                         titleInput.classList.add("is-invalid");
                         if (!firstInvalid) firstInvalid = titleInput;
                     }
                 }
 
-                if (!message) {
+                const msgErr = window.Validators.validateLongText(message, 1000, "Notification Message", true);
+                if (msgErr) {
                     ok = false;
-                    if (errMsg) errMsg.textContent = "Notification Message is required.";
+                    if (errMsg) errMsg.textContent = msgErr;
                     if (msgInput) {
                         msgInput.classList.add("is-invalid");
                         if (!firstInvalid) firstInvalid = msgInput;
                     }
-                } else {
-                    const msgErr = window.validateNotes(message, 1000); // custom limit for notification
-                    if (msgErr) {
-                        ok = false;
-                        if (errMsg) errMsg.textContent = msgErr.replace("Notes", "Notification Message");
-                        if (msgInput) {
-                            msgInput.classList.add("is-invalid");
-                            if (!firstInvalid) firstInvalid = msgInput;
-                        }
-                    }
+                }
+
+                const priorityErr = window.Validators.validateDropdown(priority, ["low", "medium", "high"], "Notification Priority");
+                if (priorityErr) {
+                    ok = false;
+                    if (window.Toast) window.Toast.error("Validation Error", priorityErr);
                 }
 
                 if (!ok) {
@@ -807,7 +805,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const clear = qs("#clearFilters");
         const toggle = qs("#toggleGrouping");
 
-        if (search) search.addEventListener("input", (e) => { appFilters.search = e.target.value; renderApplications(); });
+        if (search) search.addEventListener("input", (e) => { appFilters.search = window.Validators.sanitizeSearch(e.target.value); renderApplications(); });
         if (candidate) candidate.addEventListener("change", (e) => { appFilters.candidate = e.target.value; renderApplications(); });
         if (status) status.addEventListener("change", (e) => { appFilters.status = e.target.value; renderApplications(); });
         if (priority) priority.addEventListener("change", (e) => { appFilters.priority = e.target.value; renderApplications(); });
@@ -1633,7 +1631,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let ok = true;
                 let firstInvalid = null;
 
-                const nameErr = window.validateCompanyName(body.companyName);
+                const nameErr = window.Validators.validateCompanyName(body.companyName);
                 if (nameErr) {
                     ok = false;
                     const errEl = qs("#errDriveCompanyName");
@@ -1645,7 +1643,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
 
-                const roleErr = window.validateJobRole(body.role);
+                const roleErr = window.Validators.validateJobRole(body.role);
                 if (roleErr) {
                     ok = false;
                     const errEl = qs("#errDriveRole");
@@ -1657,7 +1655,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
 
-                const pkgErr = window.validatePackage(body.package);
+                const pkgErr = window.Validators.validatePackage(body.package);
                 if (pkgErr) {
                     ok = false;
                     const errEl = qs("#errDrivePackage");
@@ -1669,11 +1667,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
 
-                const dateErr = window.validateInterviewDate(body.driveDate);
+                const dateErr = window.Validators.validateDate(body.driveDate, false, "Drive date");
                 if (dateErr) {
                     ok = false;
                     const errEl = qs("#errDriveDate");
-                    if (errEl) errEl.textContent = dateErr.replace("Interview date", "Drive date");
+                    if (errEl) errEl.textContent = dateErr;
                     const inputEl = driveForm.querySelector("input[name='driveDate']");
                     if (inputEl) {
                         inputEl.classList.add("is-invalid");
@@ -1681,12 +1679,36 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
 
-                const descErr = window.validateNotes(body.description, 5000);
+                const descErr = window.Validators.validateLongText(body.description, 5000, "Description");
                 if (descErr) {
                     ok = false;
                     const errEl = qs("#errDriveDescription");
-                    if (errEl) errEl.textContent = descErr.replace("Notes", "Description");
+                    if (errEl) errEl.textContent = descErr;
                     const inputEl = driveForm.querySelector("textarea[name='description']");
+                    if (inputEl) {
+                        inputEl.classList.add("is-invalid");
+                        if (!firstInvalid) firstInvalid = inputEl;
+                    }
+                }
+
+                const locErr = window.Validators.validateProfileText(body.location, "Location", false, 2, 100);
+                if (locErr) {
+                    ok = false;
+                    const errEl = qs("#errDriveLocation");
+                    if (errEl) errEl.textContent = locErr;
+                    const inputEl = driveForm.querySelector("input[name='location']");
+                    if (inputEl) {
+                        inputEl.classList.add("is-invalid");
+                        if (!firstInvalid) firstInvalid = inputEl;
+                    }
+                }
+
+                const eligErr = window.Validators.validateProfileText(body.eligibility, "Eligibility criteria", false, 2, 200);
+                if (eligErr) {
+                    ok = false;
+                    const errEl = qs("#errDriveEligibility");
+                    if (errEl) errEl.textContent = eligErr;
+                    const inputEl = driveForm.querySelector("input[name='eligibility']");
                     if (inputEl) {
                         inputEl.classList.add("is-invalid");
                         if (!firstInvalid) firstInvalid = inputEl;
@@ -1849,33 +1871,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 let ok = true;
                 let firstInvalid = null;
 
-                const titleErr = window.validateCompanyName(title);
+                const titleErr = window.Validators.validateName(title, "Announcement Title", true);
                 if (titleErr) {
                     ok = false;
-                    if (errTitle) errTitle.textContent = titleErr.replace("Company name", "Announcement Title");
+                    if (errTitle) errTitle.textContent = titleErr;
                     if (titleInput) {
                         titleInput.classList.add("is-invalid");
                         if (!firstInvalid) firstInvalid = titleInput;
                     }
                 }
 
-                if (!message) {
+                const msgErr = window.Validators.validateLongText(message, 5000, "Announcement Message", true);
+                if (msgErr) {
                     ok = false;
-                    if (errMessage) errMessage.textContent = "Announcement Message is required.";
+                    if (errMessage) errMessage.textContent = msgErr;
                     if (msgInput) {
                         msgInput.classList.add("is-invalid");
                         if (!firstInvalid) firstInvalid = msgInput;
                     }
-                } else {
-                    const msgErr = window.validateNotes(message, 5000);
-                    if (msgErr) {
-                        ok = false;
-                        if (errMessage) errMessage.textContent = msgErr.replace("Notes", "Announcement Message");
-                        if (msgInput) {
-                            msgInput.classList.add("is-invalid");
-                            if (!firstInvalid) firstInvalid = msgInput;
-                        }
-                    }
+                }
+
+                const typeErr = window.Validators.validateDropdown(type, ["info", "success", "warning", "urgent"], "Announcement Type");
+                if (typeErr) {
+                    ok = false;
+                    if (window.Toast) window.Toast.error("Validation Error", typeErr);
                 }
 
                 if (!ok) {

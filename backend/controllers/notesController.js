@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Note = require("../models/notes");
 const Collection = require("../models/collection");
+const Validators = require("../utils/validators");
 
 exports.getNotes = async (req, res) => {
   try {
@@ -21,30 +22,18 @@ exports.createNote = async (req, res) => {
   try {
     let { title, content, collectionId, pinned } = req.body;
 
-    const trimmedTitle = (title || "").trim();
-    if (!trimmedTitle) {
-      return res.status(400).json({ success: false, message: "Title is required." });
-    }
-    if (trimmedTitle.length > 100) {
-      return res.status(400).json({ success: false, message: "Title must not exceed 100 characters." });
-    }
-    if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedTitle)) {
-      return res.status(400).json({ success: false, message: "Title contains forbidden script content." });
+    const titleErr = Validators.validateLongText(title, 100, "Title", true);
+    if (titleErr) {
+      return res.status(400).json({ success: false, message: titleErr });
     }
 
-    const trimmedContent = (content || "").trim();
-    if (!trimmedContent) {
-      return res.status(400).json({ success: false, message: "Content is required." });
-    }
-    if (trimmedContent.length > 5000) {
-      return res.status(400).json({ success: false, message: "Content must not exceed 5000 characters." });
-    }
-    if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedContent)) {
-      return res.status(400).json({ success: false, message: "Content contains forbidden script content." });
+    const contentErr = Validators.validateLongText(content, 5000, "Content", true);
+    if (contentErr) {
+      return res.status(400).json({ success: false, message: contentErr });
     }
 
-    title = trimmedTitle;
-    content = trimmedContent;
+    title = title.trim();
+    content = content.trim();
 
     const isValidCol = mongoose.Types.ObjectId.isValid(collectionId);
     if (!collectionId || !isValidCol) {
@@ -84,30 +73,18 @@ exports.updateNote = async (req, res) => {
 
     const updateFields = {};
     if (title !== undefined) {
-      const trimmedTitle = title.trim();
-      if (!trimmedTitle) {
-        return res.status(400).json({ success: false, message: "Title cannot be empty." });
+      const titleErr = Validators.validateLongText(title, 100, "Title", true);
+      if (titleErr) {
+        return res.status(400).json({ success: false, message: titleErr });
       }
-      if (trimmedTitle.length > 100) {
-        return res.status(400).json({ success: false, message: "Title must not exceed 100 characters." });
-      }
-      if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedTitle)) {
-        return res.status(400).json({ success: false, message: "Title contains forbidden script content." });
-      }
-      updateFields.title = trimmedTitle;
+      updateFields.title = title.trim();
     }
     if (content !== undefined) {
-      const trimmedContent = content.trim();
-      if (!trimmedContent) {
-        return res.status(400).json({ success: false, message: "Content cannot be empty." });
+      const contentErr = Validators.validateLongText(content, 5000, "Content", true);
+      if (contentErr) {
+        return res.status(400).json({ success: false, message: contentErr });
       }
-      if (trimmedContent.length > 5000) {
-        return res.status(400).json({ success: false, message: "Content must not exceed 5000 characters." });
-      }
-      if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedContent)) {
-        return res.status(400).json({ success: false, message: "Content contains forbidden script content." });
-      }
-      updateFields.content = trimmedContent;
+      updateFields.content = content.trim();
     }
     if (pinned !== undefined) updateFields.pinned = !!pinned;
 

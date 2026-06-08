@@ -391,15 +391,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = emailInput ? emailInput.value.trim() : "";
       const errEmail = qs("#errForgotEmail");
       if (errEmail) errEmail.textContent = "";
+      if (emailInput) emailInput.classList.remove("is-invalid");
 
-      if (!email) {
-        if (errEmail) errEmail.textContent = "Please enter your email address.";
-        if (emailInput) emailInput.focus();
-        return;
-      }
-      if (!isValidEmail(email)) {
-        if (errEmail) errEmail.textContent = "Please enter a valid email address.";
-        if (emailInput) emailInput.focus();
+      const emailErr = window.Validators.validateEmail(email);
+      if (emailErr) {
+        if (errEmail) errEmail.textContent = emailErr;
+        if (emailInput) {
+          emailInput.classList.add("is-invalid");
+          emailInput.focus();
+        }
         return;
       }
 
@@ -476,44 +476,30 @@ document.addEventListener("DOMContentLoaded", () => {
       if (errOtp) errOtp.textContent = "";
       if (errNew) errNew.textContent = "";
       if (errConfirm) errConfirm.textContent = "";
+      otpResetForm.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
 
       let hasErrors = false;
       let firstInvalid = null;
 
-      if (!otp) {
-        if (errOtp) errOtp.textContent = "OTP is required.";
-        hasErrors = true;
-        if (!firstInvalid) firstInvalid = otpInput;
-      } else if (otp.length !== 6 || !/^\d+$/.test(otp)) {
-        if (errOtp) errOtp.textContent = "OTP must be a 6-digit number.";
+      const otpErr = window.Validators.validatePinCode(otp, true);
+      if (otpErr) {
+        if (errOtp) errOtp.textContent = otpErr.replace("PIN code", "Verification OTP");
+        if (otpInput) otpInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = otpInput;
       }
 
-      if (!newPassword || !newPassword.trim()) {
-        if (errNew) errNew.textContent = "New password is required.";
+      const passErr = window.Validators.validatePasswordComplexity(newPassword, "New password");
+      if (passErr) {
+        if (errNew) errNew.textContent = passErr;
+        if (newPasswordInput) newPasswordInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = newPasswordInput;
-      } else {
-        if (newPassword.length < 8) {
-          if (errNew) errNew.textContent = "New password must be at least 8 characters.";
-          hasErrors = true;
-          if (!firstInvalid) firstInvalid = newPasswordInput;
-        } else {
-          const hasUppercase = /[A-Z]/.test(newPassword);
-          const hasLowercase = /[a-z]/.test(newPassword);
-          const hasNumber = /[0-9]/.test(newPassword);
-          const hasSpecial = /[^A-Za-z0-9]/.test(newPassword);
-          if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecial) {
-            if (errNew) errNew.textContent = "Must contain uppercase, lowercase, a number, and a special character.";
-            hasErrors = true;
-            if (!firstInvalid) firstInvalid = newPasswordInput;
-          }
-        }
       }
 
       if (!confirmPassword) {
         if (errConfirm) errConfirm.textContent = "Confirm password is required.";
+        if (confirmPasswordInput) confirmPasswordInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = confirmPasswordInput;
       } else if (newPassword !== confirmPassword) {
@@ -651,6 +637,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (errName) errName.textContent = "";
       if (errEmail) errEmail.textContent = "";
       if (errPassword) errPassword.textContent = "";
+      authForm.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
 
       let email = authForm.email.value.trim();
       const password = authForm.password.value;
@@ -660,32 +647,36 @@ document.addEventListener("DOMContentLoaded", () => {
       let firstInvalid = null;
 
       if (currentMode === "signup") {
-        const nameErr = window.validateCompanyName(name);
+        const nameErr = window.Validators.validateName(name, "Full Name");
         if (nameErr) {
-          if (errName) errName.textContent = nameErr.replace("Company name", "Full Name");
+          if (errName) errName.textContent = nameErr;
+          if (authForm.name) authForm.name.classList.add("is-invalid");
           hasErrors = true;
           if (!firstInvalid) firstInvalid = authForm.name;
         }
       }
 
-      if (!email) {
-        if (errEmail) errEmail.textContent = "Email is required.";
-        hasErrors = true;
-        if (!firstInvalid) firstInvalid = authForm.email;
-      } else if (!isValidEmail(email)) {
-        if (errEmail) errEmail.textContent = "Please enter a valid email address without spaces.";
+      const emailErr = window.Validators.validateEmail(email);
+      if (emailErr) {
+        if (errEmail) errEmail.textContent = emailErr;
+        authForm.email.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = authForm.email;
       }
 
       if (!password || !password.trim()) {
         if (errPassword) errPassword.textContent = "Password is required.";
+        authForm.password.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = authForm.password;
-      } else if (currentMode === "signup" && !isValidPassword(password)) {
-        if (errPassword) errPassword.textContent = "Password must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
-        hasErrors = true;
-        if (!firstInvalid) firstInvalid = authForm.password;
+      } else if (currentMode === "signup") {
+        const passErr = window.Validators.validatePasswordComplexity(password);
+        if (passErr) {
+          if (errPassword) errPassword.textContent = passErr;
+          authForm.password.classList.add("is-invalid");
+          hasErrors = true;
+          if (!firstInvalid) firstInvalid = authForm.password;
+        }
       }
 
       if (hasErrors) {
@@ -782,15 +773,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const otp = otpInput ? otpInput.value.trim() : "";
       const errOtp = qs("#errVerifyOtp");
       if (errOtp) errOtp.textContent = "";
-      
-      if (!otp) {
-        if (errOtp) errOtp.textContent = "Please enter the 6-digit verification code.";
-        if (otpInput) otpInput.focus();
-        return;
-      }
-      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
-        if (errOtp) errOtp.textContent = "Verification code must be a 6-digit number.";
-        if (otpInput) otpInput.focus();
+      if (otpInput) otpInput.classList.remove("is-invalid");
+        
+      const otpErr = window.Validators.validatePinCode(otp, true);
+      if (otpErr) {
+        if (errOtp) errOtp.textContent = otpErr.replace("PIN code", "Verification code");
+        if (otpInput) {
+          otpInput.classList.add("is-invalid");
+          otpInput.focus();
+        }
         return;
       }
 

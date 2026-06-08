@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Announcement = require("../models/Announcement");
 const { protect, admin } = require("../middleware/authMiddleware");
+const Validators = require("../utils/validators");
 
 // @desc    Get all active announcements
 // @route   GET /api/announcements
@@ -22,43 +23,25 @@ router.post("/", protect, admin, async (req, res) => {
   try {
     const { title, message, type } = req.body;
 
-    const trimmedTitle = (title || "").trim();
-    if (!trimmedTitle) {
-      return res.status(400).json({ success: false, message: "Announcement Title is required." });
-    }
-    if (trimmedTitle.length < 2 || trimmedTitle.length > 100) {
-      return res.status(400).json({ success: false, message: "Announcement Title must be between 2 and 100 characters." });
-    }
-    if (/^[+-]?\d+(\.\d+)?$/.test(trimmedTitle)) {
-      return res.status(400).json({ success: false, message: "Announcement Title cannot contain only numbers." });
-    }
-    if (!/^[a-zA-Z0-9\s&.\-']+$/.test(trimmedTitle)) {
-      return res.status(400).json({ success: false, message: "Announcement Title contains invalid characters." });
-    }
-    if (!/[a-zA-Z0-9]/.test(trimmedTitle)) {
-      return res.status(400).json({ success: false, message: "Announcement Title cannot consist only of special characters." });
+    const titleErr = Validators.validateName(title, "Announcement Title", true);
+    if (titleErr) {
+      return res.status(400).json({ success: false, message: titleErr });
     }
 
-    const trimmedMsg = (message || "").trim();
-    if (!trimmedMsg) {
-      return res.status(400).json({ success: false, message: "Announcement Message is required." });
-    }
-    if (trimmedMsg.length > 5000) {
-      return res.status(400).json({ success: false, message: "Announcement Message must not exceed 5000 characters." });
-    }
-    if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedMsg)) {
-      return res.status(400).json({ success: false, message: "Announcement Message contains forbidden script content." });
+    const msgErr = Validators.validateLongText(message, 5000, "Announcement Message", true);
+    if (msgErr) {
+      return res.status(400).json({ success: false, message: msgErr });
     }
 
-    const validTypes = ["info", "success", "warning", "urgent"];
     const t = (type || "info").toLowerCase();
-    if (!validTypes.includes(t)) {
-      return res.status(400).json({ success: false, message: "Invalid announcement type." });
+    const typeErr = Validators.validateDropdown(t, ["info", "success", "warning", "urgent"], "Announcement Type");
+    if (typeErr) {
+      return res.status(400).json({ success: false, message: typeErr });
     }
 
     const announcement = await Announcement.create({
-      title: trimmedTitle,
-      message: trimmedMsg,
+      title: title.trim(),
+      message: message.trim(),
       type: t,
       createdBy: req.user._id,
     });

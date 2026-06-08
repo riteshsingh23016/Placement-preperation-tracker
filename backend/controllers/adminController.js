@@ -4,6 +4,7 @@ const Note = require("../models/notes");
 const Collection = require("../models/collection");
 const Notification = require("../models/notification");
 const PlacementDrive = require("../models/placementDrive");
+const Validators = require("../utils/validators");
 const mongoose = require("mongoose");
 
 // Get global stats for admin dashboard
@@ -115,75 +116,32 @@ exports.getDrives = async (req, res) => {
 };
 
 const validateDriveInput = (body) => {
-  const companyName = (body.companyName || "").trim();
-  if (!companyName) {
-    return "Company name is required.";
-  }
-  if (companyName.length < 2 || companyName.length > 100) {
-    return "Company name must be between 2 and 100 characters.";
-  }
-  if (/^[+-]?\d+(\.\d+)?$/.test(companyName)) {
-    return "Company name cannot contain only numbers.";
-  }
-  if (!/^[a-zA-Z0-9\s&.\-']+$/.test(companyName)) {
-    return "Company name contains invalid characters.";
-  }
-  if (!/[a-zA-Z0-9]/.test(companyName)) {
-    return "Company name cannot consist only of special characters.";
-  }
+  const nameErr = Validators.validateCompanyName(body.companyName);
+  if (nameErr) return nameErr;
 
-  const role = (body.role || "").trim();
-  if (!role) {
-    return "Job role is required.";
-  }
-  if (role.length < 2 || role.length > 80) {
-    return "Job role must be between 2 and 80 characters.";
-  }
-  if (/^[+-]?\d+(\.\d+)?$/.test(role)) {
-    return "Job role cannot contain only numbers.";
-  }
-  if (!/[a-zA-Z0-9]/.test(role)) {
-    return "Job role cannot consist only of special characters.";
-  }
+  const roleErr = Validators.validateJobRole(body.role);
+  if (roleErr) return roleErr;
 
-  const pkg = (body.package || "").trim();
-  if (pkg) {
-    const num = Number(pkg);
-    if (isNaN(num) || !/^\d+(\.\d+)?$/.test(pkg)) {
-      return "Package must be a valid positive number.";
-    }
-    if (num <= 0) {
-      return "Package must be greater than 0.";
-    }
-    if (num > 100) {
-      return "Package must not exceed 100 LPA.";
-    }
-  }
+  const pkgErr = Validators.validatePackage(body.package, false);
+  if (pkgErr) return pkgErr;
 
-  const driveDate = (body.driveDate || "").trim();
-  if (driveDate) {
-    const selectedDate = new Date(driveDate);
-    if (isNaN(selectedDate.getTime())) {
-      return "Invalid interview date.";
-    }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const compareDate = new Date(selectedDate);
-    compareDate.setHours(0, 0, 0, 0);
-    if (compareDate < today) {
-      return "Interview date cannot be in the past.";
-    }
-  }
+  const dateErr = Validators.validateDate(body.driveDate, false, "Drive date");
+  if (dateErr) return dateErr;
 
-  const description = (body.description || "").trim();
-  if (description) {
-    if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(description)) {
-      return "Description contains forbidden script content.";
-    }
-    if (description.length > 5000) {
-      return "Description must not exceed 5000 characters.";
-    }
-  }
+  const descErr = Validators.validateLongText(body.description, 5000, "Description");
+  if (descErr) return descErr;
+
+  const locErr = Validators.validateProfileText(body.location, "Location", false, 2, 100);
+  if (locErr) return locErr;
+
+  const eligErr = Validators.validateProfileText(body.eligibility, "Eligibility criteria", false, 2, 200);
+  if (eligErr) return eligErr;
+
+  const statusErr = Validators.validateDropdown(body.status || "Open", ["Open", "Closed"], "Status");
+  if (statusErr) return statusErr;
+
+  const modeErr = Validators.validateDropdown(body.mode || "Online", ["Online", "Offline", "Hybrid"], "Mode");
+  if (modeErr) return modeErr;
 
   return null;
 };
@@ -271,33 +229,23 @@ exports.getStudentNotes = async (req, res) => {
 exports.sendStudentNotification = async (req, res) => {
   try {
     const { title, message, priority } = req.body;
-
     const trimmedTitle = (title || "").trim();
-    if (!trimmedTitle) {
-      return res.status(400).json({ success: false, message: "Notification title is required." });
-    }
-    if (trimmedTitle.length > 100) {
-      return res.status(400).json({ success: false, message: "Notification title must not exceed 100 characters." });
-    }
-    if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedTitle)) {
-      return res.status(400).json({ success: false, message: "Notification title contains forbidden script content." });
-    }
-
     const trimmedMsg = (message || "").trim();
-    if (!trimmedMsg) {
-      return res.status(400).json({ success: false, message: "Notification message is required." });
-    }
-    if (trimmedMsg.length > 1000) {
-      return res.status(400).json({ success: false, message: "Notification message must not exceed 1000 characters." });
-    }
-    if (/<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmedMsg)) {
-      return res.status(400).json({ success: false, message: "Notification message contains forbidden script content." });
+
+    const titleErr = Validators.validateLongText(trimmedTitle, 100, "Notification Title", true);
+    if (titleErr) {
+      return res.status(400).json({ success: false, message: titleErr });
     }
 
-    const validPriorities = ["low", "medium", "high"];
+    const msgErr = Validators.validateLongText(trimmedMsg, 1000, "Notification Message", true);
+    if (msgErr) {
+      return res.status(400).json({ success: false, message: msgErr });
+    }
+
     const p = (priority || "low").toLowerCase();
-    if (!validPriorities.includes(p)) {
-      return res.status(400).json({ success: false, message: "Invalid priority value." });
+    const priorityErr = Validators.validateDropdown(p, ["low", "medium", "high"], "Notification Priority");
+    if (priorityErr) {
+      return res.status(400).json({ success: false, message: priorityErr });
     }
 
     const student = await User.findOne({ _id: req.params.id, role: "student" });
