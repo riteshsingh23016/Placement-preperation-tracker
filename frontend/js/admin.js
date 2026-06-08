@@ -881,6 +881,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Update Modal UI
                 const modalTitle = qs("#driveModalTitle");
                 if (modalTitle) modalTitle.textContent = "Edit Placement Drive";
+                const submitBtn = qs("#submitDriveBtn");
+                if (submitBtn) submitBtn.textContent = "Save Changes";
 
                 // Populate Form
                 const form = qs("#driveForm");
@@ -1503,31 +1505,38 @@ document.addEventListener("DOMContentLoaded", () => {
         const closeBtn = qs("#closeDriveModal");
         const driveForm = qs("#driveForm");
 
+        const cancelBtn = qs("#cancelDriveModal");
+        const closeOverlayAndReset = () => {
+            window.closeModalOverlay(driveModal);
+            editingDriveId = null;
+            if (driveForm) driveForm.reset();
+        };
+
         if (addBtn && driveModal) {
             addBtn.addEventListener("click", () => {
                 editingDriveId = null;
                 const modalTitle = qs("#driveModalTitle");
                 if (modalTitle) modalTitle.textContent = "New Placement Drive";
+                const submitBtn = qs("#submitDriveBtn");
+                if (submitBtn) submitBtn.textContent = "Create Drive";
                 if (driveForm) driveForm.reset();
                 window.openModalOverlay(driveModal);
             });
         }
 
         if (closeBtn && driveModal) {
-            closeBtn.addEventListener("click", () => {
-                window.closeModalOverlay(driveModal);
-                editingDriveId = null;
-                if (driveForm) driveForm.reset();
-            });
+            closeBtn.addEventListener("click", closeOverlayAndReset);
+        }
+
+        if (cancelBtn && driveModal) {
+            cancelBtn.addEventListener("click", closeOverlayAndReset);
         }
 
         // Close on background click
         if (driveModal) {
             driveModal.addEventListener("click", (e) => {
                 if (e.target === driveModal) {
-                    window.closeModalOverlay(driveModal);
-                    editingDriveId = null;
-                    if (driveForm) driveForm.reset();
+                    closeOverlayAndReset();
                 }
             });
         }
