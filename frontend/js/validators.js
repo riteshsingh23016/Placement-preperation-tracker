@@ -114,16 +114,93 @@
     return null;
   };
 
-  // 4b. URLs (Academic, social, etc.)
   Validators.validateUrl = function(url, label) {
     url = (url || "").trim();
     if (!url) return null;
+
     if (url.length > 500) {
       return `${label} must not exceed 500 characters.`;
     }
-    if (!/^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url)) {
+
+    // Reject whitespace within URL
+    if (/\s/.test(url)) {
+      return `${label} must not contain spaces.`;
+    }
+
+    // Check protocol first for a friendly error message
+    if (!/^https?:\/\//i.test(url)) {
       return `${label} must be a valid URL starting with http:// or https://.`;
     }
+
+    let parsed;
+    try {
+      parsed = new URL(url);
+    } catch (e) {
+      return `${label} is malformed or invalid.`;
+    }
+
+    // Protocol check
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return `${label} must use a secure protocol (http:// or https://).`;
+    }
+
+    // Hostname check
+    const hostname = parsed.hostname;
+    if (!hostname) {
+      return `${label} must have a valid hostname.`;
+    }
+
+    // Validate hostname has a dot and valid characters, and TLD
+    const hostnameParts = hostname.split(".");
+    if (hostnameParts.length < 2 || hostnameParts.some(part => part.length === 0)) {
+      return `${label} must have a valid domain name.`;
+    }
+
+    // Hostname regex validation (reject invalid characters like _, spaces, etc.)
+    const domainRegex = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!domainRegex.test(hostname)) {
+      return `${label} must have a valid hostname structure.`;
+    }
+
+    // Field-specific validation
+    const lowerLabel = (label || "").toLowerCase();
+    
+    if (lowerLabel.includes("linkedin")) {
+      const isLinkedin = hostname.endsWith("linkedin.com");
+      if (!isLinkedin) {
+        return `${label} must be a valid linkedin.com profile URL.`;
+      }
+      const path = parsed.pathname;
+      if (!/^\/(in|pub|profile)\/[a-zA-Z0-9%_.-]+\/?$/.test(path)) {
+        return `${label} must be a valid LinkedIn profile URL (e.g., https://www.linkedin.com/in/username).`;
+      }
+    } else if (lowerLabel.includes("github")) {
+      const isGithub = hostname.endsWith("github.com");
+      if (!isGithub) {
+        return `${label} must be a valid github.com profile URL.`;
+      }
+      const path = parsed.pathname;
+      const pathParts = path.split("/").filter(Boolean);
+      if (pathParts.length !== 1) {
+        return `${label} must be a valid GitHub profile URL (e.g., https://github.com/username).`;
+      }
+      const username = pathParts[0];
+      const reservedPaths = ["pulls", "issues", "marketplace", "explore", "notifications", "settings", "orgs", "search", "trending", "features", "sponsors", "login", "join"];
+      if (reservedPaths.includes(username.toLowerCase()) || !/^[a-zA-Z0-9-]{1,39}$/.test(username)) {
+        return `${label} must be a valid GitHub profile URL (e.g., https://github.com/username).`;
+      }
+    } else if (lowerLabel.includes("resume")) {
+      const path = parsed.pathname.toLowerCase();
+      const isPdf = path.endsWith(".pdf") || parsed.href.toLowerCase().includes(".pdf");
+      
+      const trustedDomains = ["drive.google.com", "docs.google.com", "dropbox.com", "www.dropbox.com", "onedrive.live.com", "sharepoint.com", "github.com", "raw.githubusercontent.com"];
+      const isTrustedDomain = trustedDomains.some(domain => hostname.endsWith(domain));
+
+      if (!isPdf && !isTrustedDomain) {
+        return `${label} must point to a PDF file or a trusted hosting service (Google Drive, Dropbox, OneDrive, or GitHub).`;
+      }
+    }
+
     return null;
   };
 

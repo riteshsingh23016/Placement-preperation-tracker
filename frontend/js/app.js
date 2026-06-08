@@ -369,14 +369,17 @@ function renderProfileFields(role, data = {}) {
       <label class="modalField">
         <span class="modalField__label">LinkedIn URL</span>
         <input class="modalField__input" type="url" name="linkedinUrl" value="${getVal('linkedinUrl')}" placeholder="https://linkedin.com/in/username" />
+        <span class="modalField__error" id="errProfileLinkedin" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
       </label>
       <label class="modalField">
         <span class="modalField__label">GitHub URL</span>
         <input class="modalField__input" type="url" name="githubUrl" value="${getVal('githubUrl')}" placeholder="https://github.com/username" />
+        <span class="modalField__error" id="errProfileGithub" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
       </label>
       <label class="modalField">
         <span class="modalField__label">Resume URL</span>
         <input class="modalField__input" type="url" name="resumeUrl" value="${getVal('resumeUrl')}" placeholder="https://drive.google.com/..." />
+        <span class="modalField__error" id="errProfileResume" style="color: var(--color-danger); font-size: 11px; margin-top: 4px; display: block;"></span>
       </label>
     `;
   } else if (role === "admin") {
@@ -731,11 +734,18 @@ function initUserMenu() {
       }
     }
 
+    const errLinkedin = document.getElementById("errProfileLinkedin");
+    const errGithub = document.getElementById("errProfileGithub");
+    const errResume = document.getElementById("errProfileResume");
+    if (errLinkedin) errLinkedin.textContent = "";
+    if (errGithub) errGithub.textContent = "";
+    if (errResume) errResume.textContent = "";
+
     const linkedinInput = profileForm.querySelector("input[name='linkedinUrl']");
     if (linkedinInput) {
       const linkErr = window.Validators.validateUrl(linkedinInput.value, "LinkedIn URL");
       if (linkErr) {
-        window.Toast.error("Validation Error", linkErr);
+        if (errLinkedin) errLinkedin.textContent = linkErr;
         linkedinInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = linkedinInput;
@@ -746,7 +756,7 @@ function initUserMenu() {
     if (githubInput) {
       const gitErr = window.Validators.validateUrl(githubInput.value, "GitHub URL");
       if (gitErr) {
-        window.Toast.error("Validation Error", gitErr);
+        if (errGithub) errGithub.textContent = gitErr;
         githubInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = githubInput;
@@ -757,7 +767,7 @@ function initUserMenu() {
     if (resumeInput) {
       const resErr = window.Validators.validateUrl(resumeInput.value, "Resume URL");
       if (resErr) {
-        window.Toast.error("Validation Error", resErr);
+        if (errResume) errResume.textContent = resErr;
         resumeInput.classList.add("is-invalid");
         hasErrors = true;
         if (!firstInvalid) firstInvalid = resumeInput;
