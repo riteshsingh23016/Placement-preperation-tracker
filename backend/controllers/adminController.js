@@ -465,6 +465,7 @@ exports.approveReset = async (req, res) => {
 
     // Update user's password (which gets hashed on save)
     user.password = tempPassword;
+    console.log(`[Admin Reset approveReset] Administrator is generating and saving a temporary password for user: ${user.email}`);
     await user.save();
 
     console.log(`[Admin Reset approveReset] Temporary password generated and saved for user: ${user.email}, role: ${user.role}. Password was modified by reset flow.`);

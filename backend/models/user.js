@@ -123,10 +123,13 @@ userSchema.pre("save", async function (next) {
     return next();
   }
   try {
+    console.log(`[User Pre-Save Hook] Password modification detected for user: ${this.email}, role: ${this.role}. isNew: ${this.isNew}`);
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    console.log(`[User Pre-Save Hook] Password successfully hashed and updated in memory for user: ${this.email}`);
     next();
   } catch (err) {
+    console.error(`[User Pre-Save Hook] Password hashing failed for user: ${this.email}:`, err);
     next(err);
   }
 });

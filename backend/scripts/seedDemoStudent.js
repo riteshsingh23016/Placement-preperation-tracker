@@ -34,7 +34,10 @@ async function main() {
 
     // 1. GET OR CREATE ADMIN USER (needed to author announcements)
     const adminEmail = process.env.ADMIN_EMAIL || "riteshthelegend10f@gmail.com";
+    console.log(`[seedDemoStudent.js] Checking if admin user exists before seeding...`);
     let admin = await User.findOne({ email: adminEmail.toLowerCase().trim() });
+    console.log(`[seedDemoStudent.js] Admin user exists before seeding: ${!!admin}`);
+
     if (!admin) {
       console.log(`Admin account not found. Seeding default admin...`);
       admin = await User.create({
@@ -47,11 +50,8 @@ async function main() {
       });
       console.log("Admin account created.");
     } else {
-      console.log("Admin account found. Ensuring verified status and resetting password...");
-      admin.isVerified = true;
-      admin.password = process.env.ADMIN_PASSWORD || "admin123";
-      await admin.save();
-      console.log("[seedDemoStudent.js] Admin verified status and password updated.");
+      console.log(`[seedDemoStudent.js] Admin account with email ${admin.email} already exists. Preserving admin credentials without any modifications.`);
+      console.log(`[seedDemoStudent.js] No admin password overwrite attempt will occur.`);
     }
 
     // 2. SEED/RESET STUDENT ACCOUNT
