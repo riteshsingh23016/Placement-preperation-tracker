@@ -536,7 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let ok = true;
                 let firstInvalid = null;
 
-                const titleErr = window.Validators.validateName(title, "Notification Title", true);
+                const titleErr = window.Validators.validateProfileText(title, "Notification Title", true, 2, 100);
                 if (titleErr) {
                     ok = false;
                     if (errTitle) errTitle.textContent = titleErr;
@@ -1871,7 +1871,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let ok = true;
                 let firstInvalid = null;
 
-                const titleErr = window.Validators.validateName(title, "Announcement Title", true);
+                const titleErr = window.Validators.validateProfileText(title, "Announcement Title", true, 2, 100);
                 if (titleErr) {
                     ok = false;
                     if (errTitle) errTitle.textContent = titleErr;

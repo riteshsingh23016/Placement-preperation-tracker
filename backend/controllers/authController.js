@@ -456,6 +456,10 @@ exports.resendVerification = async (req, res) => {
     }
 
     email = email.trim().toLowerCase();
+    const emailErr = Validators.validateEmail(email);
+    if (emailErr) {
+      return res.status(400).json({ success: false, message: emailErr });
+    }
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -534,6 +538,10 @@ exports.forgotPassword = async (req, res) => {
     }
 
     email = email.trim().toLowerCase();
+    const emailErr = Validators.validateEmail(email);
+    if (emailErr) {
+      return res.status(400).json({ success: false, message: emailErr });
+    }
 
     // Check rate limit and log the details
     const rateLimitInfo = checkForgotPasswordRateLimit(email, req.ip);
@@ -695,6 +703,10 @@ exports.verifyOtp = async (req, res) => {
 
     email = email.trim().toLowerCase();
     otp = otp.trim();
+    const emailErr = Validators.validateEmail(email);
+    if (emailErr) {
+      return res.status(400).json({ success: false, message: emailErr });
+    }
 
     const user = await User.findOne({
       email,
@@ -722,6 +734,10 @@ exports.resetPassword = async (req, res) => {
 
     email = email.trim().toLowerCase();
     otp = otp.trim();
+    const emailErr = Validators.validateEmail(email);
+    if (emailErr) {
+      return res.status(400).json({ success: false, message: emailErr });
+    }
 
     const passErr = Validators.validatePasswordComplexity(newPassword, "Password");
     if (passErr) {
@@ -765,6 +781,10 @@ exports.verifyEmailOtp = async (req, res) => {
 
     email = email.trim().toLowerCase();
     otp = otp.trim();
+    const emailErr = Validators.validateEmail(email);
+    if (emailErr) {
+      return res.status(400).json({ success: false, message: emailErr });
+    }
 
     const user = await User.findOne({
       email,

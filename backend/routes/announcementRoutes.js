@@ -23,7 +23,7 @@ router.post("/", protect, admin, async (req, res) => {
   try {
     const { title, message, type } = req.body;
 
-    const titleErr = Validators.validateName(title, "Announcement Title", true);
+    const titleErr = Validators.validateProfileText(title, "Announcement Title", true, 2, 100);
     if (titleErr) {
       return res.status(400).json({ success: false, message: titleErr });
     }

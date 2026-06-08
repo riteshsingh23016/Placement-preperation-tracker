@@ -78,12 +78,15 @@
     return null;
   };
 
-  // 4. Text Fields (College, Degree, Department, Designation, Location, Branch, etc.)
   Validators.validateProfileText = function(val, label, isRequired = false, min = 2, max = 150) {
     val = (val || "").trim();
     if (!val) {
       if (isRequired) return `${label} is required.`;
       return null;
+    }
+    const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(val);
+    if (hasScript) {
+      return `${label} contains forbidden script content.`;
     }
     if (val.length < min || val.length > max) {
       return `${label} must be between ${min} and ${max} characters.`;

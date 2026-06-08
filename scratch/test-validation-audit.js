@@ -165,7 +165,7 @@ async function runTests() {
     // 3a. Notes Title and Content limits and scripts
     const badNotes = [
       { title: '', content: 'Some content', expectedMsg: 'title is required' },
-      { title: 'A'.repeat(101), content: 'Some content', expectedMsg: 'must not exceed 100 characters' },
+      { title: 'A'.repeat(101), content: 'Some content', expectedMsg: 'between 2 and 100 characters' },
       { title: '<script>alert(1)</script>', content: 'Some content', expectedMsg: 'forbidden script content' },
       { title: 'Valid Note', content: '', expectedMsg: 'content is required' },
       { title: 'Valid Note', content: 'A'.repeat(5001), expectedMsg: 'must not exceed 5000 characters' },

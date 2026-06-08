@@ -37,7 +37,7 @@ exports.getCollections = async (req, res) => {
 exports.createCollection = async (req, res) => {
   try {
     const { name, color, icon } = req.body;
-    const nameErr = Validators.validateName(name, "Collection name", true);
+    const nameErr = Validators.validateProfileText(name, "Collection name", true, 2, 100);
     if (nameErr) {
       return res.status(400).json({ success: false, message: nameErr });
     }
@@ -77,7 +77,7 @@ exports.updateCollection = async (req, res) => {
     const updateFields = {};
 
     if (name !== undefined) {
-      const nameErr = Validators.validateName(name, "Collection name", true);
+      const nameErr = Validators.validateProfileText(name, "Collection name", true, 2, 100);
       if (nameErr) {
         return res.status(400).json({ success: false, message: nameErr });
       }

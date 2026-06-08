@@ -232,7 +232,7 @@ exports.sendStudentNotification = async (req, res) => {
     const trimmedTitle = (title || "").trim();
     const trimmedMsg = (message || "").trim();
 
-    const titleErr = Validators.validateLongText(trimmedTitle, 100, "Notification Title", true);
+    const titleErr = Validators.validateProfileText(trimmedTitle, "Notification Title", true, 2, 100);
     if (titleErr) {
       return res.status(400).json({ success: false, message: titleErr });
     }

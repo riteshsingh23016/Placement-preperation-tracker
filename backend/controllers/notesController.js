@@ -22,7 +22,7 @@ exports.createNote = async (req, res) => {
   try {
     let { title, content, collectionId, pinned } = req.body;
 
-    const titleErr = Validators.validateLongText(title, 100, "Title", true);
+    const titleErr = Validators.validateProfileText(title, "Title", true, 2, 100);
     if (titleErr) {
       return res.status(400).json({ success: false, message: titleErr });
     }
@@ -73,7 +73,7 @@ exports.updateNote = async (req, res) => {
 
     const updateFields = {};
     if (title !== undefined) {
-      const titleErr = Validators.validateLongText(title, 100, "Title", true);
+      const titleErr = Validators.validateProfileText(title, "Title", true, 2, 100);
       if (titleErr) {
         return res.status(400).json({ success: false, message: titleErr });
       }

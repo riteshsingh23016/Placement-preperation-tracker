@@ -350,7 +350,8 @@
     var topbarSearchEl = qs("#topbarCompanySearch");
     var filterEl = qs("#filterStatus");
     var sortEl = qs("#sortBy");
-    var q = ((searchEl && searchEl.value) || (topbarSearchEl && topbarSearchEl.value) || "").trim().toLowerCase();
+    var rawQ = ((searchEl && searchEl.value) || (topbarSearchEl && topbarSearchEl.value) || "");
+    var q = window.Validators.sanitizeSearch(rawQ).toLowerCase();
     var filter = filterEl ? filterEl.value : "all";
     var sortKey = sortEl ? sortEl.value : "applied-desc";
 

@@ -511,7 +511,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let hasError = false;
       let firstInvalid = null;
 
-      const titleErr = window.Validators.validateLongText(title, 100, "Title", true);
+      const titleErr = window.Validators.validateProfileText(title, "Title", true, 2, 100);
       if (titleErr) {
         if (errTitle) errTitle.textContent = titleErr;
         if (titleInput) {
@@ -610,7 +610,7 @@ document.addEventListener("DOMContentLoaded", () => {
         nameInput.classList.remove("is-invalid");
       }
 
-      const nameErr = window.Validators.validateName(name, "Collection name", true);
+      const nameErr = window.Validators.validateProfileText(name, "Collection name", true, 2, 100);
       if (nameErr) {
         if (errName) errName.textContent = nameErr;
         if (nameInput) {
