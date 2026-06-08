@@ -203,6 +203,75 @@
       if (r) r.classList.add("is-invalid");
       if (er) er.textContent = errors.role;
     }
+    if (errors.package) {
+      var p = qs("#fieldPackage");
+      var ep = qs("#errPackage");
+      if (p) p.classList.add("is-invalid");
+      if (ep) ep.textContent = errors.package;
+    }
+    if (errors.interviewDate) {
+      var i = qs("#fieldInterview");
+      var ei = qs("#errInterviewDate");
+      if (i) i.classList.add("is-invalid");
+      if (ei) ei.textContent = errors.interviewDate;
+    }
+    if (errors.notes) {
+      var nt = qs("#fieldNotes");
+      var ent = qs("#errNotes");
+      if (nt) nt.classList.add("is-invalid");
+      if (ent) ent.textContent = errors.notes;
+    }
+    if (saveBtn) {
+      saveBtn.disabled = true;
+    }
+  }
+
+  function validateForm(showErrors) {
+    var n = fieldName ? fieldName.value.trim() : "";
+    var r = fieldRole ? fieldRole.value.trim() : "";
+    var pack = fieldPackage ? fieldPackage.value.trim() : "";
+    var intvRaw = fieldInterview && fieldInterview.value ? fieldInterview.value.trim() : "";
+    var notes = fieldNotes ? fieldNotes.value.trim() : "";
+
+    var nameErr = window.validateCompanyName(n);
+    var roleErr = window.validateJobRole(r);
+    var pkgErr = window.validatePackage(pack);
+    var dateErr = window.validateInterviewDate(intvRaw);
+    var notesErr = window.validateNotes(notes, 1000);
+
+    if (showErrors) {
+      if (fieldName) {
+        fieldName.classList.toggle("is-invalid", !!nameErr);
+        var en = qs("#errName");
+        if (en) en.textContent = nameErr || "";
+      }
+      if (fieldRole) {
+        fieldRole.classList.toggle("is-invalid", !!roleErr);
+        var er = qs("#errRole");
+        if (er) er.textContent = roleErr || "";
+      }
+      if (fieldPackage) {
+        fieldPackage.classList.toggle("is-invalid", !!pkgErr);
+        var ep = qs("#errPackage");
+        if (ep) ep.textContent = pkgErr || "";
+      }
+      if (fieldInterview) {
+        fieldInterview.classList.toggle("is-invalid", !!dateErr);
+        var ed = qs("#errInterviewDate");
+        if (ed) ed.textContent = dateErr || "";
+      }
+      if (fieldNotes) {
+        fieldNotes.classList.toggle("is-invalid", !!notesErr);
+        var et = qs("#errNotes");
+        if (et) et.textContent = notesErr || "";
+      }
+    }
+
+    var hasErrors = !!(nameErr || roleErr || pkgErr || dateErr || notesErr);
+    if (saveBtn) {
+      saveBtn.disabled = hasErrors;
+    }
+    return !hasErrors;
   }
 
   /* ---- Data load ---- */
@@ -670,6 +739,10 @@
     companyForm.reset();
     if (editIdField) editIdField.value = "";
 
+    if (fieldInterview) {
+      fieldInterview.min = toInputDate(new Date());
+    }
+
     if (mode === "edit" && company) {
       if (modalTitle) modalTitle.textContent = "Edit company";
       if (modalSubtitle) modalSubtitle.textContent = "Update application details and keep your pipeline accurate.";
@@ -690,6 +763,7 @@
     }
 
     setSaveBusy(false);
+    validateForm(false); // disable Save button if errors exist
     openModalOverlay(companyModal);
     refreshIcons();
   }
@@ -701,69 +775,25 @@
       return;
     }
 
-    clearFormErrors();
-    var ok = true;
-    var firstInvalid = null;
-
-    var n = fieldName && fieldName.value.trim();
-    var r = fieldRole && fieldRole.value.trim();
-    var pack = fieldPackage ? fieldPackage.value.trim() : "";
-    var intvRaw = fieldInterview && fieldInterview.value ? fieldInterview.value.trim() : "";
-    var notes = fieldNotes ? fieldNotes.value.trim() : "";
-
-    var nameErr = window.validateCompanyName(n);
-    if (nameErr) {
-      ok = false;
-      if (fieldName) fieldName.classList.add("is-invalid");
-      var en = qs("#errName");
-      if (en) en.textContent = nameErr;
-      if (!firstInvalid) firstInvalid = fieldName;
-    }
-
-    var roleErr = window.validateJobRole(r);
-    if (roleErr) {
-      ok = false;
-      if (fieldRole) fieldRole.classList.add("is-invalid");
-      var er = qs("#errRole");
-      if (er) er.textContent = roleErr;
-      if (!firstInvalid) firstInvalid = fieldRole;
-    }
-
-    var pkgErr = window.validatePackage(pack);
-    if (pkgErr) {
-      ok = false;
-      if (fieldPackage) fieldPackage.classList.add("is-invalid");
-      var ep = qs("#errPackage");
-      if (ep) ep.textContent = pkgErr;
-      if (!firstInvalid) firstInvalid = fieldPackage;
-    }
-
-    var dateErr = window.validateInterviewDate(intvRaw);
-    if (dateErr) {
-      ok = false;
-      if (fieldInterview) fieldInterview.classList.add("is-invalid");
-      var ed = qs("#errInterviewDate");
-      if (ed) ed.textContent = dateErr;
-      if (!firstInvalid) firstInvalid = fieldInterview;
-    }
-
-    var notesErr = window.validateNotes(notes, 5000);
-    if (notesErr) {
-      ok = false;
-      if (fieldNotes) fieldNotes.classList.add("is-invalid");
-      var et = qs("#errNotes");
-      if (et) et.textContent = notesErr;
-      if (!firstInvalid) firstInvalid = fieldNotes;
-    }
-
+    var ok = validateForm(true);
     if (!ok) {
+      var firstInvalid = qs(".modalField__input.is-invalid");
       if (firstInvalid) firstInvalid.focus();
       return;
     }
 
     var editId = editIdField && editIdField.value;
+    var n = fieldName ? fieldName.value.trim() : "";
+    var r = fieldRole ? fieldRole.value.trim() : "";
+    var pack = fieldPackage ? fieldPackage.value.trim() : "";
+    var intvRaw = fieldInterview && fieldInterview.value ? fieldInterview.value.trim() : "";
+    var notes = fieldNotes ? fieldNotes.value.replace(/<[^>]*>/g, '').trim() : "";
     var st = fieldStatus ? fieldStatus.value : "Applied";
     var pri = fieldPriority ? fieldPriority.value : "Medium";
+
+    if (fieldNotes) {
+      fieldNotes.value = notes;
+    }
 
     var body = {
       companyName: n,
@@ -852,6 +882,28 @@
     }
 
     if (companyForm) companyForm.addEventListener("submit", onCompanySubmit);
+
+    var inputs = [fieldName, fieldRole, fieldPackage, fieldInterview, fieldNotes];
+    inputs.forEach(function (inp) {
+      if (inp) {
+        inp.addEventListener("input", function () {
+          validateForm(true);
+        });
+        inp.addEventListener("blur", function () {
+          validateForm(true);
+        });
+      }
+    });
+    if (fieldStatus) {
+      fieldStatus.addEventListener("change", function () {
+        validateForm(true);
+      });
+    }
+    if (fieldPriority) {
+      fieldPriority.addEventListener("change", function () {
+        validateForm(true);
+      });
+    }
 
     qsa("#companyModalClose, #companyModalCancel").forEach(function (b) {
       b.addEventListener("click", function () {

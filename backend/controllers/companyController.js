@@ -22,12 +22,83 @@ function parseRequiredAppliedDate(value) {
 
 function validateCreatePayload(body) {
   const errors = {};
-  if (!body.companyName || String(body.companyName).trim() === "") {
+
+  // Company Name
+  const companyName = (body.companyName || "").trim();
+  if (!companyName) {
     errors.companyName = "Company name is required.";
+  } else if (companyName.length < 2 || companyName.length > 100) {
+    errors.companyName = "Company name must be between 2 and 100 characters.";
+  } else if (/^[+-]?\d+(\.\d+)?$/.test(companyName)) {
+    errors.companyName = "Company name cannot contain only numbers.";
+  } else if (!/^[a-zA-Z0-9\s&.\-']+$/.test(companyName)) {
+    errors.companyName = "Company name contains invalid characters.";
+  } else if (!/[a-zA-Z0-9]/.test(companyName)) {
+    errors.companyName = "Company name cannot consist only of special characters.";
   }
-  if (!body.role || String(body.role).trim() === "") {
-    errors.role = "Role is required.";
+
+  // Job Role
+  const role = (body.role || "").trim();
+  if (!role) {
+    errors.role = "Job role is required.";
+  } else if (role.length < 2 || role.length > 80) {
+    errors.role = "Job role must be between 2 and 80 characters.";
+  } else if (/^[+-]?\d+(\.\d+)?$/.test(role)) {
+    errors.role = "Job role cannot contain only numbers.";
+  } else if (!/[a-zA-Z0-9]/.test(role)) {
+    errors.role = "Job role cannot consist only of special characters.";
   }
+
+  // Package
+  const pkg = (body.package || "").trim();
+  if (pkg) {
+    const num = Number(pkg);
+    if (isNaN(num) || !/^\d+(\.\d+)?$/.test(pkg)) {
+      errors.package = "Package must be a valid positive number.";
+    } else if (num <= 0) {
+      errors.package = "Package must be greater than 0.";
+    } else if (num > 100) {
+      errors.package = "Package must not exceed 100 LPA.";
+    }
+  }
+
+  // Interview Date
+  if (body.interviewDate) {
+    const selectedDate = new Date(body.interviewDate);
+    if (isNaN(selectedDate.getTime())) {
+      errors.interviewDate = "Invalid interview date.";
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selectedSOD = new Date(selectedDate);
+      selectedSOD.setHours(0, 0, 0, 0);
+      if (selectedSOD < today) {
+        errors.interviewDate = "Interview date cannot be in the past.";
+      }
+    }
+  }
+
+  // Status
+  const allowedStatuses = ["Applied", "Interview Scheduled", "Selected", "Rejected"];
+  if (body.status && !allowedStatuses.includes(body.status)) {
+    errors.status = "Invalid status.";
+  }
+
+  // Priority
+  const allowedPriorities = ["High", "Medium", "Low"];
+  if (body.priority && !allowedPriorities.includes(body.priority)) {
+    errors.priority = "Invalid priority.";
+  }
+
+  // Notes
+  const notes = (body.notes || "").trim();
+  const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(notes);
+  if (hasScript) {
+    errors.notes = "Notes contain forbidden script content.";
+  } else if (notes.length > 1000) {
+    errors.notes = "Notes must not exceed 1000 characters.";
+  }
+
   return errors;
 }
 
@@ -38,7 +109,7 @@ function collectUpdateFields(body) {
   if (body.package !== undefined) fields.package = String(body.package ?? "").trim();
   if (body.status !== undefined) fields.status = body.status;
   if (body.priority !== undefined) fields.priority = body.priority;
-  if (body.notes !== undefined) fields.notes = String(body.notes ?? "");
+  if (body.notes !== undefined) fields.notes = String(body.notes ?? "").replace(/<[^>]*>/g, '').trim();
   if (body.archived !== undefined) fields.archived = Boolean(body.archived);
   if (body.interviewDate !== undefined) {
     fields.interviewDate = parseOptionalDate(body.interviewDate);
@@ -95,7 +166,7 @@ exports.createCompany = async (req, res) => {
       package: String(req.body.package ?? "").trim(),
       status: req.body.status,
       priority: req.body.priority,
-      notes: String(req.body.notes ?? ""),
+      notes: String(req.body.notes ?? "").replace(/<[^>]*>/g, '').trim(),
       interviewDate,
       appliedDate: appliedDate || new Date(),
       archived: Boolean(req.body.archived) || false,
@@ -151,19 +222,38 @@ exports.updateCompany = async (req, res) => {
       });
     }
 
-    const updates = collectUpdateFields(req.body);
-    if (updates.companyName === "") {
-      return res.status(400).json({
+    const company = await Company.findOne({ _id: id, user: req.user._id });
+    if (!company) {
+      return res.status(404).json({
         success: false,
-        message: "Validation failed.",
-        errors: { companyName: "Company name is required." },
+        message: "Company not found.",
+        code: "NOT_FOUND",
       });
     }
-    if (updates.role === "") {
+
+    const updates = collectUpdateFields(req.body);
+
+    // Merge updates with existing values to validate final state
+    const merged = {
+      companyName: updates.companyName !== undefined ? updates.companyName : company.companyName,
+      role: updates.role !== undefined ? updates.role : company.role,
+      package: updates.package !== undefined ? updates.package : company.package,
+      status: updates.status !== undefined ? updates.status : company.status,
+      priority: updates.priority !== undefined ? updates.priority : company.priority,
+      notes: updates.notes !== undefined ? updates.notes : company.notes,
+    };
+
+    // Only validate interviewDate if it is being modified/sent
+    if (req.body.interviewDate !== undefined) {
+      merged.interviewDate = req.body.interviewDate;
+    }
+
+    const errors = validateCreatePayload(merged);
+    if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         success: false,
         message: "Validation failed.",
-        errors: { role: "Role is required." },
+        errors,
       });
     }
 

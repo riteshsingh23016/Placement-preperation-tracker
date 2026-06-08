@@ -3,28 +3,37 @@
 // Global validation helpers
 window.validateCompanyName = function(name) {
   name = (name || "").trim();
-  if (name.length < 2) {
-    return "Company name must be at least 2 characters.";
+  if (!name) {
+    return "Company name is required.";
+  }
+  if (name.length < 2 || name.length > 100) {
+    return "Company name must be between 2 and 100 characters.";
   }
   if (/^[+-]?\d+(\.\d+)?$/.test(name)) {
     return "Company name cannot contain only numbers.";
   }
-  if (/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~\s]+$/.test(name)) {
-    return "Company name cannot contain only special characters.";
+  if (!/^[a-zA-Z0-9\s&.\-']+$/.test(name)) {
+    return "Company name contains invalid characters.";
+  }
+  if (!/[a-zA-Z0-9]/.test(name)) {
+    return "Company name cannot consist only of special characters.";
   }
   return null;
 };
 
 window.validateJobRole = function(role) {
   role = (role || "").trim();
-  if (role.length < 2) {
-    return "Please enter a valid job role.";
+  if (!role) {
+    return "Job role is required.";
+  }
+  if (role.length < 2 || role.length > 80) {
+    return "Job role must be between 2 and 80 characters.";
   }
   if (/^[+-]?\d+(\.\d+)?$/.test(role)) {
     return "Job role cannot contain only numbers.";
   }
-  if (/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~\s]+$/.test(role)) {
-    return "Job role cannot contain only special characters.";
+  if (!/[a-zA-Z0-9]/.test(role)) {
+    return "Job role cannot consist only of special characters.";
   }
   return null;
 };
@@ -34,13 +43,13 @@ window.validatePackage = function(pkg) {
   if (!pkg) return null; // optional
   const num = Number(pkg);
   if (isNaN(num) || !/^\d+(\.\d+)?$/.test(pkg)) {
-    return "Package must be a positive number.";
+    return "Package must be a valid positive number.";
   }
   if (num <= 0) {
-    return "Package must be a positive number.";
+    return "Package must be greater than 0.";
   }
-  if (num < 0.1 || num > 1000) {
-    return "Package must be between 0.1 and 1000 LPA.";
+  if (num > 100) {
+    return "Package must not exceed 100 LPA.";
   }
   return null;
 };
@@ -49,6 +58,9 @@ window.validateInterviewDate = function(dateStr) {
   dateStr = (dateStr || "").trim();
   if (!dateStr) return null; // optional
   const selectedDate = new Date(dateStr + "T00:00:00");
+  if (isNaN(selectedDate.getTime())) {
+    return "Invalid interview date.";
+  }
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   if (selectedDate < today) {
@@ -57,10 +69,15 @@ window.validateInterviewDate = function(dateStr) {
   return null;
 };
 
-window.validateNotes = function(notes, maxLen = 5000) {
+window.validateNotes = function(notes, maxLen = 1000) {
   notes = notes || "";
-  if (notes.length > maxLen) {
-    return `Notes must not exceed ${maxLen} characters. Currently ${notes.length} characters.`;
+  const trimmed = notes.trim();
+  const hasScript = /<script\b[^>]*>|javascript:|on\w+\s*=/i.test(trimmed);
+  if (hasScript) {
+    return "Notes contain forbidden script content.";
+  }
+  if (trimmed.length > maxLen) {
+    return `Notes must not exceed ${maxLen} characters. Currently ${trimmed.length} characters.`;
   }
   return null;
 };
