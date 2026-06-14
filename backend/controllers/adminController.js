@@ -157,6 +157,28 @@ exports.createDrive = async (req, res) => {
       ...req.body,
       createdBy: req.user._id
     });
+
+    // Automatically create a student-visible notification entry for all students
+    try {
+      const User = require("../models/user");
+      const Notification = require("../models/notification");
+      const students = await User.find({ role: "student" });
+      const formattedDate = drive.driveDate ? new Date(drive.driveDate).toLocaleDateString() : "N/A";
+      
+      const notificationPromises = students.map(student => {
+        return Notification.create({
+          user: student._id,
+          type: "system",
+          title: `New Placement Drive: ${drive.companyName}`,
+          message: `A new placement drive for ${drive.role} (${drive.package} LPA) has been launched for ${formattedDate} in ${drive.location}.`,
+          priority: "medium",
+        });
+      });
+      await Promise.all(notificationPromises);
+    } catch (notifErr) {
+      console.error("Failed to generate student notifications for new drive:", notifErr);
+    }
+
     res.status(201).json({ success: true, data: drive, message: "Drive created successfully" });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
