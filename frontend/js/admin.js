@@ -2007,10 +2007,223 @@ document.addEventListener("DOMContentLoaded", () => {
     initStudentDetailFlow(); // NEW
     initClickableCards(); // NEW
     renderStats(); // Load default view
+    
+    // --- REPORT EXPORT WIRING ---
     const exportBtn = qs("#exportPlacementReportBtn");
-    if (exportBtn) {
-        exportBtn.addEventListener("click", () => {
-            window.PdfGenerator.triggerConsolidatedDownload(exportBtn);
+    const exportDropdown = qs("#exportDropdown");
+    const exportPdfBtn = qs("#exportPdfBtn");
+    const exportExcelBtn = qs("#exportExcelBtn");
+
+    if (exportBtn && exportDropdown) {
+        exportBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            exportDropdown.classList.toggle("is-open");
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!exportBtn.contains(e.target) && !exportDropdown.contains(e.target)) {
+                exportDropdown.classList.remove("is-open");
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                exportDropdown.classList.remove("is-open");
+            }
+        });
+    }
+
+    const fetchReportData = async (btn) => {
+        let originalHTML = "";
+        if (btn) {
+            originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" style="animation: spin 1s linear infinite; width: 14px; height: 14px; margin-right: 6px; display: inline-block; vertical-align: middle;"></i><span>Generating...</span>`;
+            if (window.lucide) window.lucide.createIcons({ root: btn });
+        }
+
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {})
+            };
+
+            const resStats = await fetch(`${window.APP_API_BASE}/admin/stats`, { headers }).then(r => r.json());
+            const resUsers = await fetch(`${window.APP_API_BASE}/admin/users`, { headers }).then(r => r.json());
+            const resApps = await fetch(`${window.APP_API_BASE}/admin/applications`, { headers }).then(r => r.json());
+
+            if (!resStats || !resStats.success) throw new Error((resStats && resStats.message) || "Failed to fetch platform statistics");
+            const stats = resStats.data;
+            const students = resUsers && resUsers.success ? resUsers.data : [];
+            const applications = resApps && resApps.success ? resApps.data : [];
+
+            return { stats, students, applications };
+        } catch (err) {
+            console.error("Report data fetch error:", err);
+            if (window.Toast) window.Toast.error("Error", err.message || "Failed to fetch report data");
+            throw err;
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                if (window.lucide) window.lucide.createIcons({ root: btn });
+            }
+        }
+    };
+
+    const downloadConsolidatedExcelReport = (stats, students, applications) => {
+        if (!window.XLSX) {
+            throw new Error("Excel export library (SheetJS) is not loaded.");
+        }
+
+        const wb = XLSX.utils.book_new();
+
+        // Sheet 1: Overview & Insights
+        const overviewData = [
+            ["PLACEMENT TRACKER - CONSOLIDATED REPORT"],
+            ["Generated on:", new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()],
+            [],
+            ["PLATFORM PLACEMENT SUMMARY"],
+            ["Metric", "Value"],
+            ["Total Candidates", stats.totalStudents],
+            ["Total Applications", stats.totalApplications],
+            ["Active Applications", stats.activeApplications],
+            ["Selected Students", stats.selectedStudents],
+            ["Rejected Applications", stats.rejectedApplications],
+            ["Success Conversion Rate", `${stats.successRate || 0}%`],
+            [],
+            ["APPLICATION PIPELINE DISTRIBUTION"],
+            ["Status", "Count"],
+            ["Applied", applications.filter(a => a.status === 'Applied' || a.status === 'Pending').length],
+            ["Interview Scheduled", applications.filter(a => a.status === 'Interview Scheduled').length],
+            ["Selected", applications.filter(a => a.status === 'Selected').length],
+            ["Rejected", applications.filter(a => a.status === 'Rejected').length],
+            [],
+            ["TOP RECRUITING COMPANIES"],
+            ["Company Name", "Application Count"]
+        ];
+
+        const companyCounts = {};
+        applications.forEach(a => {
+            const name = (a.companyName || 'Unknown').trim();
+            companyCounts[name] = (companyCounts[name] || 0) + 1;
+        });
+        const topCompanies = Object.entries(companyCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+        topCompanies.forEach(([name, count]) => {
+            overviewData.push([name, count]);
+        });
+
+        overviewData.push([]);
+        overviewData.push(["MOST APPLIED JOB ROLES"]);
+        overviewData.push(["Job Role", "Application Count"]);
+
+        const roleCounts = {};
+        applications.forEach(a => {
+            const name = (a.role || 'Unknown').trim();
+            roleCounts[name] = (roleCounts[name] || 0) + 1;
+        });
+        const topRoles = Object.entries(roleCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+        topRoles.forEach(([name, count]) => {
+            overviewData.push([name, count]);
+        });
+
+        overviewData.push([]);
+        overviewData.push(["OFFICIAL PLACEMENT INSIGHTS"]);
+        const activePct = stats.totalApplications > 0 ? Math.round((stats.activeApplications / stats.totalApplications) * 100) : 0;
+        const topCompStr = topCompanies.length > 0 ? topCompanies[0][0] : "N/A";
+        const topRoleStr = topRoles.length > 0 ? topRoles[0][0] : "N/A";
+        overviewData.push([`- Active recruitment pipeline represents ${activePct}% of total logged applications.`]);
+        overviewData.push([`- Success rate is at ${stats.successRate || 0}%, showing target conversions at top employers like ${topCompStr}.`]);
+        overviewData.push([`- Most in-demand job role is ${topRoleStr}, showing strong alignment with engineering profiles.`]);
+
+        const wsOverview = XLSX.utils.aoa_to_sheet(overviewData);
+        XLSX.utils.book_append_sheet(wb, wsOverview, "Overview & Insights");
+
+        // Sheet 2: Candidate Matrix
+        const candidateHeader = ["Student Name", "Email Address", "Total Applications", "Interviews Scheduled", "Selected", "Rejected", "Success Rate"];
+        const candidateData = [candidateHeader];
+
+        students.forEach(student => {
+            const studentApps = applications.filter(app => {
+                const userId = app.user?._id || app.user;
+                const userEmail = app.user?.email;
+                return userId === student._id || (userEmail && userEmail === student.email);
+            });
+
+            const totalApps = studentApps.length;
+            const selectedApps = studentApps.filter(a => a.status === 'Selected').length;
+            const rejectedApps = studentApps.filter(a => a.status === 'Rejected').length;
+            const interviews = studentApps.filter(a => a.status === 'Interview Scheduled').length;
+            const sRate = totalApps > 0 ? `${Math.round((selectedApps / totalApps) * 100)}%` : '0%';
+
+            candidateData.push([
+                student.name || 'N/A',
+                student.email || 'N/A',
+                totalApps,
+                interviews,
+                selectedApps,
+                rejectedApps,
+                sRate
+            ]);
+        });
+
+        const wsCandidates = XLSX.utils.aoa_to_sheet(candidateData);
+        XLSX.utils.book_append_sheet(wb, wsCandidates, "Candidate Matrix");
+
+        // Sheet 3: Detailed Applications
+        const appHeader = ["Student Email", "Company Name", "Job Role", "Package", "Location", "Drive Date", "Mode", "Status"];
+        const appData = [appHeader];
+
+        applications.forEach(app => {
+            const userEmail = app.user?.email || (typeof app.user === 'object' ? app.user?.email : '');
+            appData.push([
+                userEmail || 'N/A',
+                app.companyName || 'N/A',
+                app.role || 'N/A',
+                app.package || 'N/A',
+                app.location || 'N/A',
+                app.driveDate ? new Date(app.driveDate).toLocaleDateString() : 'N/A',
+                app.mode || 'N/A',
+                app.status || 'N/A'
+            ]);
+        });
+
+        const wsApps = XLSX.utils.aoa_to_sheet(appData);
+        XLSX.utils.book_append_sheet(wb, wsApps, "Detailed Applications");
+
+        const cleanDate = new Date().toISOString().split('T')[0];
+        XLSX.writeFile(wb, `placement_report_${cleanDate}.xlsx`);
+    };
+
+    if (exportPdfBtn) {
+        exportPdfBtn.addEventListener("click", async () => {
+            exportDropdown.classList.remove("is-open");
+            try {
+                const { stats, students, applications } = await fetchReportData(exportBtn);
+                const theme = localStorage.getItem("theme") || "dark";
+                await window.PdfGenerator.downloadConsolidatedReport(stats, students, applications, theme);
+                if (window.Toast) window.Toast.success("Success", "Placement report downloaded as PDF!");
+            } catch (err) {
+                // Fetch report data handles toast
+            }
+        });
+    }
+
+    if (exportExcelBtn) {
+        exportExcelBtn.addEventListener("click", async () => {
+            exportDropdown.classList.remove("is-open");
+            try {
+                const { stats, students, applications } = await fetchReportData(exportBtn);
+                downloadConsolidatedExcelReport(stats, students, applications);
+                if (window.Toast) window.Toast.success("Success", "Placement report downloaded as Excel!");
+            } catch (err) {
+                // Fetch report data handles toast
+            }
         });
     }
 

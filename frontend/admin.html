@@ -453,10 +453,23 @@
                 <section id="admin-reports" class="admin-section">
                     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 12px;">
                         <h2 class="section-title">Reports & Analytics</h2>
-                        <button class="btn btn--primary btn--sm" id="exportPlacementReportBtn" style="gap: 6px; display: flex; align-items: center;">
-                            <i data-lucide="download"></i>
-                            <span>Export Complete Placement Report</span>
-                        </button>
+                        <div style="position: relative; display: inline-block;">
+                            <button class="btn btn--primary btn--sm" id="exportPlacementReportBtn" style="gap: 6px; display: flex; align-items: center;">
+                                <i data-lucide="download"></i>
+                                <span>Export Complete Placement Report</span>
+                                <i data-lucide="chevron-down" style="width: 14px; height: 14px; margin-left: 2px;"></i>
+                            </button>
+                            <div class="user-dropdown" id="exportDropdown" style="width: 220px; top: calc(100% + 6px);">
+                                <button class="user-dropdown__item" id="exportPdfBtn">
+                                    <i data-lucide="file-text" style="width: 14.5px; height: 14.5px; color: var(--color-danger);"></i>
+                                    <span>Download as PDF</span>
+                                </button>
+                                <button class="user-dropdown__item" id="exportExcelBtn">
+                                    <i data-lucide="file-spreadsheet" style="width: 14.5px; height: 14.5px; color: #10b981;"></i>
+                                    <span>Download as Excel</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="stats-grid" id="reportsStats">
                         <!-- Loaded via JS -->
@@ -840,6 +853,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="js/config.js"></script>
     <script src="js/pdfGenerator.js" defer></script>
