@@ -3,3 +3,9 @@ backend/node_modules/
 
 .env
 backend/.env
+
+# Temporary and development files
+scratch/
+test-auth.js
+*.zip
+*.docx
